@@ -14,6 +14,7 @@ Well, we're still figuring it out. So far locally-sourced, house-made metadata i
 *WE NEED TO TALK MORE ABOUT*:
 - Tools for visualizing the data (frequency, time series, links, steam graph?)
 - Tools for searching on the data
+- Incorporating Internet Archive metadata
 
 ####Ingredients
 - custom php snippets
