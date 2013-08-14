@@ -10,9 +10,10 @@ Well, we're still figuring it out. So far locally-sourced, house-made metadata i
 - A sortable (possibly searchable) view displays all records
 - Scripts automagically ingest already collected data living on a Google Spreadsheet
 - A project management view tracks contributions by particular reviewers and articles assigned
-- *WE NEED TO TALK MORE ABOUT*:
--- Tools for visualizing the data (frequency, time series, links, steam graph?)
--- Tools for searching on the data
+
+*WE NEED TO TALK MORE ABOUT*:
+- Tools for visualizing the data (frequency, time series, links, steam graph?)
+- Tools for searching on the data
 
 ####Ingredients
 - custom php snippets
