@@ -1,0 +1,14 @@
+
+.navbar-brand{
+
+	border-bottom: 1px solid #ddd;
+	color: #666;
+	font-family: "minion pro", garamond, "times new roman", serif;
+	font-style: italic;
+}
+
+.navbar {width: 50%; margin-left: 25%;}
+
+.navbar-header{margin-left: 68px;}
+
+.navbar li a {color: #FFC425;}
