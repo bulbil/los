@@ -15,7 +15,7 @@ CREATE TABLE Articles (
 	volume TINYINT UNSIGNED NOT NULL,
 	issue TINYINT UNSIGNED NOT NULL,
 	date_published DATE NOT NULL,
-	type VARCHAR(16) NOT NULL,
+	type VARCHAR(64) NOT NULL,
 	reconciled BOOLEAN NOT NULL,
 
 	PRIMARY KEY(article_id)
@@ -55,6 +55,8 @@ CREATE TABLE Article_Themes (
 
 	article_id SMALLINT UNSIGNED NOT NULL,
 	theme_id SMALLINT UNSIGNED NOT NULL,
+	reviewer_id TINYINT UNSIGNED NOT NULL,
+	if_main BOOLEAN NOT NULL,
 
 	PRIMARY KEY(article_id, theme_id),
 	FOREIGN KEY(article_id) REFERENCES Articles(article_id),
@@ -64,7 +66,7 @@ CREATE TABLE Article_Themes (
 CREATE TABLE Tags (
 
 	tag_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-	type ENUM(
+	category ENUM(
 		'groups',
 		'persons',
 		'entities',
@@ -86,6 +88,7 @@ CREATE TABLE Article_Tags (
 	article_id SMALLINT UNSIGNED NOT NULL,
 	tag_id SMALLINT UNSIGNED NOT NULL,
 	reviewer_id TINYINT UNSIGNED NOT NULL,
+	if_main BOOLEAN NOT NULL,
 
 	PRIMARY KEY(article_id, tag_id),
 	FOREIGN KEY(article_id) REFERENCES Articles(article_id),
@@ -97,7 +100,7 @@ CREATE TABLE Reviews (
 	review_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	article_id SMALLINT UNSIGNED NOT NULL,
 	reviewer_id TINYINT UNSIGNED NOT NULL,
-	date_reviewed DATETIME NOT NULL ,
+	timestamp DATETIME NOT NULL ,
 	main VARCHAR(255) NOT NULL,
 	summary MEDIUMTEXT NOT NULL,
 	notes MEDIUMTEXT NOT NULL,
