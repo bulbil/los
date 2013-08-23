@@ -6,7 +6,7 @@ GRANT ALL ON los.* TO 'lummis'@'localhost' IDENTIFIED BY 'pQaD9oF';
 
 CREATE TABLE Articles (
 
-	article_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	article_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
 	title VARCHAR(255) NOT NULL,
 	author VARCHAR(128) NOT NULL,
 	location VARCHAR(128) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE Articles (
 
 CREATE TABLE Reviewers (
 
-	reviewer_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	reviewer_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
 	initials CHAR(3) NOT NULL,
 	first_name VARCHAR(20) NOT NULL,
 	last_name VARCHAR(20) NOT NULL,
@@ -33,29 +33,30 @@ CREATE TABLE Reviewers (
 	PRIMARY KEY(reviewer_id)
 );
 
-CREATE TABLE Article_Reviewers (
+-- CREATE TABLE Articles_Reviewers (
 
-	article_id SMALLINT UNSIGNED NOT NULL,
-	reviewer_id TINYINT UNSIGNED NOT NULL,
+-- 	article_id SMALLINT UNSIGNED,
+-- 	reviewer_id TINYINT UNSIGNED,
 
-	PRIMARY KEY(article_id, reviewer_id),
-	FOREIGN KEY(article_id) REFERENCES Articles(article_id),
-	FOREIGN KEY(reviewer_id) REFERENCES Reviewers(reviewer_id)	
-);
+-- 	PRIMARY KEY(article_id, reviewer_id),
+-- 	FOREIGN KEY(article_id) REFERENCES Articles(article_id),
+-- 	FOREIGN KEY(reviewer_id) REFERENCES Reviewers(reviewer_id)	
+-- );
 
 CREATE TABLE Themes (
 
-	theme_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	theme_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
 	theme VARCHAR(128) NOT NULL,
+	if_secondary BOOLEAN NOT NULL,
 
 	PRIMARY KEY(theme_id)
 );
 
-CREATE TABLE Article_Themes (
+CREATE TABLE Articles_Themes (
 
-	article_id SMALLINT UNSIGNED NOT NULL,
-	theme_id SMALLINT UNSIGNED NOT NULL,
-	reviewer_id TINYINT UNSIGNED NOT NULL,
+	article_id SMALLINT UNSIGNED,
+	theme_id SMALLINT UNSIGNED,
+	reviewer_id TINYINT UNSIGNED,
 	if_main BOOLEAN NOT NULL,
 
 	PRIMARY KEY(article_id, theme_id),
@@ -65,7 +66,7 @@ CREATE TABLE Article_Themes (
 
 CREATE TABLE Tags (
 
-	tag_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	tag_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
 	category ENUM(
 		'groups',
 		'persons',
@@ -83,11 +84,11 @@ CREATE TABLE Tags (
 	PRIMARY KEY(tag_id)
 );
 
-CREATE TABLE Article_Tags (
+CREATE TABLE Articles_Tags (
 
-	article_id SMALLINT UNSIGNED NOT NULL,
-	tag_id SMALLINT UNSIGNED NOT NULL,
-	reviewer_id TINYINT UNSIGNED NOT NULL,
+	article_id SMALLINT UNSIGNED,
+	tag_id SMALLINT UNSIGNED,
+	reviewer_id TINYINT UNSIGNED,
 	if_main BOOLEAN NOT NULL,
 
 	PRIMARY KEY(article_id, tag_id),
@@ -97,9 +98,9 @@ CREATE TABLE Article_Tags (
 
 CREATE TABLE Reviews (
 
-	review_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-	article_id SMALLINT UNSIGNED NOT NULL,
-	reviewer_id TINYINT UNSIGNED NOT NULL,
+	review_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	article_id SMALLINT UNSIGNED,
+	reviewer_id TINYINT UNSIGNED,
 	timestamp DATETIME NOT NULL ,
 	main VARCHAR(255) NOT NULL,
 	summary MEDIUMTEXT NOT NULL,

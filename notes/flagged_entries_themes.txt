@@ -1,0 +1,2266 @@
+RETURN
+0 Arts13
+1 crafts F L A G
+2 aesthetics1
+3 age7
+4 domesticity46
+5 education53
+6 expertise70
+7 fetishism75
+8 gender81
+9 femininity F L A G
+10 interculturalism95
+11 labor F L A G
+12 nostalgia131
+13 peoples133
+14 indigenous F L A G
+15 preservation142
+16 cultural F L A G
+17 race and ethnicity151
+
+0 Aesthetics1
+1 Affection--romantic3
+2 Leisure110
+3 Nature126
+4 Tranquility175
+
+0 Arts--Architecture17
+1 Cultivation31
+2 Demography41
+3 Ethnography57
+4 Expedition64
+5 Historicizing92
+6 Language--Spanish107
+7 Naming124
+8 Nature126
+9 Peoples--Indigenous134
+10 Race and Ethnicity151
+11 Temporality--past169
+
+0 aesthetics1
+1 National pride125
+2 nature--wilderness128
+3 sovereignty--individual160
+4 US Regionalism--East vs. West182
+5 US Regionalism--west180
+6 temporality--comparative temporalities171
+
+0 Arts--visual arts F L A G
+1 Aesthetics1
+2 Age7
+3 Expertise--non-credentialed expert72
+4 Fetishism75
+5 Peoples-Indigenous F L A G
+6 Preservation--cultural143
+7 Temporality--comparative temporalities171
+
+0 aesthetics1
+1 nature--wilderness128
+2 promotion147
+3 US Regionalism--East vs. West182
+4 US Regionalism--West180
+5 Gender--masculinity83
+
+0 Aesthetics1
+1 Arts--visual15
+2 Expertise70
+3 Fetishism75
+4 Leisure110
+5 National pride125
+6 Nature126
+7 Nostalgia131
+8 People--Indigenous F L A G
+9 Preservation--cultural143
+10 Promotion147
+11 Race and Ethnicity151
+12 Religion--Christianity153
+13 Temporality--comparative temporalities171
+14 US Regionalism--West180
+
+0 Cultivation--agriculture33
+1 Expansionism--imperialism59
+2 Expansionism--settlement60
+3 Expedition--religious66
+4 Hardship87
+5 Historicizing92
+6 Interculturalism--assimilation96
+7 Language--Spanish107
+8 Migration--to California121
+9 Naming124
+10 Peoples--Hispanic135
+11 Peoples--Indigenous134
+12 Race and Ethnicity151
+13 Religion--Christianity153
+14 Sovereignty159
+15 Standard of living162
+16 Temporality--past169
+17 Temporality--Comparative temporalities171
+18 US Regionalism--Southwest181
+
+0 Historicizing92
+1 Expansionism--imperialism59
+2 Expansionism--settlement60
+3 Foreign Policy77
+4 Location Profile--region116
+5 Temporality--past169
+6 US Regionalism--West180
+7 Preservation--structural144
+8 Religion--Christianity153
+9 Language--multilingual106
+10 Peoples--Indigenous134
+
+0 Affection--romantic3
+1 Affection--familial4
+2 Affection--forbidden6
+3 Danger35
+4 Death39
+5 Ethnography57
+6 Fetishism75
+7 Gender81
+8 Kinship101
+9 Language--indigenous108
+10 Peoples--indigenous134
+11 Race and Ethnicity151
+12 Sexuality157
+13 Sovereignty--individual160
+14 Storytelling164
+15 Temporality--past169
+16 Tragedy174
+
+0 Aesthetics1
+1 Arts--architecture17
+2 Gender81
+3 Justice100
+4 Preservation--structural144
+5 Promotion147
+6 Publics--organizational F L A G
+7 Revenge155
+
+0 Affection--familial4
+1 Age--childhood8
+2 Age--youth9
+3 Cultivation--agriculture33
+4 cultivation--horticulture32
+5 Domestic Policy--national45
+6 Eduction--higher education F L A G
+7 Gender81
+8 national pride125
+9 US Regionalism--East vs. West182
+
+0 age7
+1 arts--literature14
+2 Gender--masculinity83
+3 health--preventative90
+4 Nature--climate127
+5 storytelling164
+6 US Regionalism--East vs. West182
+7 US Regionalism--West180
+
+0 Aesthetics1
+1 Cooperation29
+2 Fetishism75
+3 Historicizing92
+4 Innovation94
+5 Interculturalism95
+6 Leisure110
+7 Peoples--Indigenous134
+8 Peoples--Chinese136
+9 Preservation--cultural143
+10 Publics148
+11 Race and Ethnicity151
+12 Religion--Christianity153
+13 Success165
+14 Temporality--comparative temporalities171
+15 Tourism172
+16 US Regionalism--West180
+
+0 cultivation--agriculture33
+1 education53
+2 economics--development49
+3 economic--business F L A G
+4 expansionism--settlement60
+5 irrigation99
+6 leisure110
+7 location profile--city114
+8 nature--climate127
+9 ownership132
+10 promotion147
+11 publics148
+12 religion--christianity153
+13 standard of living162
+14 success165
+15 transportation176
+16 US Regionalism--West180
+
+0 Economics--business48
+1 Food & Drink F L A G
+2 Promotion147
+3 Success165
+
+0 Class21
+1 Clothing27
+2 Economics--business48
+3 Promotion147
+4 Standard of Living162
+
+0 Kinship--marriage102
+1 Kinship101
+2 Storytelling164
+3 Peoples-Indigenous F L A G
+4 Sexuality157
+5 Revenge155
+6 Nostalgia131
+7 Ownership132
+8 Language--indigenous108
+9 Hardship87
+10 Gender81
+11 Affection--forbidden6
+
+0 Religion--Christianity153
+1 Peoples--Hispanic135
+2 Peoples--Indigenous134
+3 Expansionism--Imperialism59
+4 Expansionism--settlement60
+5 Class21
+6 Cultivation31
+7 Expedition--religious66
+8 Foreign Policy77
+9 Historicizing92
+10 Migration--to California121
+11 Language--multilingual106
+
+0 Affection--romantic3
+1 Expedition64
+2 Sexuality157
+3 Kinship101
+
+0 Domesticity46
+1 Tourism172
+2 Publics148
+3 Leisure110
+4 Nature--Climate127
+5 Gender81
+
+0 Nature126
+1 Aesthetics1
+2 Death39
+
+0 Nature126
+1 Nature--climate127
+
+0 Cultivation--agriculture33
+1 Cultivation--animal husbandry34
+2 Expansionism--settlement60
+3 Expedition--leisure65
+4 Expertise--non-credentialed expert72
+5 Interculturalism95
+6 Location profile--region116
+7 Nature--climate127
+8 Nature--wilderness128
+9 Nature--exploitation130
+10 Peoples--Indigenous134
+11 Temporality--comparative temporalities171
+12 Tourism172
+13 Tranquility175
+14 US Regionalism--West180
+
+0 Nature126
+1 Aesthetics1
+
+0 Cooperation29
+1 Historicizing92
+2 Interculturalism95
+3 Nostalgia131
+4 Philanthropy139
+5 Preservation--cultural143
+6 Preservation--structural144
+7 Religion--Christianity153
+8 Temporality--comparative temporalities171
+9 US Regionalism--Southwest181
+
+0 Arts--crafts16
+1 Danger35
+2 Expansion--settlement F L A G
+3 Expedition--leisure65
+4 Expedition--scientific67
+5 Expertise--non-credentialed expert72
+6 Happiness86
+7 Language--Spanish107
+8 Leisure110
+9 Location profile111
+10 Nature--wilderness128
+11 Nostalgia131
+12 Peoples--Indigenous134
+13 Preservation--environmental145
+14 Solitude158
+15 Temporality--comparative temporalities171
+16 Tourism172
+17 Tranquility175
+18 US Regionalism--West180
+
+0 Affection--friendship5
+1 Biography19
+2 Cooperation29
+3 Danger--bravery37
+4 Expansionism--secession62
+5 Foreign policy--war79
+6 Hardship87
+7 Migration120
+8 Nostalgia131
+9 Ownership132
+10 Temporality--past169
+11 US Regionalism--South185
+
+0 Arts--architecture17
+1 Interculturalism95
+2 Nostalgia131
+3 Philanthropy139
+4 Preservation--structural144
+5 Promotion147
+6 Religion--Christianity153
+7 Temporality--comparitive temporalities F L A G
+8 Tourism172
+
+0 Polemics140
+1 Anti-expansionism12
+2 Domestic Policy--national45
+3 Education--secondary education55
+4 Expansionism--annexation61
+5 Expedition--scientific67
+6 Foreign policy77
+7 Interculturalism95
+8 Nature--exploitation130
+9 Religion--Indigenous154
+10 Temporality--comparative temporalities171
+11 Peoples--Indigenous134
+
+0 Aesthetics1
+1 Arts--literature14
+2 Expertise--enthusiast73
+3 Gender81
+4 Historicizing92
+5 Interculturalism95
+6 Language--translation109
+7 Peoples--Indigenous134
+8 Polemics140
+9 Preservation--structural144
+10 Storytelling164
+11 US Regionalism--South185
+
+0 US Regionalism--West180
+1 Temporalities-- comparative temporalities F L A G
+2 Philanthropy139
+3 Preservation--structural144
+
+0 Polemics140
+1 Climate F L A G
+2 Age7
+3 Cultivation--Horitculture F L A G
+4 Expansionism58
+5 Nature126
+6 Tourism172
+7 US Regionalism--East vs. West182
+
+0
+0 Expertise70
+1 Humor93
+2 Innovation94
+3 Polemics140
+4 Health88
+
+0 Race and Ethnicity151
+1 Gender--femininity82
+2 Gender--masculinity83
+3 Peoples--Indigenous134
+4 Peoples--Spanish F L A G
+5 Peoples--Chinese136
+6 Success165
+7 Tourism172
+8 Promotion147
+9 US Regionalism--Southwest181
+10 Interculturalism95
+11 Aesthetics1
+
+0 Publics--organizational F L A G
+1 Technology166
+2 Transportation176
+3 US Regionalism--West180
+
+0 Transportation176
+1 Publics--organizational F L A G
+2 Economics--development49
+3 US Regionalism--Southwest181
+4 Leisure110
+5 Promotion147
+6
+0 Arts--architecture17
+1 Cultivation--agriculture33
+2 Economics--business48
+3 Economics--development49
+4 Education--secondary education55
+5 Expansionism--settlement60
+6 Health--treatment89
+7 Leisure110
+8 Location profile--city114
+9 Migration--to California121
+10 Nature--climate127
+11 Nostalgia131
+12 Ownership132
+13 Peoples--Indigenous134
+14 Religion--Christianity153
+15 Standard of living162
+16 Tourism172
+
+0 Location profile--city114
+1 Arts--architecture17
+2 Promotion147
+3 Food and Drink76
+4 Arts--performing18
+5 Irrigation99
+6 Health--treatment89
+7 Education53
+
+0 Gender81
+1 Affection--romantic3
+2 Maritime culture119
+
+0 Gender81
+1 Affection--romantic3
+2 Maritime culture119
+
+0 Affection2
+1 Happiness86
+2 Nature126
+
+0 Historicizing92
+1 innovation94
+2 Nostalgia131
+3 transportation176
+4 technology166
+5 expedition64
+6 expansionism58
+7 US Regionalism178
+8 Solitude158
+
+0 Temporality--comparative temporalities171
+1 Labor F L A G
+2 Kinship--marriage102
+3 Kinship--ancestry103
+4 Arts--crafts16
+5 Aesthetics1
+
+0 Leisure110
+1 Location profile--city114
+2 Nostalgia131
+3 Tranquility175
+4 Temporality--past169
+5 Temporality--comparative temporalities171
+6 US Regionalism--West180
+7 Peoples--Hispanic135
+8 Peoples--Indigenous134
+9 Historicizing92
+10 Interculturalism95
+11 Race and Ethnicity151
+12 Death39
+13 Religion--Christianity153
+14 Aesthetics1
+
+0 Leisure110
+1 Location profile--city114
+2 Nostalgia131
+3 Tranquility175
+4 Temporality--past169
+5 Temporality--comparative temporalities171
+6 US Regionalism--West180
+7 Peoples--Hispanic135
+8 Peoples--Indigenous134
+9 Historicizing92
+10 Interculturalism95
+11 Race and Ethnicity151
+12 Death39
+13 Religion--Christianity153
+14 Aesthetics1
+
+0 Expansionism58
+1 Expertise70
+2 Arts--literature14
+3 Politicking141
+4 Domestic policy42
+5 Ethnography57
+6 Biography19
+7 Expedition64
+
+0 Death39
+1 Peoples--indigenous134
+2 Fetishism75
+3 Nature126
+4 Gender81
+5 Interculturalism95
+
+0 Peoples--indigenous134
+1 Foreign policy--war79
+2 Religion152
+3 Historicizing92
+4 Temporality--past169
+5 Temporality--comparative temporalities171
+6 Language--Spanish107
+7 Language--multilingual106
+
+0 Peoples--African Americans F L A G
+1 Labor F L A G
+2 Economics--development49
+3 Expansionism--settlement60
+4 US Regionalism--East vs. West182
+5 Nature--exploitation130
+6 Historicizing92
+
+0 Peoples--African Americans F L A G
+1 Labor F L A G
+2 Economics--development49
+3 Expansionism--settlement60
+4 US Regionalism--East vs. West182
+5 Nature--exploitation130
+6 Historicizing92
+
+0 Demography41
+1 Irrigation99
+2 Nature126
+3 Cultivation--horticulture32
+4 Economics--development49
+5 Leisure110
+6 Tranquility175
+7 Tourism172
+
+0 Nature126
+1 Nostalgia131
+
+0 Language--Spanish107
+1 Location profile--Landscape112
+2 Nature126
+3 Peoples--Indigenous134
+4 Arts--Architecture17
+5 Preservation--Structural144
+
+0 Happiness86
+1 Leisure110
+2 US Regionalism--East vs. West182
+
+0 Success165
+1 Storytelling164
+2 Migration120
+3 Race F L A G
+4 Affection--friendship5
+
+0 Affection2
+1 Nature126
+2 Location profile--Landscape112
+
+0 Migration120
+1 Hardship87
+2 Domestic Policy42
+3 class21
+4 religion152
+5 race F L A G
+6 expertise70
+
+0 Migration120
+1 Hardship87
+2 Domestic Policy42
+3 class21
+4 religion152
+5 race F L A G
+6 expertise70
+
+0 U.S.Regionalism--East vs West F L A G
+1 historicizing92
+2 Storytelling164
+3 Affection--Romantic3
+
+0 Cultivation31
+1 US Regionalism--East vs. West182
+
+0 Nature126
+
+0 Arts--Crafts16
+1 People--Indigenous F L A G
+2 Preservation--Cultural143
+3 Education53
+
+0 Health--preventative90
+1 religion152
+2 Arts--architecture17
+3 Arts--literature14
+4 Arts--visual15
+5 tourism172
+
+0 religions F L A G
+1 Cultivation--agriculture33
+2 Nature126
+3 Expansionism--settlement60
+
+0 Expansionism--settlement60
+1 U.S. Regionalism -- East vs West F L A G
+2 U.S. Regionalism F L A G
+
+0 cultivation--horticulture32
+1 health--illness91
+2 health--treatment89
+3 education--higher F L A G
+
+0 Aesthetics1
+1 Class--wealthy F L A G
+2 Cultivation--agriculture33
+3 Cultivation--horticulture32
+4 Economics--development49
+5 Food and Drink76
+6 Leisure110
+7 Location Profile--city114
+8 Publics148
+9 Tourism172
+10 Climate F L A G
+
+0 Success165
+1 Economics--business48
+
+0 Promotion147
+
+0 Aesthetics1
+1 Arts--architecture17
+2 Class--relations26
+3 Clothing27
+4 Economics--development49
+5 Expansionism--imperialism59
+6 Foreign policy77
+7 Gender81
+8 Interculturalism95
+9 Language--Spanish107
+10 Language--indigenous108
+11 Location profile--city114
+12 Nostalgia131
+13 Peoples--Indigenous134
+14 Peoples--Hispanic135
+15 Peoples--Chinese136
+16 Race and Ethnicity151
+17 Temporality--past169
+18 Temporality--comparative temporalities171
+
+0 Class--relations26
+1 Domestic policy--local43
+2 Expansionism--imperialism59
+3 Expansionism--annexation61
+4 Foreign policy--diplomacy78
+5 Historicizing92
+6 Location profile111
+7 Peoples--Indigenous134
+8 Sovereignty--collective161
+9 Temporality--comparative temporalities171
+10 US Regionalism--West180
+
+0 Cultivation--Agriculture33
+1 Domestic Policy42
+2 Expansionism58
+3 Historicizing92
+4 Language--translation109
+5 Language--Spanish107
+6 Peoples--Hispanic135
+7 Religion--Christianity153
+8 Temporality--Past169
+9 US Regionalism178
+
+0 Gender--femininity82
+1 Maritime culture119
+2 Nature126
+3 Tranquility175
+
+0 Danger35
+1 Expedition64
+2 Nature126
+3 US Regionalism--West180
+
+0 Religion--Christianity153
+1 Nature126
+2 Danger35
+
+0 Nature126
+1 Expertise70
+
+0 Cultivation--agriculture33
+1 Economics--development49
+2 Expansionism58
+3 Domestic Policy42
+4 Success165
+5 Class21
+
+0 Ethnography57
+1 Peoples--Indigenous134
+2 Peoples--European American F L A G
+3 Interculturalism95
+4 Fetishism75
+5 Religion--Indigenous154
+6 Religion--Christianity153
+7 Expedition64
+8 Expertise70
+
+0 Affection--romantic3
+1 Danger--bravery37
+2 Gender81
+3 Humor93
+4 Sexuality157
+
+0 Anti-Expansionism12
+1 Expansionism58
+2 Foreign Policy77
+3 Education53
+4 National Pride125
+5 Race and Ethnicity151
+6 Polemics140
+
+0 Arts--literary F L A G
+1 US Regionalism--West180
+2 Foreign Policy77
+3 Historicizing92
+
+0 Death39
+1 Religion--Christianity153
+2 National Pride125
+3 Historicizing92
+4 Childrearing20
+5 Kinship101
+
+0 Nature--climate127
+1 US Regionalism178
+2 Tourism172
+3 Migration120
+4 Health88
+
+0 Preservation142
+1 Publics148
+2 Class21
+3 Philanthropy139
+4 Religion--Christianity153
+5 Historicizing92
+
+0 Location Profile111
+1 Tourism172
+2 Economics--development49
+3 Transportation176
+4 Migration120
+5 US Regionalism--West180
+6 Leisure110
+7 Aesthetics1
+8 Promotion147
+
+0 Race and Ethnicity151
+1 Kinship101
+2 Affection--romantic3
+3 Affection--familial4
+4 Peoples--indigenous134
+5 Gender81
+6 Interculturalism95
+
+0 Arts13
+1 cultivation--horticulture32
+2 leisure110
+3 maritime culture119
+4 promotion147
+5 tourism172
+6 nature126
+
+0 Economics--investment52
+1 Economics--business48
+2 Economics--incorporation51
+3 Expertise70
+4 Ownership132
+5 Success165
+
+0 US Regionalism--East vs. West182
+1 promotion147
+2 education--higher education54
+3 education53
+4 gender--femininity82
+5 success165
+
+0 Ownership132
+1 US Regionalism178
+2 Success165
+3 Labor F L A G
+4 Hardship87
+5 Economics--development49
+6 Expansionism--settlement60
+7 Expedition64
+8 Nature--exploitation130
+
+0 Aesthetics1
+1 Success165
+2 Interculturalism95
+3 Historicizing92
+4 Temporality--comparative temporalities171
+5 Leisure110
+6 Philanthropy139
+7 Preservation--structural144
+
+0 Expedition--scientific67
+1 Expertise--non-credentialed expert72
+2 Location profile--rural113
+3 Nature126
+4 Tranquillity F L A G
+
+0 Affection--romantic3
+1 Affection--familial4
+2 Affection--forbidden6
+3 Childrearing20
+4 Class--wealth22
+5 Class--poverty23
+6 Class--relations26
+7 Clothing--fashion28
+8 Cooperation29
+9 Corruption30
+10 Cultivation--agriculture33
+11 Danger35
+12 Death39
+13 Domesticity46
+14 Expansionism--settlement60
+15 Failure74
+16 Food and Drink76
+17 Gender--femininity82
+18 Gender--masculinity83
+19 Guilt85
+20 Happiness86
+21 Hardship87
+22 Health--illness91
+23 Interculturalism95
+24 Justice100
+25 Kinship101
+26 Labor F L A G
+27 Language--Spanish107
+28 Language--indigenous108
+29 Nature126
+30 Ownership132
+31 Peoples--Indigenous134
+32 Peoples--European Americans138
+33 Philanthropy139
+34 Politicking141
+35 Publics--organizational F L A G
+36 Religion--Christianity153
+37 Religion--Indigenous154
+38 Revenge155
+39 Sovereignty--collective161
+40 Standard of living162
+41 Temporality--past169
+42 Temporality--future168
+43 Temporality--comparative temporalities171
+44 Tragedy174
+45 Tranquility175
+
+0 Temporality--comparative temporalities171
+1 Nostalgia131
+2 US Regionalism--West180
+
+0 Anti-expansionism12
+1 Death39
+2 Domestic policy42
+3 Education--higher education54
+4 Expansionism--imperialism59
+5 Expansionism--annexation61
+6 Expertise70
+7 Failure74
+8 Fetishism75
+9 Foreign policy--diplomacy78
+10 Foreign policy--war79
+11 Hardship87
+12 Historicizing92
+13 Interculturalism95
+14 Justice100
+15 Migration120
+16 National pride125
+17 Nostalgia131
+18 Ownership132
+19 Peoples--Indigenous134
+20 Peoples--Hispanic135
+21 Peoples--Chinese136
+22 Peoples--African American137
+23 Philanthropy139
+24 Polemics140
+25 Politicking141
+26 Race and Ethnicity151
+27 Religion--Christianity153
+28 Sovereignty--collective161
+29 Standard of living162
+30 success165
+31 Temporality--past169
+32 Temporality--comparative temporalities171
+33 US Regionalism--East vs. West182
+34 US Regionalism--South185
+
+0 Labor F L A G
+1 Solitude158
+2 Expedition64
+
+0 Temporality--comparative temporalities171
+1 Expedition--leisure65
+2 Location profile--region116
+3 Maritime culture119
+4 Nature--wilderness128
+5 Nature--climate127
+6 Peoples--indigenous134
+
+0 Temporality--Comparative Temporalities171
+1 Peoples--Hispanic135
+2 Language--Spanish107
+3 Interculturalism--borrowing98
+4 Gender-Femininity F L A G
+5 Food and Drink76
+6 Age7
+
+0 Migration--to California121
+1 Migration--forced123
+2 Class-relations F L A G
+3 Death39
+4 Kinship--marriage102
+5 Tragedy174
+
+0 Arts--performance F L A G
+1 Leisure110
+2 Tranquility175
+
+0 Structural--Preservation F L A G
+1 Promotion147
+
+0 U.S. Regionalism--West F L A G
+1 Success165
+2 Happiness86
+3 Expedition--Geographic69
+
+0 US Regionalism--East vs. West182
+1 Arts--literature14
+2 Domestic Policy42
+3 Polemics140
+
+0 Arts--literature14
+1 U.S. Regionalism--East vs. West F L A G
+2 Polemics140
+
+0 Tourism172
+1 Location Profile--region116
+2 Expedition--Leisure65
+
+0 Aesthetics1
+1 Arts--literature14
+2 Cooperation29
+3 Economics--business48
+4 Education--higher education54
+5 Expansionism--imperialism59
+6 Exploration--religious F L A G
+7 Expertise--credentialed71
+8 Historicizing92
+9 Language--Spanish107
+10 Language--translation109
+11 Peoples--Indigenous134
+12 Peoples--European Americans138
+13 Polemics140
+14 Promotion147
+15 Religion--Christianity153
+16 Temporality--past169
+17 US Regionalism--East vs. West182
+
+0
+0
+0 comparative temporalities F L A G
+1 location profile111
+2 historicizing92
+3 preservation--structural144
+4 preservation--cultural143
+5 Religion--Christianity153
+
+0 US Regionalism- Southwest F L A G
+1 Economics-Development F L A G
+2 Success165
+3 Food and Drink76
+4 Ownership132
+
+0 Economics-development F L A G
+1 Success165
+2 Clothing27
+3 Ownership132
+
+0 Cooperation29
+1 Economics- Business F L A G
+2 Leisure110
+3 Promotion147
+4 Publics148
+5 Success165
+6 US Regionalism-Southwest F L A G
+
+0 US Regionalism- Southwest F L A G
+1 Tourism172
+2 Leisure110
+3 Publics148
+
+0 Aesthetics1
+1 Class--wealth22
+2 Class--poverty23
+3 Class--relations26
+4 Clothing--fashion28
+5 Corruption30
+6 Domesticity46
+7 Economics47
+8 Expertise--non-credentialed expert72
+9 Fetishism75
+10 Gender--femininity82
+11 Gender--masculinity83
+12 Justice100
+13 Labor F L A G
+14 Leisure110
+15 Ownership132
+16 Polemics140
+17 Publics--organizational F L A G
+18 Standard of living162
+19 Success165
+20 Temporality--future168
+21 Temporality--comparative temporalities171
+
+0 Cooperation29
+1 Cultivation31
+2 Economics--development49
+3 Economics--investment52
+4 Expansionism--settlement60
+5 Leisure110
+6 Tourism172
+7 Transportation176
+
+0 Expedition-leisure F L A G
+1 Expertise-credentialed F L A G
+2 Food and Drink76
+3 Happiness86
+4 Historicizing92
+5 Leisure110
+6 Preservation-structural F L A G
+7 Promotion147
+8 Success165
+9 U.S. Regionalism- West F L A G
+
+0 Aesthetics1
+1 Ethnography57
+2 Expedition64
+3 Expertise- Non-credentialed expert F L A G
+4 Danger35
+5 Location profile-Landscape F L A G
+6 Nature- Wilderness F L A G
+7 Maritime culture119
+8 Historicizing92
+9 Race and Ethnicity151
+10 Storytelling164
+
+0 Aesthetics1
+1 Danger--bravery37
+2 Sovereignty--individual160
+3 Success165
+
+0 Tragedy174
+1 Storytelling164
+2 Affection2
+3 Corruption30
+4 Danger35
+5 Death-murder F L A G
+6 Gender81
+7 Interculturalism-comparison F L A G
+8 Peoples-Hispanic F L A G
+
+0 Aesthetics1
+1 Arts--literature14
+2 Arts--visual15
+3 Death--murder40
+4 Ethnography57
+5 Gender--femininity82
+6 Gender--masculinity83
+7 Hardship87
+8 Interculturalism95
+9 Language--Spanish107
+10 Location profile--region116
+11 Peoples--Indigenous134
+12 Peoples--Hispanic135
+13 Peoples--European American F L A G
+14 Race and Ethnicity151
+15 Religion--Christianity153
+16 Standard of living162
+17 Tourism172
+18 US Regionalism--East vs. West182
+
+0 Danger35
+1 Humor93
+2 Expansionism58
+3 Gender81
+4 Age--old age F L A G
+5 Affection--romantic3
+
+0 Danger35
+1 Humor93
+2 Expansionism58
+3 Gender81
+4 Age--old age F L A G
+5 Affection--romantic3
+
+0 Expedition--scientific67
+1 Expertise--credentialed71
+2 Peoples--Indigenous134
+3 Peoples--European American F L A G
+4 Ethnography57
+5 Education--higher education54
+6 Location profile--rural113
+7 Nature126
+
+0 Nature126
+1 Leisure110
+2 Tourism172
+3 US Regionalism--East vs. West182
+
+0 Polemics140
+1 Arts--literature14
+2 Expertise70
+3 Expedition--scientific67
+4 US Regionalism--East vs. West182
+5 US Regionalism--Midwest183
+6 Temporality--comparative temporalities171
+7 Preservation--structural144
+8 Nature--exploitation130
+9 Success165
+
+0 Expedition--scientific67
+1 Expertise--non-credentialed expert72
+2 Fetishism75
+3 Interculturalism95
+4 Nature126
+5 Peoples--Chinese136
+6 Temporality--past169
+
+0 Cooperation29
+1 Danger35
+2 Death39
+3 Education-Higher Education F L A G
+4 Ethnography57
+5 Expedition-Scientific F L A G
+6 Expertise70
+7 Failure74
+8 Hardship87
+9 Historicizing- Comparative Temporalities F L A G
+10 Peoples-Indigenous F L A G
+11 Polemics140
+12 Storytelling164
+
+0 Nature-Exploitation F L A G
+1 Aesthetics1
+2 Gender-Masculinity F L A G
+3 Happiness86
+4 Leisure110
+5 Preservation-Environmental F L A G
+6 Happiness86
+7 U.S. Regionalism-West F L A G
+8 Expertise70
+
+0 Nature126
+
+0 Aesthetics1
+1 Anti-expansionism12
+2 Clothing27
+3 Domesticity46
+4 Ethnography57
+5 Expansionism--imperialism59
+6 Expansionism--settlement60
+7 Foreign policy--war79
+8 Gender--femininity82
+9 Gender--masculinity83
+10 Health--preventative90
+11 Historicizing92
+12 Interculturalism95
+13 Nature126
+14 Nostalgia131
+15 Peoples--Indigenous134
+16 Peoples--European Americans138
+17 Race and Ethnicity151
+18 Religion152
+19 Solitude158
+20 Standard of living162
+21 Temporality--past169
+22 Temporality--comparative temporalities171
+23 Tranquility175
+24 US Regionalism--West180
+
+0 Preservation-Structural F L A G
+1 Class-Wealthy F L A G
+2 Cooperation29
+3 Expertise-Enthusiast F L A G
+4 Historicizing92
+5 Temporalities- Comparative Temporalities F L A G
+6 Philanthropy139
+7 Success165
+8 US Regionalism- West F L A G
+
+0 Polemics140
+1 Cooperation29
+2 Domestic Policy-National F L A G
+3 Economics47
+4 Education-Higher Education F L A G
+5 Historicizing92
+6 Politicking141
+7 Promotion147
+8 US Regionalism178
+9 Success165
+10 Failure74
+
+0 Polemics140
+1 Politicking141
+2 Domestic Policy-National F L A G
+3 Foreign Policy77
+4 Expansionism58
+5 US Regionalism178
+6 Peoples-Chinese F L A G
+7 Historicizing92
+8 Expertise-Credentialed F L A G
+9 Class21
+
+0 Arts--literature14
+1 Ethnography57
+2 Gender81
+3 Interculturalism95
+4 Peoples--indigenous134
+5 Race and Ethnicity151
+6 Storytelling164
+7 US Regionalism--West180
+
+0 Expertise70
+1 Historicizing92
+2 Nature126
+
+0 Ethnography57
+1 Fetishism75
+2 Interculturalism95
+3 Nature126
+4 Peoples--indigenous134
+5 Peoples--European Americans138
+6 Race and Ethnicity151
+
+0 Expertise--enthusiast73
+1 Leisure110
+2 Nature126
+3 US Regionalism178
+
+0 Aesthetics1
+1 Arts--literature14
+2 Expertise70
+3 Peoples--Chinese136
+4 Peoples--European Americans138
+5 Anti-expansionism12
+6 Foreign Policy--war79
+7 Humor93
+8 Polemics140
+9 Promotion147
+10 US Regionalism--West180
+11 US Regionalism--Southwest181
+12 US Regionalism--East vs. West182
+
+0 Expansionism--settlement60
+1 Arts13
+2 Cultivation--agriculture33
+3 Promotion147
+4 Demography41
+5 Economics47
+6 Expertise70
+7 Happiness86
+8 Health--preventative90
+9 Location profile--region116
+10 Migration--to California121
+11 Nature--climate127
+12 Ownership132
+13 Polemics140
+14 Standard of Living162
+15 Success165
+16 US Regionalism--East vs. West182
+
+0 Nature126
+1 Storytelling164
+2 Migration120
+
+0 Arts--literature14
+1 Gender81
+2 US Regionalism--West180
+
+0 Aesthetics1
+1 Cultivation31
+2 Nature126
+
+0 Expertise--non-credentialed expert72
+1 Gender--femininity82
+
+0 Cultivation--horticulture32
+1 Gender81
+2 Affection--romantic3
+3 Storytelling164
+4 US Regionalism178
+5 Nature--climate127
+
+0 Aesthetics1
+1 Nature126
+2 US Regionalism178
+
+0 Class--wealth22
+1 Class--working class24
+2 Class-relations F L A G
+3 Cultivation--agriculture33
+4 Cultivation--animal husbandry34
+5 Danger35
+6 Economics--business48
+7 Economics--development49
+8 Expansionism--imperialism59
+9 Expansion--settlement F L A G
+10 Failure74
+11 Hardship87
+12 Innovation94
+13 Interculturalism95
+14 Nature--wilderness128
+15 Ownership132
+16 Peoples--African American137
+17 Peoples--European Americans138
+18 Preservation--environmental145
+19 Race and Ethnicity151
+20 Temporality--past169
+21 Temporality--comparative temporalities171
+
+0 demography41
+1 US Regionalism178
+2 Domestic Policy42
+3 Cultivation31
+4 Education53
+
+0 Expansionism58
+1 Anti-expansionism12
+2 Death39
+3 Foreign policy77
+4 Race and Ethnicity151
+
+0 Anti-expansionism12
+1 Death39
+2 Demography41
+3 Domestic Policy42
+4 Expansionism58
+5 Foreign Policy77
+6 Historicizing92
+7 Migration120
+8 National Pride125
+9 Polemics140
+10 Race and Ethnicity151
+11 Sovereignty--collective161
+12 Tragedy174
+13 US Regionalism--West180
+
+0 Aesthetics1
+1 Success165
+2 Interculturalism95
+3 Historicizing92
+4 Temporality--comparative temporalities171
+5 Leisure110
+6 Philanthropy139
+7 Preservation--structural144
+8 Expertise-credentialed F L A G
+9 Food and Drink76
+10 Happiness86
+11 Leisure110
+12 Promotion147
+13 U.S. Regionalism- West F L A G
+
+0 Aesthetics1
+1 Ethnography57
+2 Expertise- Non-credentialed expert F L A G
+3 Danger35
+4 Location profile-Landscape F L A G
+5 Nature- Wilderness F L A G
+6 Maritime culture119
+7 Historicizing92
+8 Race and Ethnicity151
+9 Temporality--comparative temporalities171
+10 Expedition--leisure65
+11 Location profile--region116
+12 Nature--climate127
+13 Peoples--indigenous134
+
+0 Arts--literature14
+1 US Regionalism--West180
+
+0 Domestic Policy42
+1 Economics--development49
+2 Historicizing92
+3 Location profile111
+4 Maritime culture119
+5 Transportation176
+
+0 Aesthetics1
+1 Arts--architecture17
+2 Cultivation--agriculture33
+3 Cultivation--horticulture32
+4 Irrigation99
+5 Location profile--city114
+6 Leisure110
+7 Publics--organizational F L A G
+8 Standard of Living162
+9 Class--wealth22
+10 US Regionalism178
+
+0 Historicizing92
+1 Expansionism58
+2 Peoples--hispanic135
+3 Peoples--indigenous134
+4 Religion--Christianity153
+5 Language--Spanish107
+
+0 Polemics140
+1 Health88
+2 Nature-Climate F L A G
+3 Age7
+4 Class21
+5 Danger35
+6 Death39
+7 Cultivation31
+8 Leisure110
+9 Migration-to California F L A G
+10 Standard of Living162
+
+0 Economics-business F L A G
+1 Success165
+2 Ownership132
+3 Technology166
+4 US Regionalism178
+5 National Pride125
+
+0 Aesthetics1
+1 Biography19
+2 Childrearing20
+3 Education--higher education54
+4 Gender--femininity82
+5 Gender--masculinity83
+6 Nature126
+7 Peoples--European Americans138
+8 Polemics140
+
+0 Aesthetics1
+1 Arts13
+2 Domesticity46
+3 Economics--business48
+4 Expertise--non-credentialed expert72
+5 Gender--Femininity82
+6 Innovation94
+7 Labor F L A G
+8 Peoples--European Americans138
+9 Technology166
+
+0 Aesthetics1
+1 Affection--romantic3
+2 Age--youth9
+3 Arts--literature14
+4 Childrearing20
+5 Clothing27
+6 Cultivation--agriculture33
+7 Cultivation--horticulture32
+8 Danger35
+9 Domesticity46
+10 Expertise--credentialed71
+11 Gender--femininity82
+12 Gender--masculinity83
+13 Happiness86
+14 Hardship87
+15 Health--illness91
+16 Migration--to California121
+17 Ownership132
+18 Standard of living162
+
+0 Aesthetics1
+1 Cultivation--agriculture33
+2 Nature126
+3 Religion152
+
+0 Biography19
+1 Cultivation31
+2 Danger35
+3 Death39
+4 Domestic Policy42
+5 Economics--development49
+6 Expansionism--imperialism59
+7 Expansionism--settlement60
+8 Expedition--religious66
+9 Food and drink76
+10 Foreign policy--war79
+11 Foreign policy--diplomacy78
+12 Gender--masculinity83
+13 Gender--femininity82
+14 Hardship87
+15 Historicizing92
+16 Labor F L A G
+17 Language--Spanish107
+18 Language--Indigenous108
+19 Language--translation109
+20 Language--multilingual106
+21 Nature--wilderness128
+22 Peoples--Indigenous134
+23 Peoples--Hispanic135
+24 Peoples--European American F L A G
+25 Promotion147
+26 Race and Ethnicity151
+27 Religion--Christianity153
+28 Religion--Indigenous154
+29 Sovereignty--collective161
+30 Standard of living162
+31 Temporality--past169
+32 Temporality--comparative temporalities171
+
+0 Historicizing92
+1 Religion--Indigenous154
+
+0 US Regionalism--West180
+1 National pride125
+2 Historicizing92
+3 Arts--literature14
+4 Affection2
+
+0 Aesthetics1
+1 Nature126
+2 Art F L A G
+3 Education53
+4 Innovation94
+
+0 Cultivation--agriculture33
+1 Labor F L A G
+2 Nature--climate127
+3 Technology166
+
+0 Standard of living162
+1 Peoples--Indigenous134
+2 Language105
+3 Gender81
+4 Expansionism58
+5 Death39
+6 Age7
+7 Race and Ethnicity151
+
+0 Arts--architecture17
+1 Arts13
+2 Happiness86
+3 Leisure110
+4 Location profile111
+5 Migration120
+6 Nature--climate127
+7 Privacy146
+8 Publics--spacial F L A G
+9 Standard of living162
+10 US Regionalism--West180
+
+0 Cultivation--agriculture33
+1 Cultivation--animal husbandry34
+2 Demography41
+3 Economics--business48
+4 Education--higher education54
+5 Education--secondary education55
+6 Education--primary education56
+7 Food and Drink76
+8 Location profile111
+9 Ownership132
+10 Peoples133
+11 Religion--Christianity153
+12 Statistics163
+
+0 Anti-expansionism12
+1 Arts--literature14
+2 Childrearing20
+3 Class--poverty23
+4 Class--relations26
+5 Danger--cowardice36
+6 Death--murder40
+7 Ethnography57
+8 Expansionism--imperialism59
+9 Failure74
+10 Foreign policy--war79
+11 Gender--femininity82
+12 Gender--masculinity83
+13 Guilt85
+14 Hardship87
+15 Interculturalism95
+16 Justice100
+17 Peoples--Indigenous134
+18 Peoples--European Americans138
+19 Race and ethnicity151
+20 Religion--Christianity153
+21 Sovereignty--collective161
+22 Tragedy174
+
+0 Affection--familial4
+1 Age--youth9
+2 Anti-expansionism12
+3 Biography19
+4 Childrearing20
+5 Corruption30
+6 Danger--bravery37
+7 Death39
+8 Demography41
+9 Domestic policy--state44
+10 Economics--development49
+11 Education--higher education54
+12 Ethnography57
+13 Expansionism--imperialism59
+14 Expansionism--annexation61
+15 Expertise--credentialed71
+16 Expertise--non-credentialed expert72
+17 Failure74
+18 Foreign policy--war79
+19 Foreign policy--diplomacy78
+20 Foreign policy--trade policy80
+21 Gender--femininity82
+22 Gender--masculinity83
+23 Happiness86
+24 Hardship87
+25 Interculturalism95
+26 Justice100
+27 Kinship101
+28 Location profile--city114
+29 Migration--to California121
+30 Ownership132
+31 Peoples--Indigenous134
+32 Peoples--Hispanic135
+33 Peoples--European Americans138
+34 Polemics140
+35 Politicking141
+36 Race and Ethnicity151
+37 Religion--Christianity153
+38 Solitude158
+39 Sovereignty--individual160
+40 Sovereignty--collective161
+41 Statistics163
+42 Success165
+43 Temporality--past169
+44 Temporality--present170
+45 Temporality--comparative temporalities171
+46 Tragedy174
+47 US Regionalism--West180
+
+0 Age--old age F L A G
+1 Death39
+2 Kinship101
+3 Peoples--Indigenous134
+4 Religion--Indigenous154
+
+0 Success165
+1 Cooperation29
+2 Economics-Business F L A G
+3 Class-wealthy F L A G
+4 Cooperation29
+5 Cultivation-agriculture F L A G
+6 Gender-masculinity F L A G
+7 Ownership132
+8 Promotion147
+
+0 Economics-Business F L A G
+1 Class-wealth F L A G
+2 Class-relations F L A G
+3 Cultivation-agriculture F L A G
+4 Labor F L A G
+5 Success165
+
+0 Aesthetics1
+1 Affection--romantic3
+2 Affection--familial4
+3 Age--childhood8
+4 Arts--literature14
+5 Biography19
+6 Childrearing20
+7 Class--wealth22
+8 Education--higher education54
+9 Ethnography57
+10 Expertise--credentialed71
+11 Expertise--non-credentialed expert72
+12 Expansionism--imperialism59
+13 Foreign policy77
+14 Gender--femininity82
+15 Gender--masculinity83
+16 Humor93
+17 Language--multilingual106
+18 Language--indigenous108
+19 Nature126
+20 Peoples--Indigenous134
+21 Peoples--European Americans138
+22 Polemics140
+23 Race and Ethnicity151
+24 Temporality--past169
+25 Temporality--comparative temporalities171
+26 US Regionalism--West180
+
+0 Race and Ethnicity151
+1 Peoples--Chinese136
+2 Affection--romantic3
+3 Kinship101
+
+0 Religion--indigenous154
+1 Peoples--indigenous134
+2 Race and Ethnicity151
+3 Ethnography57
+4 Fetishism75
+
+0 Gender--femininity82
+1 US Regionalism--West180
+2 Peoples--European American F L A G
+3 Peoples--Hispanic135
+4 Peoples--Chinese136
+5 Race and Ethnicity151
+6 Affection--romantic3
+7 Nature--climate127
+8 Leisure110
+9 Interculturalism95
+
+0 Nature126
+1 US Regionalism--West180
+2 Gender--femininity82
+
+0 Foreign Policy--war79
+1 Death39
+2 Polemics140
+3 Education--higher education54
+
+0 Historicizing92
+1 Arts--literature14
+2 Peoples--Hisapnic F L A G
+3 Religion--Christianity153
+4 US Regionalism--West180
+
+0 Gender81
+1 Foreign Policy77
+2 Danger35
+3 Childrearing20
+4 National Pride125
+
+0 Expansionism58
+1 Economics--development49
+2 US Regionalism--West180
+3 Foreign Policy77
+4 Peoples--Hispanic135
+5 Nature--exploitation130
+6 Cultivation--agriculture33
+
+0 Location Profile111
+1 US Regionalism--West180
+2 Nature126
+3 Tourism172
+4 Promotional F L A G
+
+0 Promotion147
+1 Aesthetics1
+2 Economics--business48
+3 Gender--femininity82
+
+0 Affection--romantic3
+1 Peoples--indgenous F L A G
+2 Peoples--European Americans138
+3 Gender81
+4 Domestic Policy42
+5 Interculturalism95
+6 Race and Ethnicity151
+7 Kinship101
+
+0 Anti-expansionism12
+1 Corruption30
+2 Death--murder40
+3 Education--higher education54
+4 Expansionism--imperialism59
+5 Foreign policy--war79
+6 Nature--climate127
+7 Polemics140
+8 US Regionalism--East vs. West182
+
+0 Arts--literature14
+
+0 Cooperation29
+1 Domestic Policy42
+2 Failure74
+3 Gender81
+
+0 Tourism172
+1 Peoples--Chinese136
+2 Location profile--neighborhood117
+3 Interculturalism--comparison97
+
+0 US Regionalism--West180
+1 Nature126
+
+0 Aesthetics1
+1 Nature126
+2 Tourism172
+3 Expedition--leisure65
+4 Innovation94
+5 Promotion147
+6 Transportation176
+
+0 Leisure110
+1 Location profile111
+2 Tourism172
+3 Standard of living162
+4 Promotion147
+5 Maritime culture119
+
+0 historicizing92
+1 fetishism75
+2 Peoples133
+3 Storytelling164
+
+0 Cooperation29
+1 Domestic policy42
+2 Economics--development49
+3 Economics--investment52
+4 Expansionism--settlement60
+5 Foreign policy--trade policy80
+6 Innovation94
+7 Justice100
+8 Labor F L A G
+9 Maritime culture119
+10 Nature--exploitation130
+11 Ownership132
+12 Polemics140
+13 Promotion147
+14 Publics--organizational F L A G
+15 Sovereignty--collective161
+16 Temporality--future168
+17 Temporality--comparative temporalities171
+18 Transportation176
+19 US Regionalism--West180
+
+0 Danger35
+1 Nature-wilderness F L A G
+2 Fetishism75
+3 Solitude158
+4 Storytelling164
+5 Temporality167
+
+0 Danger35
+1 Nature-wilderness F L A G
+2 Aesthetics1
+3 Expedition- geographic F L A G
+4 Hardship87
+5 Nature-exploitation F L A G
+6 Success165
+7 Storytelling164
+8 US Regionalism-west F L A G
+9 Temporality-present F L A G
+
+0 Cooperation29
+1 Danger-bravery F L A G
+2 Expansionism-religious F L A G
+3 Expansionism-military F L A G
+4 Foreign Policy77
+5 Gender-masculinity F L A G
+6 Historicizing92
+7 Language-Spanish F L A G
+8 Peoples- Indigenous F L A G
+9 Peoples-Hispanic F L A G
+10 Preservation-structural F L A G
+11 Religion-Christianity F L A G
+12 Temporality-past F L A G
+13 US Regionalism-West F L A G
+
+0 Age7
+1 Arts-crafts F L A G
+2 Expertise70
+3 Gender81
+4 Happiness86
+5 Historicizing92
+6 Kinship-ancestry F L A G
+7 Labor F L A G
+8 Language-Indigenous F L A G
+9 Peoples-Indigenous F L A G
+10 Storytelling164
+11 temporality- comparative temporalities F L A G
+12 US Regionalism-West F L A G
+
+0 Aesthetics1
+1 Arts--architecture17
+2 Class--wealth22
+3 Cultivation--agriculture33
+4 Economics--development49
+5 Economics--business48
+6 Education53
+7 Expansionism--settlement60
+8 Location profile--city114
+9 Migration--to California121
+10 Nature--climate127
+11 Ownership132
+12 Peoples--European Americans138
+13 Promotion147
+14 Publics--organizational F L A G
+15 Religion--Christianity153
+16 Standard of living162
+17 Temporality--past169
+18 Temporality--future168
+19 Temporality--comparative temporalities171
+20 Tourism172
+
+0 Aesthetics1
+1 Expedition64
+2 Location profile--landscape112
+3 Nature--wilderness128
+4 Nature--climate127
+5 US Regionalism--West180
+
+0 Expansionism58
+1 Interculturalism95
+2 Peoples--indigenous134
+3 Peoples--Hispanic135
+4 Religion--Christianity153
+5 Historicizing92
+6 US Regionalism--Southwest181
+
+0 Ethnography57
+1 Nature126
+2 Peoples--indigenous134
+3 Fetishism75
+4 Race and Ethnicity151
+5 Standard of Living162
+
+0 Age7
+1 Arts--performing18
+2 Arts--crafts16
+3 Clothing27
+4 Gender--masculinity83
+5 nostalgia131
+6 US Regionalism--West180
+
+0 Arts--literature14
+1 Danger35
+2 Peoples--indigenous134
+3 Peoples--Hispanic135
+4 Race and Ethnicity151
+5 Reverie156
+6 Solitude158
+7 Storytelling164
+
+0 Arts--architecture17
+1 Aesthetics1
+2 Historicizing92
+3 Philanthropy139
+4 Preservation--structural144
+5 Publics--organizational F L A G
+
+0 Nature126
+1 Promotion147
+2 US Regionalism--West180
+3 Migration120
+4 Health88
+
+0 Death39
+1 Nature126
+
+0 Anti-expansionism12
+1 Education53
+2 Expedition--military68
+3 Foreign Policy--War79
+4 Language--multilingual106
+5 Peoples--Hispanic135
+6 Polemics140
+
+0 Arts--literature14
+1 Cultivation--agriculture33
+2 Death39
+3 Historicizing92
+4 Peoples--Hispanic135
+5 Peoples--Indigenous134
+6 Race and Ethnicity151
+7 Interculturalism95
+8 Leisure110
+9 Tourism172
+10 Temporality--past169
+11 US Regionalism--West180
+
+0 Arts--literature14
+1 Class--middle class25
+2 Gender--masculinity83
+3 Leisure110
+4 Peoples--European Americans138
+5 Promotion147
+6 Publics--organizational F L A G
+7 US Regionalism--West180
+
+0 Publics--organizational F L A G
+1 US Regionalism--West180
+
+0 Peoples--European American F L A G
+1 Class--middle class25
+2 Gender--masculinity83
+3 Publics--organizational F L A G
+4 US Regionalism--West180
+
+0 Publics--organizational F L A G
+1 Gender--femininity82
+2 Leisure110
+
+0 Gender--masculinity83
+1 Publics--organizational F L A G
+2 Publics--spatial F L A G
+3 Leisure110
+4 Health88
+5 Class--middle class25
+
+0 Arts--visual15
+1 Publics--spatial F L A G
+2 Arts--architecture17
+3 US Regionalism--West180
+
+0 Leisure110
+1 Nature126
+2 Health88
+3 Economics--business48
+4 Tourism172
+
+0 Age-old-age F L A G
+1 Clothing27
+2 Cooperation29
+3 Cultivation-animal husbandry F L A G
+4 Danger-bravery F L A G
+5 Expertise-non-credentialed expert F L A G
+6 Failure74
+7 Fetishism75
+8 Gender-masculinity F L A G
+9 Hardship87
+10 Interculturalism-comparison F L A G
+11 Labor F L A G
+12 Nature-wilderness F L A G
+13 Nostalgia131
+14 Peoples-Hispanic F L A G
+15 Preservation-cultural F L A G
+16 Race and Ethnicity151
+17 Standard of Living162
+18 Tragedy174
+19 US Regionalism-West F L A G
+
+0 Age-old-age F L A G
+1 Clothing27
+2 Cooperation29
+3 Cultivation-animal husbandry F L A G
+4 Danger-bravery F L A G
+5 Expertise-non-credentialed expert F L A G
+6 Failure74
+7 Fetishism75
+8 Gender-masculinity F L A G
+9 Hardship87
+10 Interculturalism-comparison F L A G
+11 Labor F L A G
+12 Nature-wilderness F L A G
+13 Nostalgia131
+14 Peoples-Hispanic F L A G
+15 Preservation-cultural F L A G
+16 Race and Ethnicity151
+17 Standard of Living162
+18 Tragedy174
+19 US Regionalism-West F L A G
+
+0 Storytelling164
+1 Tragedy174
+2 US Regionalism-Southwest F L A G
+3 Temporality-comparative temporalities F L A G
+4 solitude158
+5 sexuality157
+6 Revenge155
+7 Race and Ethnicity151
+8 Peoples-indigenous F L A G
+9 Peoples-Hispanic F L A G
+10 Kinship-marriage F L A G
+11 Interculturalism-comparison F L A G
+12 Hardship87
+13 Guilt85
+14 Gender81
+15 Death-murder F L A G
+16 Affection-romantic F L A G
+
+0
+0 Aesthetics1
+1 Arts--crafts16
+2 Arts--architecture17
+3 Danger--bravery37
+4 Education--higher education54
+5 Ethnography57
+6 Expedition--scientific67
+7 Expedition--geographic69
+8 Expertise--credentialed71
+9 Historicizing92
+10 Interculturalism95
+11 Language--Spanish107
+12 Language--indigenous108
+13 Language--translation109
+14 Location profile111
+15 Nostalgia131
+16 Peoples--Indigenous134
+17 Peoples--European Americans138
+18 Preservation--environmental145
+19 Race and Ethnicity151
+20 Religion--Christianity153
+21 Religion--Indigenous154
+22 Sovereignty--collective161
+23 Standard of living162
+24 Temporality--past169
+25 Temporality--comparative temporalities171
+
+0 Expedition--scientific67
+1 Peoples--Indigenous134
+2 Preservation--cultural143
+
+0 Preservation-structural F L A G
+1 Politicking141
+2 Expertise70
+3 Hardship87
+4 Success165
+5 Philanthropy139
+6 Promotion147
+7 Temporality-comparative temporalities F L A G
+8 US Regionalism-west F L A G
+
+0 Cultivation-agriculture F L A G
+1 Danger35
+2 Death39
+3 Publics-spacial F L A G
+4 Standard of Living162
+5 US Regionalism-west F L A G
+
+0 Danger35
+1 Death39
+2 Food and Drink76
+3 Gender-masculinity F L A G
+4 Nature-exploitation F L A G
+5 Success165
+
+0 Aesthetics1
+1 Cultivation--horticulture32
+2 Food and Drink76
+3 Language--Spanish107
+4 Language--translation109
+5 Nature126
+6 Peoples--Indigenous134
+7 Peoples--Hispanic135
+8 US Regionalism--Southwest181
+
+0 Aesthetics1
+1 Affection--romantic3
+2 Affection--familial4
+3 Arts--crafts16
+4 Childrearing20
+5 Cultivation--animal husbandry34
+6 Demography41
+7 Domesticity46
+8 Expansionism--settlement60
+9 Expedition--religious66
+10 Food and Drink76
+11 Gender--femininity82
+12 Gender--masculinity83
+13 Happiness86
+14 Hardship87
+15 Justice100
+16 Kinship--marriage102
+17 Language--Spanish107
+18 Language--translation109
+19 Location profile--region116
+20 Nostalgia131
+21 Peoples--Indigenous134
+22 Peoples--European Americans138
+23 Religion--Christianity153
+24 Standard of living162
+25 Temporality--past169
+26 Temporality--comparative temporalities171
+
+0 Affection--familial4
+1 Affection--friendship5
+2 Age--childhood8
+3 Childrearing20
+4 Class--poverty23
+5 Clothing27
+6 Cultivation31
+7 Danger35
+8 Death39
+9 Domesticity46
+10 Education--primary education56
+11 Education--secondary education55
+12 Ethnography57
+13 Expertise--enthusiast73
+14 Food and Drink76
+15 Gender--femininity82
+16 Gender--masculinity83
+17 Happiness86
+18 Hardship87
+19 Health88
+20 Humor93
+21 Interculturalism--comparison97
+22 Irrigation99
+23 Justice100
+24 Kinship--ancestry103
+25 Labor F L A G
+26 Language--indigenous108
+27 Language--translation109
+28 National pride125
+29 Nature126
+30 Peoples--Indigenous134
+31 Philanthropy139
+32 Race and Ethnicity151
+33 Religion--Christianity153
+34 Sovereignty--collective161
+35 Standard of living162
+36 Temporality--past169
+37 Temporality--future168
+38 Temporality--comparative temporalities171
+
+0 Aesthetics1
+1 Arts--architecture17
+2 Historicizing92
+3 Nature126
+4 Foreign Policy77
+5 Peoples--indigenous134
+6 Peoples--Chinese136
+7 Peoples--Hispanic135
+8 Peoples--European Americans138
+9 Fetishism75
+10 Gender81
+11 Race and Ethnicity151
+
+0 Expansionism--Imperialism59
+1 Expedition64
+2 Foreign Policy77
+3 Gender--masculinity83
+4 Gender--femininity82
+5 National Pride125
+
+0 Aesthetics1
+1 Expertise--enthusiast73
+2 Leisure110
+3 Nature--wilderness128
+4 US Regionalism--West180
+
+0 Cultivation--agriculture33
+1 Arts--literature14
+2 Aesthetics1
+3 Nature126
+4 Temporality167
+
+0 Anti-expansionism12
+1 Expansionism--imperialism59
+2 Foreign Policy77
+3 Interculturalism95
+4 National Pride125
+5 Philanthropy139
+6 Polemics140
+7 Peoples--Chinese136
+8 Poeples--Indigenous F L A G
+9 Race and Ethnicity151
+10 Sovereignty--collective161
+
+0 Class-wealthy F L A G
+1 Cooperation29
+2 Corruption30
+3 Economics47
+4 Education53
+5 Fetishism75
+6 Foreign Policy77
+7 Interculturalism95
+8 Language-multilingual F L A G
+9 Peoples-Hispanic F L A G
+10 Polemics140
+11 Politicking141
+12 Race and Ethnicity151
+13 Success165
+14 Failure74
