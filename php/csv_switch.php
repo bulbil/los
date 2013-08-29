@@ -1,8 +1,12 @@
 <?
 
-// $gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AtVEb6YM9oi8dDE0cEx1eVpqN2pBQkpxVjdpeGZ4WkE&output=csv';
-$gcsv = ('http://localhost:8888/los/textdata.csv');
-$handle = fopen($gcsv, 'r');
+$gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AtVEb6YM9oi8dDE0cEx1eVpqN2pBQkpxVjdpeGZ4WkE&output=csv';
+$gcsv_local = 'http://localhost:8888/los/textdata.csv';
+
+$gcsv_copy = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdGN0OFpuVGZFYnRSdFhjd05HYVFncEE&output=csv';
+$gcsv_short = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdEhrSkVqQ3Ezb2p5ZV9UWnFUMGV5dEE&output=csv';
+
+$handle = fopen($gcsv_short, 'r');
 
 $columns = array(
 	'timestamp',
@@ -49,17 +53,15 @@ fclose($handle);
 unset($csv[0]);
 
 $articles = array(
-	'author',
-	'location',
-	'page_start',
-	'page_end',
-	'volume',
-	'issue',
-	'date_published',
-	'type'
+	'author = :author',
+	'location = :location',
+	'page_start = :page_start',
+	'page_end = :page_end',
+	'volume = :volume',
+	'issue = :issue',
+	'date_published = :date_published',
+	'type = :type'
 	);
-
-$articles_sql = sqlImplode($articles, 'Articles');
 
 $reviews = array(
 	'article_id',
@@ -111,32 +113,35 @@ try {
 $losPDO = db_connect();
 $tempPDO = db_connect();
 
-$stmt_articles = $losPDO->prepare($articles_sql);
 $stmt_reviews = $losPDO->prepare($reviews_sql);
 // $stmt_reviewers = $losPDO->prepare($reviewers_sql);
 $stmt_articles_themes = $losPDO->prepare($articles_themes_sql);
 $stmt_tags = $losPDO->prepare($tags_sql);
 $stmt_articles_tags = $losPDO->prepare($articles_tags_sql);
 
+echo $tags_sql . '<br /><br />';
+echo $reviews_sql . '<br /><br />';
+echo $articles_themes_sql . '<br /><br />';
+echo $articles_tags_sql . '<br /><br />';
+
 	foreach($csv as $row){
 
-			$article_id = null;
 			$reviewer_id = null;
+
+			insertValue($row['title'], 'Articles', 'title', $tempPDO);
+			$article_id = $tempPDO->lastInsertId();
+
+			$articles_sql = sqlImplode($articles, 'Articles', 'update', 'article_id', $article_id);
+			echo $articles_sql . '<br/><br/>';
+			$stmt_articles = $losPDO->prepare($articles_sql);
+
+			echo "A R T Y " . $article_id . '<br/>';
+			bindValue($article_id, $stmt_reviews, 'article_id');
+			// bindValue($article_id, $stmt_reviewers, 'article_id');
 
 		foreach($row as $key=>$value) {
 
 			switch($key){
-
-				case 'title':
-
-					insertValue($value, 'Articles', $key, $tempPDO);
-					$article_id = $tempPDO->lastInsertId();
-					$article_id = ($article_id > 1) ? $article_id - 1 : 1;
-					echo "A R T Y " . $article_id . '<br/>';
-					bindValue($article_id, $stmt_reviews, 'article_id');
-					// bindValue($article_id, $stmt_reviewers, 'article_id');
-					
-					break;
 
 				case 'author':
 				case 'location':
@@ -159,7 +164,7 @@ $stmt_articles_tags = $losPDO->prepare($articles_tags_sql);
 				case 'initials': 
 
 					$reviewer_id = returnID($value, 'reviewer_id', $key, 'Reviewers', $tempPDO); 
-					echo $key . ' ' . $reviewer_id . '<br/>'; 
+					echo 'reviewer id' . ' ' . $reviewer_id . '<br/>'; 
 					bindValue($reviewer_id, $stmt_reviews, 'reviewer_id');
 					// bindValue($reviewer_id, $stmt_reviewers, 'reviewer_id'); 
 					break;
@@ -176,11 +181,14 @@ $stmt_articles_tags = $losPDO->prepare($articles_tags_sql);
 				case 'technologies':
 				case 'environments':  
 
+						echo "tag " . $article_id . '<br/>';
+
 					foreach(stringFormat($value, 'array') as $tag) {
 
 						insertTag($tag, $stmt_tags, $key, $tempPDO);
 						$id = returnID($tag, 'tag_id', 'tag', 'Tags', $tempPDO, $key, 'category');
-						echo $id . '<br />';
+						// echo $id . '<br />';
+						
 						if($id && !ifExists($id, 'Articles_Tags' , 'tag_id', $tempPDO)){
 							bindValue($id, $stmt_articles_tags, 'tag_id');
 							bindValue($reviewer_id, $stmt_articles_tags, 'reviewer_id');
@@ -191,10 +199,11 @@ $stmt_articles_tags = $losPDO->prepare($articles_tags_sql);
 					break;
 
 				case 'themes': 
+					echo "theme " . $article_id . '<br/>';
 
 					foreach(stringFormat($value, 'array') as $key=>$theme) {
 						$id = returnID($theme, 'theme_id', 'theme', 'Themes', $tempPDO);
-						echo 'id found ' . $id;
+						// echo 'id found ' . $id;
 						if($id) {
 							bindValue($id, $stmt_articles_themes, 'theme_id');
 							bindValue($reviewer_id, $stmt_articles_themes, 'reviewer_id');

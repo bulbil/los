@@ -1,35 +1,70 @@
 <?php
 
-function sqlImplode($array, $table) {
+function tagArray($array, $category, $article_id, $reviewer_id, $obj, $pdo){
+
+	foreach (stringFormat($array, 'array') as $tag){
+
+		if (!ifExists($tag, 'Tags', 'tag', $pdo, $category, 'category') && strlen($tag) > 2 && $tag != 'n/a'){	
+
+			$tag_id = returnID(stringFormat($tag), 'tag_id', 'tag', 'Tags', $pdo, $category, 'category');
+	
+			if(!$tag_id) { 
+	
+				insertValue($tag, 'Tags', 'tag', $pdo, $category, 'category'); 
+				$tag_id = $pdo->lastInsertId();
+				echoLine($tag_id . ': ' . $tag);
+	
+			} else { echoLine('exists '. $tag_id . ': ' . $tag); }
+	
+			bindValue($tag_id, $obj, 'tag_id');
+			bindValue($article_id, $obj, 'article_id');
+			bindValue($reviewer_id, $obj, 'reviewer_id');
+			$obj->execute();
+		}
+	}
+
+}	
+
+function echoline($str1, $str2 = '') {
+
+	$line = ($str2) ? $str2 . ' ' . $str1 . '<br/>' : $str1 . '<br/>';
+	echo $line;
+}
+
+function echoArray($array){
+
+	foreach(stringFormat($array, 'array') as $key=>$value) echoLine($value, $key);
+
+}
+
+function sqlImplode($array, $table, $param = '', $column = '', $str = '') {
 
 	$sql_columns = implode(', ', $array);
 	$sql_values = implode(', :', $array);
-	$query = "INSERT INTO `$table` ($sql_columns) VALUES (:$sql_values)";
+	$query = ($param != 'update') ? "INSERT INTO `$table` ($sql_columns) VALUES (:$sql_values)" :
+									"UPDATE `$table` SET $sql_columns WHERE $column = '$str')";
 	return $query;
 }
 
-function insertValue($str, $table, $column, $pdo) {
+function insertValue($str, $table, $column, $pdo, $str2 = '', $column2 = '') {
 
 	$r = $pdo->quote(stringFormat($str));
-	echo $column . ' ' . $r . '<br/>';
-	$sql = "INSERT INTO $table (`$column`) VALUES ($r)";
+	$r2 = $pdo->quote(stringFormat($str2));
+	$sql = (!$str2) ? "INSERT INTO $table (`$column`) VALUES ($r)" :
+	"INSERT INTO $table (`$column`, `$column2`) VALUES ($r, $r2)";
 	$pdo->query($sql);
 }
 
 function insertTag($str, $obj, $column, $pdo) {
 
 	$r = $pdo->quote(stringFormat($str));
-	// $r = $str;
-	echo $r;
 	if(strlen($str) > 2){
 
-		if(!ifExists($str, 'Tags', 'tag', $pdo, $column, 'category')) {
-			// $sql = "INSERT INTO Tags(`category`, `tag`) VALUES ('$column', $r)";
-			// $pdo->query($sql);
-			$obj->bindValue(':tag', $str, PDO::PARAM_STR);
-			$obj->bindValue(':category', $column, PDO::PARAM_STR);
-			$obj->execute();
-		}
+			$sql = "INSERT INTO Tags(`category`, `tag`) VALUES ('$column', $r)";
+			$pdo->query($sql);
+			// $obj->bindValue(':tag', $str, PDO::PARAM_STR);
+			// $obj->bindValue(':category', $column, PDO::PARAM_STR);
+			// $obj->execute();
 	}
 }
 
@@ -60,8 +95,7 @@ function insertThemeID($str, $obj) {
 
 function returnID($str1, $column1, $column2, $table, $pdo, $str2 = '', $column3 = '') {
 	
-	$r = $str1;
-	echo $r;
+	$r = (stringFormat($str1));
 	if(strlen($r) >= 2){
 		$sql = (!$str2) ? "SELECT $column1 FROM $table WHERE $column2 = '$r'" :
 					"SELECT $column1 FROM $table WHERE $column2 = '$r' AND $column3 = '$str2'";
@@ -74,24 +108,24 @@ function returnID($str1, $column1, $column2, $table, $pdo, $str2 = '', $column3 
 function updateMain($str, $pdo) {
 
 	if (ifExists($str, 'Themes', 'theme', $pdo)) {
-
 		$id = returnID($str, 'theme_id', 'theme', 'Themes', $pdo);
-		$id = stringFormat($str, $pdo);
-		$sql = "UPDATE Articles_Themes SET if_main = true WHERE theme_id = '$id'";
+		$sql = "UPDATE Articles_Themes SET if_main = '1' WHERE theme_id = '$id'";
 		$pdo->exec($sql);
 
 		}
 
 	elseif (ifExists($str, 'Tags', 'tag', $pdo)) {
-
+		echoLine('tugss what');
 		$id = returnID($str, 'tag_id', 'tag', 'Tags', $pdo);
-		$id = stringFormat($str, $pdo);
-		$sql = "UPDATE Articles_Tags SET if_main = true WHERE tag_id = '$id'";
+		// $id = stringFormat($str);
+		$sql = "UPDATE Articles_Tags SET if_main = 'true' WHERE tag_id = '$id'";
 		$pdo->exec($sql);
-		} 
+		}
+
+	else { echoLine('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $str . '</strong> not found ... check data');}
 }
 
-function stringFormat($str, $param = 'default', $pdo = '') {
+function stringFormat($str, $param = 'default') {
 	
 	$str = trim($str);
 
@@ -106,7 +140,7 @@ function stringFormat($str, $param = 'default', $pdo = '') {
 			if($str){	
 
 				$d = DateTime::createFromFormat('j/n/Y G:i:s', $str);
-				return $d->format('Y-m-d h:i:s');
+				return $d->format('Y-m-d H:i:s');
 
 			} else { return 0; }
 

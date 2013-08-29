@@ -1,3 +1,22 @@
+-- SET FOREIGN_KEY_CHECKS=0;
+-- TRUNCATE Articles;
+-- TRUNCATE Tags;
+-- TRUNCATE Reviews;
+-- TRUNCATE Articles_Tags;
+-- TRUNCATE Articles_Themes;
+-- Truncate Articles_Reviewers;
+
+-- INSERT INTO Reviewers VALUES
+-- ('JT', 'John', 'Toe', 'jtoe', 'what'),
+-- ('JH', 'John', 'Hoe', 'jhoe', 'what'),
+-- ('AW', 'Ahn', 'Woe', 'awoe', 'what'),
+-- ('RM', 'Ron', 'Moe', 'rmoe', 'what'),
+-- ('MB', 'Mon', 'Boe', 'mboe', 'what'),
+-- ('VMR', 'Vaughn', 'Roe', 'vroe', 'what'),
+-- ('SH', 'Saun', 'Hoe', 'shoe', 'what'),
+-- ('jj', 'John', 'Joe', 'jjoe', 'what');
+
+
 CREATE DATABASE los DEFAULT CHARSET UTF8;
 
 USE los;
