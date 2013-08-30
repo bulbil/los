@@ -3,26 +3,28 @@
 function tagArray($array, $category, $article_id, $reviewer_id, $obj, $pdo){
 
 	foreach (stringFormat($array, 'array') as $tag){
+		$tag = stringFormat($tag);
 
-		if (!ifExists($tag, 'Tags', 'tag', $pdo, $category, 'category') && strlen($tag) > 2 && $tag != 'n/a'){	
+		if (strlen($tag) > 2 &&	$tag != 'n/a'){	
 
-			$tag_id = returnID(stringFormat($tag), 'tag_id', 'tag', 'Tags', $pdo, $category, 'category');
-	
-			if(!$tag_id) { 
-	
+			$tag_id = returnID($tag, 'tag_id', 'tag', 'Tags', $pdo, $category, 'category');
+
+			if(!$tag_id) {
+
+				$tag = $pdo->quote($tag);
 				insertValue($tag, 'Tags', 'tag', $pdo, $category, 'category'); 
 				$tag_id = $pdo->lastInsertId();
-				echoLine($tag_id . ': ' . $tag);
+			} 
 	
-			} else { echoLine('exists '. $tag_id . ': ' . $tag); }
-	
-			bindValue($tag_id, $obj, 'tag_id');
-			bindValue($article_id, $obj, 'article_id');
-			bindValue($reviewer_id, $obj, 'reviewer_id');
-			$obj->execute();
-		}
+			if (!ifExists($tag_id, 'Articles_Tags', 'tag_id', $pdo, $article_id, 'article_id')){
+				
+				bindValue($tag_id, $obj, 'tag_id');
+				bindValue($article_id, $obj, 'article_id');
+				bindValue($reviewer_id, $obj, 'reviewer_id');
+				$obj->execute();
+			}		
+		} 
 	}
-
 }	
 
 function echoline($str1, $str2 = '') {
@@ -48,23 +50,25 @@ function sqlImplode($array, $table, $param = '', $column = '', $str = '') {
 
 function insertValue($str, $table, $column, $pdo, $str2 = '', $column2 = '') {
 
-	$r = $pdo->quote(stringFormat($str));
-	$r2 = $pdo->quote(stringFormat($str2));
-	$sql = (!$str2) ? "INSERT INTO $table (`$column`) VALUES ($r)" :
-	"INSERT INTO $table (`$column`, `$column2`) VALUES ($r, $r2)";
-	$pdo->query($sql);
+	$sql = (!$str2) ? "INSERT INTO $table (`$column`) VALUES ($str)" :
+	"INSERT INTO $table (`$column`, `$column2`) VALUES ($str, '$str2')";
+	$stmt = $pdo->quote($sql);
+	$stmt = $pdo->prepare($sql);
+	$stmt->bindValue($column, $str, PDO::PARAM_STR);
+	if($str2){$stmt->bindValue($column2, $str2, PDO::PARAM_STR);}
+	$stmt->execute();
 }
 
 function insertTag($str, $obj, $column, $pdo) {
 
-	$r = $pdo->quote(stringFormat($str));
 	if(strlen($str) > 2){
-
-			$sql = "INSERT INTO Tags(`category`, `tag`) VALUES ('$column', $r)";
-			$pdo->query($sql);
-			// $obj->bindValue(':tag', $str, PDO::PARAM_STR);
-			// $obj->bindValue(':category', $column, PDO::PARAM_STR);
-			// $obj->execute();
+			$str = addslashes($str);
+			$sql = "INSERT INTO Tags(`category`, `tag`) VALUES ('$column', $str)";
+			// $pdo->query($sql);
+			$stmt = $pdo->prepare($sql);
+			$stmt->bindValue(':tag', $str, PDO::PARAM_STR);
+			$stmt->bindValue(':category', $column, PDO::PARAM_STR);
+			$stmt->execute();
 	}
 }
 
@@ -77,11 +81,12 @@ function bindValue($str, $obj, $column) {
 
 function ifExists($str, $table, $column, $pdo, $str2 = '', $column2 = '') {
 
-	$str = stringFormat($str);
-	$sql = (!$str2) ? "SELECT EXISTS(SELECT * FROM $table WHERE $column = '$str')" :
-						"SELECT EXISTS(SELECT * FROM $table WHERE $column = '$str' AND $column2 = '$str2')";
-	$exists = $pdo->query($sql);
-	$exists = $exists->fetch(PDO::FETCH_NUM);
+	$sql = (!$str2) ? "SELECT EXISTS(SELECT * FROM $table WHERE $column = ?)" :
+						"SELECT EXISTS(SELECT * FROM $table WHERE $column = ? AND $column2 = ?)";
+	$param = (!$str2) ? array($str) : array($str, $str2);
+	$stmt = $pdo->prepare($sql);
+	$stmt->execute($param);
+	$exists = $stmt->fetch(PDO::FETCH_NUM);
 	return $exists[0];
 }
 
@@ -94,35 +99,49 @@ function insertThemeID($str, $obj) {
 }
 
 function returnID($str1, $column1, $column2, $table, $pdo, $str2 = '', $column3 = '') {
-	
-	$r = (stringFormat($str1));
-	if(strlen($r) >= 2){
-		$sql = (!$str2) ? "SELECT $column1 FROM $table WHERE $column2 = '$r'" :
-					"SELECT $column1 FROM $table WHERE $column2 = '$r' AND $column3 = '$str2'";
-		$result = $pdo->query($sql);
-		$r = $result->fetch(PDO::FETCH_NUM);	
-		return $r[0];}
-	else { return 0;}
+
+	$str1 = stringFormat($str1);
+	$str2 = stringFormat($str2);
+
+	if(strlen($str1) >= 2){
+
+		$sql = (!$str2) ? "SELECT $column1 FROM $table WHERE $column2 = ?" :
+					"SELECT $column1 FROM $table WHERE $column2 = ? AND $column3 = ?";
+		$param = (!$str2) ? array($str1) : array($str1, $str2);
+
+		$stmt = $pdo->prepare($sql);
+		if(!$str2) { $stmt->execute(array($str1)); } else { $stmt->execute(array($str1,$str2)); }
+		
+		$result = $stmt->fetch(PDO::FETCH_NUM);
+		return ($result[0]);}
+	else { return '';}
+}
+
+function updateReconciled($str, $pdo) {
+
+		$sql = "UPDATE Articles SET reconciled = 1 WHERE article_id = ?";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array($str));
 }
 
 function updateMain($str, $pdo) {
-
+	
+	$str = stringFormat($str);
 	if (ifExists($str, 'Themes', 'theme', $pdo)) {
 		$id = returnID($str, 'theme_id', 'theme', 'Themes', $pdo);
-		$sql = "UPDATE Articles_Themes SET if_main = '1' WHERE theme_id = '$id'";
-		$pdo->exec($sql);
-
+		$sql = "UPDATE Articles_Themes SET if_main = 1 WHERE theme_id = ?";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array($id));
 		}
 
 	elseif (ifExists($str, 'Tags', 'tag', $pdo)) {
-		echoLine('tugss what');
 		$id = returnID($str, 'tag_id', 'tag', 'Tags', $pdo);
-		// $id = stringFormat($str);
-		$sql = "UPDATE Articles_Tags SET if_main = 'true' WHERE tag_id = '$id'";
-		$pdo->exec($sql);
+		$sql = "UPDATE Articles_Tags SET if_main = 1 WHERE tag_id = ?";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array($id));
 		}
 
-	else { echoLine('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $str . '</strong> not found ... check data');}
+	else { echoLine('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $str . '</strong> main not found ... check data');}
 }
 
 function stringFormat($str, $param = 'default') {
@@ -131,9 +150,30 @@ function stringFormat($str, $param = 'default') {
 
 	switch ($param){
 
+		case('default'): 
+
+			return $str;
+
+		case('array'):
+
+			$str = rtrim($str, ';');
+			$str = explode(';', $str);
+			return $str;
+
 		case('bool'): 	
 
 			return ($str == 'Yes') ? true : false;
+
+		case('date_published'):	
+
+				$str = preg_replace('/,/', '', $str);
+				$d = '15 ' . $str;
+				$dArray = explode(' ', $d);
+				if (count($dArray) == 3 && strtotime($dArray[1])) {
+					$d = DateTime::createFromFormat('d F Y', $d);
+					return $d->format('Y-m-d');
+
+				} else { return 0000-00-00; }
 
 		case('timestamp'): 	
 
@@ -144,33 +184,17 @@ function stringFormat($str, $param = 'default') {
 
 			} else { return 0; }
 
-		case('date_published'):	
-
-			if($str){
-
-				$str = preg_replace('/,/', '', $str);
-				$d = '15 ' . $str;
-				$d = DateTime::createFromFormat('d F Y', $d);
-				return $d->format('Y-m-d');
-
-			} else { return 0; }
+		case('theme'):
+			$str = trim($str);
+			// $str = preg_replace('/-/', '--', $str, 1);
+			$str = preg_replace('/\./', '', $str);
+			return $str;
 
 		case('type'): 	
 
 			$str = strtolower($str);
 			$str = preg_replace('/-/', '', $str);
 			return $str;
-
-		case('array'):
-
-			$str = rtrim($str, ';');
-			$str = explode(';', $str);
-			return $str;
-
-		case('default'): 
-
-			return $str;
-
 	}
 
 }

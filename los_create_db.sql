@@ -1,10 +1,9 @@
--- SET FOREIGN_KEY_CHECKS=0;
--- TRUNCATE Articles;
--- TRUNCATE Tags;
--- TRUNCATE Reviews;
--- TRUNCATE Articles_Tags;
--- TRUNCATE Articles_Themes;
--- Truncate Articles_Reviewers;
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE Articles;
+TRUNCATE Tags;
+TRUNCATE Reviews;
+TRUNCATE Articles_Tags;
+TRUNCATE Articles_Themes;
 
 -- INSERT INTO Reviewers VALUES
 -- ('JT', 'John', 'Toe', 'jtoe', 'what'),
@@ -15,6 +14,7 @@
 -- ('VMR', 'Vaughn', 'Roe', 'vroe', 'what'),
 -- ('SH', 'Saun', 'Hoe', 'shoe', 'what'),
 -- ('jj', 'John', 'Joe', 'jjoe', 'what');
+-- ('rec')
 
 
 CREATE DATABASE los DEFAULT CHARSET UTF8;
@@ -51,16 +51,6 @@ CREATE TABLE Reviewers (
 
 	PRIMARY KEY(reviewer_id)
 );
-
--- CREATE TABLE Articles_Reviewers (
-
--- 	article_id SMALLINT UNSIGNED,
--- 	reviewer_id TINYINT UNSIGNED,
-
--- 	PRIMARY KEY(article_id, reviewer_id),
--- 	FOREIGN KEY(article_id) REFERENCES Articles(article_id),
--- 	FOREIGN KEY(reviewer_id) REFERENCES Reviewers(reviewer_id)	
--- );
 
 CREATE TABLE Themes (
 
