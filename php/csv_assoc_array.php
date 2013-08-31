@@ -6,7 +6,7 @@ $gcsv_local = 'http://localhost:8888/los/textdata_short.csv';
 $gcsv_copy = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdGN0OFpuVGZFYnRSdFhjd05HYVFncEE&output=csv';
 $gcsv_short = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdEhrSkVqQ3Ezb2p5ZV9UWnFUMGV5dEE&output=csv';
 
-$handle = fopen($gcsv_short, 'r');
+$handle = fopen($gcsv, 'r');
 
 $columns = array(
 	'timestamp',
