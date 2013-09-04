@@ -1,6 +1,3 @@
-<?php
-echo <<<EOD
-<div class="container">
 <div class="navbar">
 <div class="navbar-header">
 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -8,15 +5,18 @@ echo <<<EOD
 <span class="icon-bar"></span>
 <span class="icon-bar"></span>
 </button> 
-<a class="navbar-brand" href="#">THE LAND <img src="img/los_logo.png" />OF SUNSHINE</a>
+<a class="navbar-brand" href="home.php">THE LAND <img src="../img/los_logo.png" alt="land of sunshine logo" />OF SUNSHINE</a>
 </div>
 <div class="navbar-collapse collapse">
 <ul class="nav nav-justified">
-<li class="active"><a href="#">home</a></li>
-<li><a href="#about">about</a></li>
-<li><a href="#login">login</a></li>
+<li class="active"><a href="http://www.landofsunshine.org/blog/">home</a></li>
+<li><a href="http://localhost:8888/los/php/data-table.php">data</a></li>
+<li><a href="http://localhost:8888/los/php/visualization.php">visualization</a></li>
+
+<?php $tag = (isset($_SESSION['username'])) ? "<li><a href='http://localhost:8888/los/php/reviews.php'>edit reviews</a></li>" :
+		"<li><a href='http://localhost:8888/los/php/login.php'>login</a></li>";
+echo $tag ?>
+
 </ul>
 </div>
 </div>
-EOD;
-?>
