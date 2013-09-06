@@ -1,14 +1,31 @@
+#login {height: 2em; padding: 0px;}
+#login h5{float: right; padding: 0px;}
 
-.navbar-brand{
-	font-size: 22px;
-	border-bottom: 1px solid #ddd;
-	color: #666;
+#masthead {padding: 0px;}
+
+#masthead #brand a {text-decoration: none;}
+
+#masthead #brand a p {	
+	font-size: 800%;
+	color: #ffaa00;
 	font-family: "minion pro", garamond, "times new roman", serif;
 	font-style: italic;
+	line-height: .8em;
+	display: inline;
+	vertical-align: top;}
+
+#masthead #brand {
+	background: #eee;
 }
 
-.navbar {width: 50%; margin-left: 25%;}
+#masthead div.navbar-collapse { margin-top: 5px; width: 100%; padding: 0px;}
 
-.navbar-header{margin-left: 68px;}
+#masthead ul.nav li a:hover { background: #eee; color: #ffaa00;}
 
-.navbar li a {color: #FFC425;}
+#masthead ul.nav li a{ color: #777;}
+
+form.form-signin h2, form.form-signin button, form.form-signin input { margin-bottom: 20px;}
+
+form.form-signin h2 {text-align: center;}
+
+#login a{ color: #ffaa00; }

@@ -1,4 +1,5 @@
 <?php
+session_start();
 require '../html/header.html';
 include 'navbar.php';
 include 'db.php';
