@@ -374,6 +374,7 @@ function string_format($str, $param = 'default') {
 			$str = trim($str);
 			// $str = preg_replace('/-/', '--', $str, 1);
 			$str = preg_replace('/\./', '', $str);
+			$str = preg_replace('/\w-\w/', '--', $str);
 			return $str;
 
 		case('type'): 	
@@ -469,14 +470,14 @@ function return_json($param, $article_id = '', $reviewer_id = '') {
 
 		case('themes'):
 
-			$sql = "SELECT theme FROM Themes 
+			$sql = "SELECT theme, if_main FROM Themes 
 					JOIN Articles_Themes ON Articles_Themes.theme_id = Themes.theme_id 
 					WHERE (Articles_Themes.article_id, Articles_Themes.reviewer_id) = ($article_id, $reviewer_id)";
 			return query($sql);
 
 		case('tags'):
 
-			$sql = "SELECT category, tag FROM Tags 
+			$sql = "SELECT category, tag, if_main FROM Tags 
 					JOIN Articles_Tags ON Tags.tag_id = Articles_Tags.tag_id 
 					WHERE (Articles_Tags.article_id, Articles_Tags.reviewer_id) = ($article_id, $reviewer_id)";
 			return query($sql);
@@ -505,8 +506,8 @@ function return_json($param, $article_id = '', $reviewer_id = '') {
 			return query($sql);	
 
 		case('dump_tags'):
-
-			$sql = "SELECT article_id, reviewer_id, category, tag 
+			$sql = "SELECT category, tag FROM Tags";
+			$sql_alt = "SELECT category, article_id, reviewer_id, category, tag 
 					FROM Tags JOIN Articles_Tags 
 					ON Tags.tag_id = Articles_Tags.tag_id";
 			return query($sql);
@@ -518,5 +519,39 @@ function return_json($param, $article_id = '', $reviewer_id = '') {
 		// 				JOIN Reviews ON Articles.article_id = Reviews.article_id
 		// 				Articles_Themes JOIN Themes ON Articles_Themes.ar"
 
+		}
+}
+
+// for calling funtions from main.js
+
+function js_functions() {
+
+		$view = preg_split("/\//", $_SERVER['PHP_SELF']);
+		$js = '<script>';
+		$js .= 'losFormViews.themesList();';
+		$js .= 'losFormViews.tagsLists();';
+		$js .= 'losFormViews.mainLists();';
+
+		if(isset($view[3])){
+			switch($view[3]) {
+
+				case('reviewer.php'): break;
+
+				case('add-review.php'): 
+
+					$js .= 'losFormViews.lastReview();';
+					$js .= '</script>'; 
+					return $js;
+
+				case('edit-review.php'):
+					$id = $_GET['id'];
+					$js .= "losFormViews.editReview($id);";
+					$js .= '</script>';
+					return $js;
+
+				case('reconcile.php'):
+				case('data-table.php'):
+				case('visualization.php'):
+			}
 		}
 }

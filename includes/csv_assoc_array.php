@@ -190,6 +190,7 @@ try {
 
 // binds values and executes Articles_Tags table statement, adds tags to Tags table if new
 		tag_array($row['groups'], 'groups', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
+		tag_array($row['persons'], 'persons', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
 		tag_array($row['entities'], 'entities', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
 		tag_array($row['places'], 'places', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
 		tag_array($row['activities'], 'activities', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);

@@ -21,8 +21,8 @@ $stmt = $themesPDO->prepare($sql);
 foreach($themes as $theme) { 
 
 $label_main = preg_replace('/\./', '', ucfirst(trim($theme['main'])));
-$stmt->bind_value('theme', $label_main);
-$stmt->bind_value('if_secondary', false);
+$stmt->bindValue('theme', $label_main);
+$stmt->bindValue('if_secondary', false);
 
 echo $label_main . '<br />';
 $stmt->execute();
@@ -33,8 +33,8 @@ if($theme['secondary']) {
 	foreach($secondary as $value) {
 		$value = preg_replace('/\./', '', $value);
 		echo $label_main . '--' . trim($value) . '<br />';
-		$stmt->bind_value('theme', $label_main . '--' . trim($value));
-		$stmt->bind_value('if_secondary', true);
+		$stmt->bindValue('theme', $label_main . '--' . trim($value));
+		$stmt->bindValue('if_secondary', true);
 		$stmt->execute();
 
 	}

@@ -4,22 +4,19 @@
 		<legend>summary &amp; themes</legend>
 
 		<!-- Text input-->
-		<div class="input-group col-md-6">
+<!-- 		<div class="input-group col-md-6">
 		<label class="control-label" for="themes">Themes</label>
 		<div class="controls">
 		<input class="form-control" id="themes" name="themes" type="text">
 
 		</div>
 		</div>
-
+ -->
 		<!-- Select Multiple -->
-		<div class="input-group col-md-4">
-		<label class="control-label" for="themes-list"></label>
-		<div class="controls">
-		<select class="form-control" id="themes-list" name="themes-list" multiple="multiple">
-		<option>theme 1</option>
-		<option>theme 2</option>
-		</select>
+		<div class="input-group col-md-6">
+		<label class="control-label" for="summary">Themes</label>
+		<div class='controls'>
+		<input type='text' id="themes-list" name="themes-list[]">
 		</div>
 		</div>
 
@@ -27,7 +24,7 @@
 		<div class="input-group col-md-6">
 		<label class="control-label" for="main">Main Elements</label>
 		<div class="controls">                     
-		<textarea class="form-control" id="main" name="main"></textarea>
+		<input type='text' id="main" name="main[]">
 		</div>
 		</div>
 
