@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+    <title>phpMyAdmin</title>
+    <link rel="stylesheet" type="text/css" href="phpmyadmin.css.php?server=1&amp;token=cf7d96c654ecf6a4fd85a1bb37b87e02&amp;js_frame=right&amp;nocache=5461385318" />
+    <link rel="stylesheet" type="text/css" href="print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="./themes/original/jquery/jquery-ui-1.8.16.custom.css" />
+    <meta name="robots" content="noindex,nofollow" />
+<script src="./js/jquery/jquery-1.6.2.js?ts=1358848330" type="text/javascript"></script>
+<script src="./js/jquery/jquery-ui-1.8.16.custom.js?ts=1358848330" type="text/javascript"></script>
+<script src="./js/update-location.js?ts=1358848331" type="text/javascript"></script>
+<script src="./js/config.js?ts=1358848330" type="text/javascript"></script>
+<script src="./js/functions.js?ts=1358848330" type="text/javascript"></script>
+<script src="./js/jquery/jquery.qtip-1.0.0-rc3.js?ts=1358848330" type="text/javascript"></script>
+<script src="./js/messages.php?lang=en&amp;db=los&amp;token=cf7d96c654ecf6a4fd85a1bb37b87e02" type="text/javascript"></script>
+<script src="./js/get_image.js.php?theme=original" type="text/javascript"></script>
+<script type="text/javascript">
+// <![CDATA[
+if (typeof(parent.document) != 'undefined' && typeof(parent.document) != 'unknown'
+    && typeof(parent.document.title) == 'string') {
+    parent.document.title = 'localhost:8888 / localhost / los / Reviews | phpMyAdmin 3.5.5';
+}
+// ]]>
+</script>
+        <meta name="OBGZip" content="true" />
+                <!--[if IE 6]>
+        <style type="text/css">
+        /* <![CDATA[ */
+        html {
+            overflow-y: scroll;
+        }
+        /* ]]> */
+        </style>
+        <![endif]-->
+    </head>
+
+    <body>
+            <div id="prefs_autoload" class="notice" style="display:none">
+        <form action="prefs_manage.php" method="post">
+            <input type="hidden" name="token" value="cf7d96c654ecf6a4fd85a1bb37b87e02" />
+            <input type="hidden" name="json" value="" />
+            <input type="hidden" name="submit_import" value="1" />
+            <input type="hidden" name="return_url" value="export.php?" />
+            Your browser has phpMyAdmin configuration for this domain. Would you like to import it for current session?            <br />
+            <a href="#yes">Yes</a> / <a href="#no">No</a>
+        </form>
+    </div>
+    <div id='floating_menubar'></div>
+<div id='serverinfo'>
+<img src="themes/dot.gif" title="" alt="" class="icon ic_s_host item" />
+<a href="main.php?token=cf7d96c654ecf6a4fd85a1bb37b87e02" class="item">localhost</a>
+<span class='separator item'>&nbsp;»</span>
+<img src="themes/dot.gif" title="" alt="" class="icon ic_s_db item" />
+<a href="db_structure.php?db=los&amp;token=cf7d96c654ecf6a4fd85a1bb37b87e02" class="item">los</a>
+<span class='separator item'>&nbsp;»</span>
+<img src="themes/dot.gif" title="" alt="" class="icon ic_s_tbl item" />
+<a href="tbl_structure.php?db=los&amp;table=Reviews&amp;token=cf7d96c654ecf6a4fd85a1bb37b87e02" class="item">Reviews</a>
+<span class="hide" id="update_recent_tables"></span><div class="clearfloat"></div></div>
+<!-- PMA-SQL-ERROR -->
+    <div class="error"><h1>Error</h1>
+    <p><strong>SQL query:</strong>
+<a href="./url.php?url=http%3A%2F%2Fdev.mysql.com%2Fdoc%2Fmysql%2Fen%2Fselect.html&amp;token=cf7d96c654ecf6a4fd85a1bb37b87e02" target="mysql_doc"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help" /></a><a href="tbl_sql.php?sql_query=%0D%0Aselect+article_id+from+reviews+WHERE+%28%60Reviews%60.%60article_id%60+%3D+1%29+OR+%28%60Reviews%60.%60article_id%60+%3D+2%29+OR+%28%60Reviews%60.%60article_id%60+%3D+3%29+OR+%28%60Reviews%60.%60article_id%60+%3D+4%29+OR+%28%60Reviews%60.%60article_id%60+%3D+5%29+OR+%28%60Reviews%60.%60article_id%60+%3D+6%29+OR+%28%60Reviews%60.%60article_id%60+%3D+7%29+OR+%28%60Reviews%60.%60article_id%60+%3D+8%29+OR+%28%60Reviews%60.%60article_id%60+%3D+9%29+OR+%28%60Reviews%60.%60article_id%60+%3D+10%29+OR+%28%60Reviews%60.%60article_id%60+%3D+11%29+OR+%28%60Reviews%60.%60article_id%60+%3D+12%29+OR+%28%60Reviews%60.%60article_id%60+%3D+13%29+OR+%28%60Reviews%60.%60article_id%60+%3D+14%29+OR+%28%60Reviews%60.%60article_id%60+%3D+15%29+OR+%28%60Reviews%60.%60article_id%60+%3D+16%29+OR+%28%60Reviews%60.%60article_id%60+%3D+17%29+OR+%28%60Reviews%60.%60article_id%60+%3D+18%29+OR+%28%60Reviews%60.%60article_id%60+%3D+19%29+OR+%28%60Reviews%60.%60article_id%60+%3D+20%29+OR+%28%60Reviews%60.%60article_id%60+%3D+21%29+OR+%28%60Reviews%60.%60article_id%60+%3D+22%29+OR+%28%60Reviews%60.%60article_id%60+%3D+23%29+OR+%28%60Reviews%60.%60article_id%60+%3D+24%29+OR+%28%60Reviews%60.%60article_id%60+%3D+25%29+OR+%28%60Reviews%60.%60article_id%60+%3D+26%29+OR+%28%60Reviews%60.%60article_id%60+%3D+27%29+OR+%28%60Reviews%60.%60article_id%60+%3D+28%29+OR+%28%60Reviews%60.%60article_id%60+%3D+29%29+OR+%28%60Reviews%60.%60article_id%60+%3D+30%29&amp;show_query=1&amp;db=los&amp;table=Reviews&amp;token=cf7d96c654ecf6a4fd85a1bb37b87e02"><span class="nowrap"><img src="themes/dot.gif" title="Edit" alt="Edit" class="icon ic_b_edit" /></span></a>    </p>
+    <p>
+        
+select article_id from reviews WHERE (`Reviews`.`article_id` = 1) OR (`Reviews`.`article_id` = 2) OR (`Reviews`.`article_id` = 3) OR (`Reviews`.`article_id` = 4) OR (`Reviews`.`article_id` = 5) OR (`Reviews`.`article_id` = 6) OR (`Reviews`.`article_id` = 7) OR (`Reviews`.`article_id` = 8) OR (`Reviews`.`article_id` = 9) OR (`Reviews`.`article_id` = 10) OR (`Reviews`.`article_id` = 11) OR (`Reviews`.`article_id` = 12) OR (`Reviews`.`article_id` = 13) OR (`Reviews`.`article_id` = 14) OR (`Reviews`.`article_id` = 15) OR (`Reviews`.`article_id` = 16) OR (`Reviews`.`article_id` = 17) OR (`Reviews`.`article_id` = 18) OR (`Reviews`.`article_id` = 19) OR (`Reviews`.`article_id` = 20) OR (`Reviews`.`article_id` = 21) OR (`Reviews`.`article_id` = 22) OR (`Reviews`.`article_id` = 23) OR (`Reviews`.`article_id` = 24) OR (`Reviews`.`article_id` = 25) OR (`Reviews`.`article_id` = 26) OR (`Reviews`.`article_id` = 27) OR (`Reviews`.`article_id` = 28) OR (`Reviews`.`article_id` = 29) OR (`Reviews`.`a[...]
+    </p>
+<p>
+    <strong>MySQL said: </strong><a href="./url.php?url=http%3A%2F%2Fdev.mysql.com%2Fdoc%2Fmysql%2Fen%2Ferror-messages-server.html&amp;token=cf7d96c654ecf6a4fd85a1bb37b87e02" target="mysql_doc"><img src="themes/dot.gif" title="Documentation" alt="Documentation" class="icon ic_b_help" /></a>
+</p>
+<code>
+#1146 - Table 'los.reviews' doesn't exist
+</code><br />
+</div><script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+// updates current settings
+if (window.parent.setAll) {
+    window.parent.setAll('en', 'utf8_general_ci', '1', 'los', 'Reviews', 'cf7d96c654ecf6a4fd85a1bb37b87e02');
+}
+    // set current db, table and sql query in the querywindow
+if (window.parent.reload_querywindow) {
+    window.parent.reload_querywindow(
+        'los',
+        'Reviews',
+        '\r\nselect article_id from reviews WHERE (`Reviews`.`article_id` = 1) OR (`Reviews`.`article_id` = 2) OR (`Reviews`.`article_id` = 3) OR (`Reviews`.`article_id` = 4) OR (`Reviews`.`article_id` = 5) OR (`Reviews`.`article_id` = 6) OR (`Reviews`.`article_id` = 7) OR (`Reviews`.`article_id` = 8) OR (`Reviews`.`article_id` = 9) OR (`Reviews`.`article_id` = 10) OR (`Reviews`.`article_id` = 11) OR (`Reviews`.`article_id` = 12) OR (`Reviews`.`article_id` = 13) OR (`Reviews`.`article_id` = 14) OR (`Reviews`.`article_id` = 15) OR (`Reviews`.`article_id` = 16) OR (`Reviews`.`article_id` = 17) OR (`Reviews`.`article_id` = 18) OR (`Reviews`.`article_id` = 19) OR (`Reviews`.`article_id` = 20) OR (`Reviews`.`article_id` = 21) OR (`Reviews`.`article_id` = 22) OR (`Reviews`.`article_id` = 23) OR (`Reviews`.`article_id` = 24) OR (`Reviews`.`article_id` = 25) OR (`Reviews`.`article_id` = 26) OR (`Reviews`.`article_id` = 27) OR (`Reviews`.`article_id` = 28) OR (`Reviews`.`article_id` = 29) OR (`Reviews`.`article_id` = 30)');
+}
+    
+if (window.parent.frame_content) {
+    // reset content frame name, as querywindow needs to set a unique name
+    // before submitting form data, and navigation frame needs the original name
+    if (typeof(window.parent.frame_content.name) != 'undefined'
+     && window.parent.frame_content.name != 'frame_content') {
+        window.parent.frame_content.name = 'frame_content';
+    }
+    if (typeof(window.parent.frame_content.id) != 'undefined'
+     && window.parent.frame_content.id != 'frame_content') {
+        window.parent.frame_content.id = 'frame_content';
+    }
+    //window.parent.frame_content.setAttribute('name', 'frame_content');
+    //window.parent.frame_content.setAttribute('id', 'frame_content');
+}
+});
+
+//]]>
+</script>
+</body>
+</html>

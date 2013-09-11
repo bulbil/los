@@ -18,7 +18,10 @@ require '../html/footer.html';
 </div>
 </div>
 <div class='row'>
-<?php foreach($_POST as $key => $value) echo_line($key . ': ' . $value); ?>
+<?php foreach($_POST as $key => $value) {
+	$html = (!is_array($value)) ? $key . ': ' . $value : $key . ': ' . implode(',', $value);
+	echo_line($html);
+	} ?>
 </div>
 </div>
 

@@ -1,119 +1,95 @@
-        <div class="tab-pane fade in active" id="bib">
-			<fieldset>
+<div class="tab-pane fade in active" id="bib">
+	<fieldset>
 
-			<!-- Form Name -->
-			<legend>bibliographic information</legend>
+		<legend>bibliographic information</legend>
 
-			<!-- Text input-->
-			<div class="control-group col-md-6">
-			  <label class="control-label" for="title">Title</label>
-			  <div class="controls">
-			    <input class="form-control" id="title" name="title" placeholder="test" type="text">
-			    
-			  </div>
-			</div>
+		<div class='col-md-10 col-md-offset-1'>
+		<!-- TITLE -->
+		<div class='row'>
+		<div class="form-group col-md-4">
+			<label  for="title">Title</label>
+			<input class="form-control" id="title" name="title" placeholder="test" type="text">
+		</div>
 
-			<!-- Text input-->
-			<div class="control-group col-md-6">
-			  <label class="control-label" for="author">Author</label>
-			  <div class="controls">
-			    <input class="form-control" id="author" name="author" placeholder="test" type="text">
-			    
-			  </div>
-			</div>
+		<!-- AUTHOR -->
+		<div class="form-group col-md-4">
+			<label  for="author">Author</label>
+				<input class="form-control" id="author" name="author" placeholder="test" type="text">
+		</div>
+				<!-- TYPE -->
+		<div class="form-group col-md-4">
+			<label for="type">Type</label>
+				<input type='text' id="type" name="type">
+		</div>
 
-			<!-- Prepended text-->
-			<div class="control-group col-md-2">
-			  <label class="control-label" for="page-start">Page Number</label>
-			  <div class="controls">
-			    <div class="input-group">
-			      <span class="input-group-addon">start</span>
-			      <input class="form-control" id="page-start" name="page-start" placeholder="test"  type="text">
-			    </div>
-			    
-			  </div>
-			</div>
 
-			<!-- Prepended text-->
-			<div class="control-group col-md-2">
-			  <label class="control-label" for="page-end"></label>
-			  <div class="controls">
-			    <div class="input-group">
-			      <span class="input-group-addon">end</span>
-			      <input class="form-control" id="page-end" name="page-end" placeholder="test"  type="text">
-			    </div>
-			    
-			  </div>
-			</div>
+		</div>
 
-			<!-- Text input-->
-			<div class="control-group col-md-8">
-			  <label class="control-label" for="location">Location Written</label>
-			  <div class="controls">
-			    <input class="form-control" id="location" name="location" placeholder="test" type="text">
-			    
-			  </div>
-			</div>
+		<div class='row'>
+		<!-- LOCATION -->
+		<div class="form-group col-md-4">
+			<label for="location">Location Written</label>
+				<input class="form-control" id="location" name="location" placeholder="test" type="text">
+		</div>
+		<!-- PAGE START -->
+		<div class="form-group col-md-2" id='page-start-group'>
+			<label  for="page-start">Pages</label>
+				<div class="input-group">
+					<span class="input-group-addon">start</span>
+					<input class="form-control" id="page-start" name="page-start"  type="text">
+				</div>
+		</div>
 
-			<!-- Prepended text-->
-			<div class="control-group col-md-2">
-			  <label class="control-label" for="volume">Issue</label>
-			  <div class="controls">
-			    <div class="input-group">
-			      <span class="input-group-addon">volume</span>
-			      <input class="form-control" id="volume" name="volume"  placeholder="test" type="text">
-			    </div>
-			    
-			  </div>
-			</div>
+		<!-- PAGE END -->
+		<div class="form-group col-md-2" id='page-end-group'>
+			<label  for="page-end">&nbsp;</label>
+				<div class="input-group">
+					<span class="input-group-addon">end</span>
+					<input class="form-control" id="page-end" name="page-end"  type="text">
+				</div>
+		</div>
 
-			<!-- Prepended text-->
-			<div class="control-group col-md-2">
-			  <label class="control-label" for="issue"></label>
-			  <div class="controls">
-			    <div class="input-group">
-			      <span class="input-group-addon">issue</span>
-			      <input class="form-control" id="issue" name="issue" placeholder="test" type="text">
-			    </div>
-			    
-			  </div>
-			</div>
+		<div class='row'>
 
-			<!-- Prepended text-->
-			<div class="control-group col-md-3">
-			  <label class="control-label" for="date-published"></label>
-			  <div class="controls">
-			    <div class="input-group">
-			      <span class="input-group-addon">date</span>
-			      <input class="form-control" id="date-published" name="date-published" placeholder="test" type="text">
-			    </div>
-			    
-			  </div>
-			</div>
+		</div>
 
-			<!-- Select Multiple -->
-			<div class="control-group col-md-4">
-			  <label class="control-label" for="type">Type</label>
-			  <div class="controls">
-			    <select class="form-control" id="type" name="type" multiple="multiple">
-			      <option>Poetry</option>
-			      <option>Nonfiction</option>
-			      <option>Fiction</option>
-			      <option>Editorial</option>
-			      <option>Advertisement</option>
-			    </select>
-			  </div>
+		<!-- VOLUME -->
+		<div class="form-group col-md-2" id='volume-group'>
+			<label  for="volume">Issue</label>
+				<div class="input-group">
+					<span class="input-group-addon">volume</span>
+					<input class="form-control" id="volume" name="volume" type="text">
 			</div>
+		</div>
 
-			<!-- Multiple Checkboxes (inline) -->
-			<div class="control-group col-md-4">
-			  <label class="control-label" for="reconciled-0"></label>
-			  <div class="controls">
-			    <label class="form-control" for="reconciled-0">
-			      <input name="reconciled" id="reconciled-0" value="1" type="checkbox">
-			      Reconciled Review
-			    </label>
-			  </div>
-			</div>
-			</fieldset>    
-			</div>
+		<!-- ISSUE -->
+		<div class="form-group col-md-2" id='issue-group'>
+			<label  for="issue">&nbsp;</label>
+				<div class="input-group">
+					<span class="input-group-addon">issue</span>
+					<input class="form-control" id="issue" name="issue" type="text">
+				</div>
+		</div>
+
+		<!-- DATE -->
+		<div class="form-group col-md-3" id='date-published-group'>
+			<label  for="date-published">&nbsp;</label>
+				<div class="input-group">
+					<span class="input-group-addon">date</span>
+					<input class="form-control" id="date-published" name="date-published" placeholder="mm-yyyy" type="text">
+				</div>
+		</div>
+
+		<!-- RECONCILED -->
+		<div class="form-group col-md-5">
+			<label>&nbsp;</label>
+			<label class='form-control'>
+				<input type='checkbox' name='reconciled' value='1'>
+				reviews for this article have been reconciled
+			</label>
+		</div>
+		</div>
+		</div>
+
+	</fieldset>    
+</div>

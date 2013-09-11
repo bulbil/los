@@ -29,3 +29,14 @@ form.form-signin h2, form.form-signin button, form.form-signin input { margin-bo
 form.form-signin h2 {text-align: center;}
 
 #login a{ color: #ffaa00; }
+
+ul.select2-results {border-bottom: 1px solid #ddd;border-top: 1px solid #ddd;}
+
+form input.btn { margin: 20px 15px -10px 0;}
+a#add-review {margin: 15px 0;}
+
+#tags div.row, #summary-and-themes div.row { border-bottom: 1px solid #ddd; margin-bottom: 25px; padding: 0 0 15px 0;}
+
+form #summary-and-themes textarea {height: 300px;}
+
+div.select2-container {width: 100%;}

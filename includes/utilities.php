@@ -397,11 +397,24 @@ function echo_array($array){
 	foreach(string_format($array, 'array') as $key=>$value) echo_line($value, $key);
 }
 
+// for getting the title for the forms page
+
+function getFormTitle(){
+
+	$form_title = $_GET['form'];
+	switch($form_title) {
+		case ('add'): return 'add review';
+		case ('edit'): return 'edit review';
+		case ('reconcile'): return 'reconcile reviews';
+	}
+}
+
 // for outputting tables, php to html
 
 function table_start($array) {
 
-	$html = "<div class='col-md-10 col-md-offset-1'>";
+	$html = "<div class='row'>";
+	$html .= "<div class='col-md-10 col-md-offset-1'>";
 	$html .= "<table class='table table-striped'><tr>";
 	foreach($array as $column) { $html .= '<th>' . $column . '</th>'; }
 	$html .= '</tr>';
@@ -412,14 +425,17 @@ function table_row($array, $id_column = '') {
 
 	$html = '<tr>';
 	foreach($array as $value) { $html .= '<td>' . $value . '</td>'; }
-	if($id_column) $html .= "<td><a href='edit-review.php?id=" . $id_column . "'>edit</a></td>"; 
+	if($id_column) { 
+		$html .= "<td><a href='review-form.php?form=edit&id=" . $id_column . "'>edit</a></td>";
+		$html .= "<td><a href='reconcile-form.php?form=reconcile&id=" . $id_column . "'>reconcile</a></td>";
+	}
 	$html .= '</tr>';
 	echo $html;
 }
 
 function table_end(){
 
-	$html = '</div></table>';
+	$html = '</div></div></table>';
 	echo $html;
 }
 
@@ -524,32 +540,39 @@ function return_json($param, $article_id = '', $reviewer_id = '') {
 
 // for calling funtions from main.js
 
-function js_functions() {
+function js_form_functions() {
 
-		$view = preg_split("/\//", $_SERVER['PHP_SELF']);
+		$view = (isset($_GET['form'])) ? $_GET['form'] : '';
 		$js = '<script>';
-		$js .= 'losFormViews.themesList();';
-		$js .= 'losFormViews.tagsLists();';
-		$js .= 'losFormViews.mainLists();';
+		// $js .= 'losFormViews.formValidation();';
+		// $js .= 'losFormViews.themesList();';
+		// $js .= 'losFormViews.tagsLists();';
+		// $js .= 'losFormViews.mainList();';
+		// $js .= 'losFormViews.typeList();';
 
-		if(isset($view[3])){
-			switch($view[3]) {
+		if(isset($view)){
+			switch($view) {
 
-				case('reviewer.php'): break;
+				// case('reviewer.php'): break;
 
-				case('add-review.php'): 
+				case('add'): 
 
 					$js .= 'losFormViews.lastReview();';
 					$js .= '</script>'; 
 					return $js;
 
-				case('edit-review.php'):
+				case('edit'):
 					$id = $_GET['id'];
 					$js .= "losFormViews.editReview($id);";
 					$js .= '</script>';
 					return $js;
 
-				case('reconcile.php'):
+				case('reconcile'):
+					$id = $_GET['id'];
+					$js .= "losFormViews.reconcileReview($id);";
+					$js .= '</script>';
+					return $js;
+
 				case('data-table.php'):
 				case('visualization.php'):
 			}

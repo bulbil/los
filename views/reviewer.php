@@ -14,10 +14,15 @@ $sql = "SELECT timestamp, Articles.article_id, title, issue, volume, date_publis
 
 $results = $dbh->query($sql);
 
-$html = "<div class='row'><div class='col-md-2 col-md-offset-1'><a href='add-review.php'><h4 style='color: #777'><em>add new review</em></h4></a></div></div>";
+$html = "<div class='row'>
+		<div class='col-md-10 col-md-offset-1'>
+		<a class='btn btn-warning pull-right' id='add-review' href='review-form.php?form=add'>
+		<em>add new review</em>
+		</a></div></div>";
+
 echo $html;
 
-$table_columns = array('timestamp', 'id', 'title', 'issue', 'volume', 'date', 'reconciled');
+$table_columns = array('timestamp', 'id', 'title', 'issue', 'volume', 'date', 'reconciled','');
 
 table_start($table_columns);
 

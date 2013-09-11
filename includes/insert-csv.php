@@ -137,6 +137,7 @@ try {
 		foreach ($row as $key=>$value) {
 			switch($key){
 				case ('groups') :
+				case ('persons') :
 				case ('entities') :
 				case ('places') :
 				case ('activities') :

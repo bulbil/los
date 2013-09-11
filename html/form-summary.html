@@ -1,60 +1,46 @@
-	<div class="tab-pane fade" id="summary-and-themes">
-		<fieldset>
-		<!-- Form Name -->
+<div class="tab-pane fade" id="summary-and-themes">
+	<fieldset>
+
 		<legend>summary &amp; themes</legend>
-
-		<!-- Text input-->
-<!-- 		<div class="input-group col-md-6">
-		<label class="control-label" for="themes">Themes</label>
-		<div class="controls">
-		<input class="form-control" id="themes" name="themes" type="text">
-
-		</div>
-		</div>
- -->
-		<!-- Select Multiple -->
+		<div class="col-md-10 col-md-offset-1">
+		<div class='row'>
+		<!-- THEMES -->
 		<div class="input-group col-md-6">
-		<label class="control-label" for="summary">Themes</label>
-		<div class='controls'>
-		<input type='text' id="themes-list" name="themes-list[]">
-		</div>
+			<label  for="summary">Themes</label>
+			<input type='text' id="themes-list" name="themes-list">
 		</div>
 
-		<!-- Textarea -->
+		<!-- MAIN ELEMENTS -->
 		<div class="input-group col-md-6">
-		<label class="control-label" for="main">Main Elements</label>
-		<div class="controls">                     
-		<input type='text' id="main" name="main[]">
+			<label  for="main">Main Elements</label>
+			<input type='text' id="main" name="main">
 		</div>
 		</div>
 
-		<!-- Textarea -->
-		<div class="input-group col-md-8">
-		<label class="control-label" for="summary">Summary</label>
-		<div class="controls">                     
-		<textarea class="form-control" id="summary" name="summary">enter summary</textarea>
+		<div class='row'>
+		<!-- SUMMARY -->
+		<div class="input-group col-md-6">
+			<label  for="summary">Summary</label>
+			<textarea class="form-control" id="summary" name="summary"></textarea>
+		</div>
+
+		<!-- NOTES -->
+		<div class="input-group col-md-6">
+			<label  for="notes">Notes</label>
+			<textarea class="form-control" id="notes" name="notes"></textarea>
 		</div>
 		</div>
 
-		<!-- Textarea -->
-		<div class="input-group col-md-8">
-		<label class="control-label" for="notes">Notes</label>
-		<div class="controls">                     
-		<textarea class="form-control" id="notes" name="notes">enter any significant information not captured by the other fields</textarea>
+		<div class='row'>
+		<!-- RESEARCH NOTES -->
+		<div class="input-group col-md-6">
+			<label for="research-notes">Research Notes</label>
+			<textarea class="form-control" id="research-notes" name="research-notes"></textarea>
+		</div>
 		</div>
 		</div>
 
-		<!-- Textarea -->
-		<div class="input-group col-md-8">
-		<label class="control-label" for="research-notes">Research Notes</label>
-		<div class="controls">                     
-		<textarea class="form-control" id="research-notes" name="research-notes" placeholder="test">enter any notes regarding further research that may be necessary</textarea>
-		</div>
-		</div>
-		
-		<input class="btn btn-primary" type='submit' value='submit'>
-
-		</fieldset>
+	</fieldset>
 </div>
 
 
