@@ -19,7 +19,6 @@
 $gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdHA2R3pHLTBrZHJFbE1kOUtZLV9GSEE&output=csv';
 $gcsv_local = 'http://localhost:8888/los/textdata_short.csv';
 $gcsv_rec_test = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdHgtMDVpLVRvcnNDdmJIS1liMFRRQ1E&output=csv';
-
 $gcsv_copy = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdGN0OFpuVGZFYnRSdFhjd05HYVFncEE&output=csv';
 $gcsv_short = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdEhrSkVqQ3Ezb2p5ZV9UWnFUMGV5dEE&output=csv';
 
@@ -76,7 +75,7 @@ function csvToArray($url) {
 	return $csv;
 }
 
-$csv = csvToArray($gcsv_rec_test);
+$csv = csvToArray($gcsv);
 
 // attempts to connect to the los database
 try {

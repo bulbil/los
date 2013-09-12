@@ -41,9 +41,7 @@ var losFormViews = {
 	themesList: function() { 
 
 		$.getJSON('../includes/json.php?p=themes_list', function(data){
-			console.log('fire themesList');
 			themes = _.pluck(data, 'theme');
-			console.log(themes[0]);
 			$('input#themes').select2({
 			width: '100%',
 			tags: themes,
@@ -121,7 +119,6 @@ var losFormViews = {
 
 			review = data[0];
 			_.each(_.keys(review), function(key) {
-				console.log(review[key]);
 				losFormViews.appendInput(key, review[key]);
 			})
 			$("input[name='timestamp']").val(review['timestamp']);
