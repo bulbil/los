@@ -75,11 +75,11 @@ function edit_row_review($article_id, $reviewer_id, $array, $obj) {
 function edit_themes($article_id, $reviewer_id, $str, $obj, $pdo) {
 
 	foreach(string_format($str, 'array') as $theme) {
-	
-		$value = string_format($theme, 'theme');
-		$theme_id = return_id($theme, 'theme_id', 'theme', 'Themes', $pdo);
 
-		if($theme_id && !if_exists($theme_id, 'Articles_Themes', 'theme_id', $pdo, $article_id, 'article_id')){			
+		$value = string_format($theme, 'theme');
+		$theme_id = return_id('theme_id', array($theme), array('theme'), 'Themes', $pdo);
+		echo_line($value);
+		if($theme_id && !if_exists(array($theme_id, $article_id, $reviewer_id), array('theme_id','article_id', 'reviewer_id'), 'Articles_Themes', $pdo)){			
 
 			bind_value($theme_id, $obj, 'theme_id');
 			bind_value($article_id, $obj, 'article_id');
@@ -185,7 +185,7 @@ function prepare_pdo_statement($array, $table, $pdo) {
 function bind_value($str, $obj, $column) {
 
 	$str = string_format($str);
-	$obj->bind_value($column, $str);
+	$obj->bindValue($column, $str);
 	return $obj;
 }
 
@@ -197,20 +197,19 @@ function insert_value($str, $table, $column, $pdo, $str2 = '', $column2 = '') {
 	"INSERT INTO $table (`$column`, `$column2`) VALUES ($str, '$str2')";
 	$stmt = $pdo->quote($sql);
 	$stmt = $pdo->prepare($sql);
-	$stmt->bind_value($column, $str, PDO::PARAM_STR);
-	if($str2){$stmt->bind_value($column2, $str2, PDO::PARAM_STR);}
+	$stmt->bindValue($column, $str, PDO::PARAM_STR);
+	if($str2){$stmt->bindValue($column2, $str2, PDO::PARAM_STR);}
 	$stmt->execute();
 }
 
 
 // returns bool if exists in a table -- faster than return_id as far as I know
-function if_exists($str, $table, $column, $pdo, $str2 = '', $column2 = '') {
+function if_exists($filterArray, $columnArray, $table, $pdo) {
 
-	$sql = (!$str2) ? "SELECT EXISTS(SELECT * FROM $table WHERE $column = ?)" :
-						"SELECT EXISTS(SELECT * FROM $table WHERE $column = ? AND $column2 = ?)";
-	$param = (!$str2) ? array($str) : array($str, $str2);
+	$columns = implode(' = ? AND ', $columnArray);
+	$sql = "SELECT EXISTS(SELECT * FROM $table WHERE $columns = ?)";
 	$stmt = $pdo->prepare($sql);
-	$stmt->execute($param);
+	$stmt->execute($filterArray);
 	$exists = $stmt->fetch(PDO::FETCH_NUM);
 	return $exists[0];
 }
@@ -218,7 +217,7 @@ function if_exists($str, $table, $column, $pdo, $str2 = '', $column2 = '') {
 function return_reviewer_id($str, $article_id, $pdo) {
 
 	// grabs the reviewer_id or, if two sets of initials appear as in a reconciled article, sets the initials to 'rec'
-	$id = (strlen($str) < 4) ? return_id($str, 'reviewer_id', 'initials', 'Reviewers', $pdo)
+	$id = (strlen($str) < 4) ? return_id('reviewer_id', array($str), array('initials'), 'Reviewers', $pdo)
 		: 9;
 	// if reconciled, updates the corresponding article in the Articles table to 'reconciled'
 	if($id == 'rec') {update_reconciled($article_id, $pdo);}
@@ -227,25 +226,29 @@ function return_reviewer_id($str, $article_id, $pdo) {
 
 
 // give it a string and it should return an id -- can take an optional parameter to further specify select query
-function return_id($str1, $column1, $column2, $table, $pdo, $str2 = '', $column3 = '') {
+function return_id($column, $filterArray, $columnArray, $table, $pdo) {
 
-	$str1 = string_format($str1);
-	$str2 = string_format($str2);
+	$filters = array_map('string_format', $filterArray);
+	$columns = implode(' = ? AND ', $columnArray);
 
-	if(strlen($str1) >= 2){
-
-		$sql = (!$str2) ? "SELECT $column1 FROM $table WHERE $column2 = ?" :
-					"SELECT $column1 FROM $table WHERE $column2 = ? AND $column3 = ?";
-		$param = (!$str2) ? array($str1) : array($str1, $str2);
-
-		$stmt = $pdo->prepare($sql);
-		if(!$str2) { $stmt->execute(array($str1)); } else { $stmt->execute(array($str1,$str2)); }
-		
-		$result = $stmt->fetch(PDO::FETCH_NUM);
-		return ($result[0]);}
-	else { return '';}
+	$sql = "SELECT $column FROM $table WHERE $columns = ?";
+	$stmt = $pdo->prepare($sql);
+	$stmt->execute($filters);
+	
+	$result = $stmt->fetch(PDO::FETCH_NUM);
+	return $result[0];
 }
 
+function return_article_id($row, $pdo) {
+
+	$filterArray = array($row['page_start'],$row['page_end'],$row['volume'],$row['issue']);
+	$columnArray = array('page_start','page_end','volume','issue');
+
+	if(if_exists($filterArray, $columnArray, 'Articles', $pdo)) {
+		$article_id = return_id('article_id', $filterArray, $columnArray, 'Articles', $pdo);
+		return $article_id;
+	} else { $article_id = $pdo->lastInsertId();}
+}
 
 // takes a string of tags delimited by semicolons, inserts the tag into Tags table if new and associates tags with articles and reviewers
 function tag_array($array, $category, $article_id, $reviewer_id, $obj, $pdo){
@@ -255,7 +258,7 @@ function tag_array($array, $category, $article_id, $reviewer_id, $obj, $pdo){
 
 		if (strlen($tag) > 2 &&	$tag != 'n/a'){	
 
-			$tag_id = return_id($tag, 'tag_id', 'tag', 'Tags', $pdo, $category, 'category');
+			$tag_id = return_id('tag_id', array($tag, $category), array('tag_id', 'category'), 'Tags', $pdo);
 
 			if(!$tag_id) {
 
@@ -265,7 +268,7 @@ function tag_array($array, $category, $article_id, $reviewer_id, $obj, $pdo){
 			} 
 
 			// just in case the tag appears twice in the same category with reference to the same article
-			if (!if_exists($tag_id, 'Articles_Tags', 'tag_id', $pdo, $article_id, 'article_id')){
+			if (!if_exists(array($tag_id, $article_id), array('tag_id', 'article_id'), 'Articles_Tags', $pdo)){
 				
 				bind_value($tag_id, $obj, 'tag_id');
 				bind_value($article_id, $obj, 'article_id');
@@ -280,9 +283,9 @@ function tag_array($array, $category, $article_id, $reviewer_id, $obj, $pdo){
 // just for inserting themes from the google spreadsheet themes list 
 function insert_theme_id($str, $obj) {
 
-	$obj->bind_value('theme', $str);
+	$obj->bindValue('theme', $str);
 	$if_secondary = (contains_substr($str, '--')) ? true : false;
-	$obj->bind_value('if_secondary', $if_secondary); 
+	$obj->bindValue('if_secondary', $if_secondary); 
 	$obj->execute();
 }
 
@@ -300,15 +303,15 @@ function update_reconciled($str, $pdo) {
 function update_main($str, $pdo) {
 	
 	$str = string_format($str);
-	if (if_exists($str, 'Themes', 'theme', $pdo)) {
-		$id = return_id($str, 'theme_id', 'theme', 'Themes', $pdo);
+	if (if_exists(array($str), array('theme'), 'Themes', $pdo)) {
+		$id = return_id('theme_id', array($str), array('theme'), 'Themes', $pdo);
 		$sql = "UPDATE Articles_Themes SET if_main = 1 WHERE theme_id = ?";
 		$stmt = $pdo->prepare($sql);
 		$stmt->execute(array($id));
 		}
 
-	elseif (if_exists($str, 'Tags', 'tag', $pdo)) {
-		$id = return_id($str, 'tag_id', 'tag', 'Tags', $pdo);
+	elseif (if_exists(array($str), array('tag'), 'Tags', $pdo)) {
+		$id = return_id('tag_id', array($str), array('tag'), 'Tags', $pdo);
 		$sql = "UPDATE Articles_Tags SET if_main = 1 WHERE tag_id = ?";
 		$stmt = $pdo->prepare($sql);
 		$stmt->execute(array($id));
@@ -372,9 +375,8 @@ function string_format($str, $param = 'default') {
 
 		case('theme'):
 			$str = trim($str);
-			// $str = preg_replace('/-/', '--', $str, 1);
 			$str = preg_replace('/\./', '', $str);
-			$str = preg_replace('/\w-\w/', '--', $str);
+			// $str = preg_replace('/\w-\w/', '--', $str, 1);
 			return $str;
 
 		case('type'): 	
@@ -425,12 +427,26 @@ function table_row($array, $id_column = '') {
 
 	$html = '<tr>';
 	foreach($array as $value) { $html .= '<td>' . $value . '</td>'; }
-	if($id_column) { 
-		$html .= "<td><a href='review-form.php?form=edit&id=" . $id_column . "'>edit</a></td>";
-		$html .= "<td><a href='reconcile-form.php?form=reconcile&id=" . $id_column . "'>reconcile</a></td>";
-	}
+	if($id_column) $html .= "<td><a href='review-form.php?form=edit&id=" . $id_column . "'>edit</a></td>";
+	$html .= table_reconcile_cell($id_column);
 	$html .= '</tr>';
 	echo $html;
+}
+
+function table_reconcile_cell($id) {
+
+	$reviewer_id = $_SESSION['reviewer_id'];
+	$dbh = db_connect();
+	$sql = "SELECT EXISTS (SELECT COUNT(*) FROM Reviews WHERE article_id = $id HAVING COUNT(*) > 1)";
+	$results = $dbh->query($sql, PDO::FETCH_COLUMN, 0);
+	$results = $results->fetchAll();
+	if($results[0]) { 
+
+		$sql = "SELECT reviewer_id FROM Reviews WHERE article_id = $id AND reviewer_id <> $reviewer_id"; 
+		$results = $dbh->query($sql, PDO::FETCH_COLUMN, 0);
+		$results = $results->fetchAll();
+		return "<td><a href='reconcile-form.php?form=reconcile&id=" . $id . "&rid=" . $results[0] . "'>reconcile</a></td>";
+	}
 }
 
 function table_end(){
@@ -441,25 +457,30 @@ function table_end(){
 
 // for outputting json things
 
-function return_json($param, $article_id = '', $reviewer_id = '') {
+function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id = '') {
 
 	function query($sql) {
 		$dbh = db_connect();
 		$results = $dbh->query($sql);
 		while($row = $results->fetch(PDO::FETCH_ASSOC)) $results_array[] = $row;
-		$json = json_encode($results_array);
+		$json = (isset($results_array)) ? json_encode($results_array) : "<em>sorry bro, no results ...</em>";
 		$dbh = null;
 		return $json;
 	}
 
 	switch ($param){
-		
+		// spits out reviewer info
+		case('reviewer'):
+			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
+			$sql = "SELECT initials FROM Reviewers WHERE reviewer_id = $id";
+			return query($sql);
+
 		// all the the articles reviewed for a reviewer_id
 		case('reviewed'):
 
 			$sql = "SELECT timestamp, Articles.article_id, title, issue, volume, date_published, reconciled 
 					FROM Articles JOIN Reviews ON Articles.article_id = Reviews.article_id 
-					WHERE reviewer_id = $reviewer_id 
+					WHERE reviewer_id = $reviewer1_id 
 					ORDER BY UNIX_TIMESTAMP(timestamp) DESC";
 			return query($sql);
 
@@ -468,7 +489,7 @@ function return_json($param, $article_id = '', $reviewer_id = '') {
 
 			$sql = "SELECT timestamp, Articles.article_id, title, issue, volume, date_published, reconciled 
 					FROM Articles JOIN Reviews ON Articles.article_id = Reviews.article_id 
-					WHERE reviewer_id = $reviewer_id 
+					WHERE reviewer_id = $reviewer1_id 
 					ORDER BY UNIX_TIMESTAMP(timestamp) DESC LIMIT 1";
 			return query($sql);
 
@@ -480,22 +501,24 @@ function return_json($param, $article_id = '', $reviewer_id = '') {
 
 		case('review'):
 
-			$sql = "SELECT * FROM Reviews 
-					WHERE (article_id, reviewer_id) = ($article_id, $reviewer_id)";
+			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
+			$sql = "SELECT * FROM Reviews WHERE (article_id, reviewer_id) = ($article_id, $id)";
 			return query($sql);
 
 		case('themes'):
 
-			$sql = "SELECT theme, if_main FROM Themes 
+			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
+			$sql = 	"SELECT theme, if_main FROM Themes 
 					JOIN Articles_Themes ON Articles_Themes.theme_id = Themes.theme_id 
-					WHERE (Articles_Themes.article_id, Articles_Themes.reviewer_id) = ($article_id, $reviewer_id)";
+					WHERE (Articles_Themes.article_id, Articles_Themes.reviewer_id) = ($article_id, $id)";
 			return query($sql);
 
 		case('tags'):
 
+			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
 			$sql = "SELECT category, tag, if_main FROM Tags 
 					JOIN Articles_Tags ON Tags.tag_id = Articles_Tags.tag_id 
-					WHERE (Articles_Tags.article_id, Articles_Tags.reviewer_id) = ($article_id, $reviewer_id)";
+					WHERE (Articles_Tags.article_id, Articles_Tags.reviewer_id) = ($article_id, $id)";
 			return query($sql);
 
 		case('themes_list'):
@@ -544,11 +567,6 @@ function js_form_functions() {
 
 		$view = (isset($_GET['form'])) ? $_GET['form'] : '';
 		$js = '<script>';
-		// $js .= 'losFormViews.formValidation();';
-		// $js .= 'losFormViews.themesList();';
-		// $js .= 'losFormViews.tagsLists();';
-		// $js .= 'losFormViews.mainList();';
-		// $js .= 'losFormViews.typeList();';
 
 		if(isset($view)){
 			switch($view) {
@@ -562,14 +580,16 @@ function js_form_functions() {
 					return $js;
 
 				case('edit'):
-					$id = $_GET['id'];
-					$js .= "losFormViews.editReview($id);";
+					$a_id = $_GET['id'];
+					$js .= "losFormViews.editReview($a_id);";
 					$js .= '</script>';
 					return $js;
 
 				case('reconcile'):
-					$id = $_GET['id'];
-					$js .= "losFormViews.reconcileReview($id);";
+					$a_id = $_GET['id'];
+					$r_id = $_GET['rid'];
+					$js .= "losFormViews.reconcileReview";
+					$js .= (isset($_GET['rid'])) ? "($a_id, $r_id);" : "($a_id);";
 					$js .= '</script>';
 					return $js;
 

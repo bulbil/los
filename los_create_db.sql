@@ -68,7 +68,7 @@ CREATE TABLE Articles_Themes (
 	reviewer_id TINYINT UNSIGNED,
 	if_main BOOLEAN NOT NULL,
 
-	PRIMARY KEY(article_id, theme_id),
+	PRIMARY KEY(article_id, theme_id, reviewer_id),
 	FOREIGN KEY(article_id) REFERENCES Articles(article_id),
 	FOREIGN KEY(theme_id) REFERENCES Themes(theme_id)	
 );

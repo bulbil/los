@@ -40,3 +40,18 @@ a#add-review {margin: 15px 0;}
 form #summary-and-themes textarea {height: 300px;}
 
 div.select2-container {width: 100%;}
+
+.review-list ul {list-style: none;}
+
+.review-list ul li {display: inline-block; padding: 5px; margin: 5px 3px; border: 1px #ddd solid; border-radius: 3px;}
+
+.review-list ul li.reviewer,
+
+#narration-pov-review-1 h5,
+#narration-pov-review-2 h5 {display: block; padding: 5px; margin: 5px 3px; border: none; font-style: italic; border-bottom: 1px solid #ddd;}
+
+.one ul li.reviewer, 
+#narration-pov-review-1 h5 {color: #f0ad4e;}
+
+.two ul li.reviewer, 
+#narration-pov-review-2 h5 {color: #2a6496;}

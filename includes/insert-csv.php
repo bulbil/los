@@ -18,6 +18,7 @@
 // -- the the suffix needs to be 'output=csv'
 $gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdHA2R3pHLTBrZHJFbE1kOUtZLV9GSEE&output=csv';
 $gcsv_local = 'http://localhost:8888/los/textdata_short.csv';
+$gcsv_rec_test = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdHgtMDVpLVRvcnNDdmJIS1liMFRRQ1E&output=csv';
 
 $gcsv_copy = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdGN0OFpuVGZFYnRSdFhjd05HYVFncEE&output=csv';
 $gcsv_short = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdEhrSkVqQ3Ezb2p5ZV9UWnFUMGV5dEE&output=csv';
@@ -75,7 +76,7 @@ function csvToArray($url) {
 	return $csv;
 }
 
-$csv = csvToArray($gcsv);
+$csv = csvToArray($gcsv_rec_test);
 
 // attempts to connect to the los database
 try {
@@ -99,7 +100,6 @@ try {
 
 // binds values and executes to the Articles table statement
 		edit_row_article($row, $stmt_articles);
-		
 		// echo_line($row['author']);
 		// echo_line($row['location']);
 		// echo_line($row['page_start']);
@@ -112,9 +112,14 @@ try {
 // binds values and executes Reviews table statement
 
 		// sets the current article_id as the last updated row, from the Articles table in this case
-		$article_id = $dbh->lastInsertId();
+		
+
+		$article_id = return_article_id($row, $dbh);
+		echo_line($article_id);
+		// $article_id = return_article_id($row, $dbh->lastInsertId();
 		$reviewer_id = return_reviewer_id($row['initials'], $article_id, $dbh);
-		// echo_line($article_id);
+		echo_line('article id: ' . $article_id);
+		echo_line('reviewer id: ' . $reviewer_id);
 
 		edit_row_review($article_id, $reviewer_id, $row, $stmt_reviews, $dbh);
 

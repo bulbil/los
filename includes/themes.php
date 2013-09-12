@@ -1,5 +1,8 @@
 <?php
 
+include 'db.php';
+include 'utilities.php';
+
 $gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AhsvAy6KBj1HdHJQSlpKS3NIdjZBTDNxa0YyZFVyS2c&output=csv';
 $handle = fopen($gcsv, 'r');
 

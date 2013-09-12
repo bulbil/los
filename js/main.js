@@ -98,17 +98,19 @@ var losFormViews = {
 
 				$.getJSON('../includes/json.php?p=article&id=' + id, function(data) {
 
-				article = _.pairs(data[0]);
-				_.each(article, function(i){
-					if(i[0] == 'date_published') {
-						d = i[1].split('-');
-						i[1] = d[1] + '-' + d[0];
-					}
-					if(i[0] == 'type') { 
-						i[1] = i[1].charAt(0).toUpperCase() + i[1].substr(1); 
-						$('input#type').select2('val', [i[1]]);}
-					losFormViews.appendInput(i[0], i[1]);
-				})
+				article = data[0];
+				d = article.date_published.split('-');
+				article.date_published = d[1] + '-' + d[0];
+
+				article.type = article.type.charAt(0).toUpperCase() + article.type.substr(1); 
+				$('input#type').select2('val', [article.type]);
+
+				recMessage = (article.reconciled == 1) ? "<span style='color: #5cb85c'><em>yes</em></span>" : "<span style='color: #428bca;'><em>nope</em></span>";
+				$('label#reconciled').append(recMessage);
+
+				_.each(_.keys(article), function(key){
+					losFormViews.appendInput(key, article[key]);
+				});
 		});
 	},
 	appendReview: function(id) { 
@@ -221,15 +223,14 @@ var losFormViews = {
 		})
 	},
 
-	reconcileReview: function(id) {
+	reconcileReview: function(id1, id2) {
 
 		losFormViews.formValidation();
 		losFormViews.themesList();
 		losFormViews.tagsLists();
 		losFormViews.mainList();
 		losFormViews.typeList();
-
-		losFormViews.appendArticle(id);
+		losFormViews.appendArticle(id1); 
 
 		function makeArray(object, filter, column, p = '') {
 
@@ -248,30 +249,35 @@ var losFormViews = {
 			return array;
 		}
 
+		$.getJSON('../includes/json.php?p=reviewer', function(data) {
 
-		$.getJSON('../includes/json.php?p=review&id=' + id, function(data){
+			reviewer1 = data[0].initials;
+
+			$.getJSON('../includes/json.php?p=reviewer&rid=' + id2, function(data){
+					
+				reviewer2 = data[0].initials;
+				$('#narration-pov-review-1 h5').html(reviewer1);
+				$('#narration-pov-review-2 h5').html(reviewer2);
+				$('.one li.reviewer').html(reviewer1);
+				$('.two li.reviewer').html(reviewer2);
+
+			});
+		});
+
+		$.getJSON('../includes/json.php?p=review&id=' + id1, function(data){
 
 			review1 = data[0];
 			
-			$.getJSON('../includes/json.php?p=review&id=' + id, function(data){
+			$.getJSON('../includes/json.php?p=review&id=' + id1 + '&rid=' + id2, function(data){
 				
 				review2 = data[0];
 
-				$('#narration-pov-review-1 p').append(review1.narration_pov);
-				$('#narration-pov-review-2 p').append(review2.narration_pov);
-				
-				$('#narration-tense-review-1 p').append(review1.narration_tense);
-				$('#narration-tense-review-2 p').append(review2.narration_tense);
+				function reviewText(key) {
 
-				$('#notes-review-1 p').append(review1.notes);
-				$('#notes-review-2 p').append(review2.notes);
-
-				$('#research-notes-review-1 p').append(review1.research_notes);
-				$('#research-notes-review-2 p').append(review2.research_notes);
-
-				$('#summary-review-1 p').append(review1.summary);
-				$('#summary-review-2 p').append(review2.summary);
-
+					domID = key.replace('_', '-');
+					$('#' + domID + '-review-1 p').append(review1[key]);
+					$('#' + domID + '-review-2 p').append(review2[key]);
+				}
 
 				function reviewBool(key) {
 
@@ -282,16 +288,21 @@ var losFormViews = {
 					$('#' + domID + '-review-2 p').append(boolResponse2);
 				}
 
+				reviewText('narration_pov');
+				reviewText('narration_tense');
+				reviewText('notes');
+				reviewText('research_notes');
+				reviewText('summary');
 				reviewBool('narration_embedded');
 				reviewBool('narration_tenseshift');
 			});
 		});
 
-		$.getJSON('../includes/json.php?p=tags&id=' + id, function(data){
+		$.getJSON('../includes/json.php?p=tags&id=' + id1, function(data){
 
 			review1tags = data;
 				
-			$.getJSON('../includes/json.php?p=tags&id=' + id, function(data){
+			$.getJSON('../includes/json.php?p=tags&id=' + id1 + '&rid=' + id2, function(data){
 
 				review2tags = data;
 
@@ -300,52 +311,64 @@ var losFormViews = {
 					domID = category.replace('_','-');
 
 					review1tagsByCategory = makeArray(review1tags, category, 'category', 'tag');
-					$('#' + domID + '-review-1 ul').append("<li>" + review1tagsByCategory.join("</li><li>"));
-
 					review2tagsByCategory = makeArray(review2tags, category, 'category', 'tag');
-					$('#' + domID + '-review-2 ul').append("<li>" + review2tagsByCategory.join("</li><li>"));										
-					
 					sharedTagsByCategory = _.intersection(review1tagsByCategory, review2tagsByCategory);
+					
+					review1tagsByCategory = _.difference(review1tagsByCategory, sharedTagsByCategory);
+					review2tagsByCategory = _.difference(review2tagsByCategory, sharedTagsByCategory);
+
 					$('input#' + domID).select2('val', [sharedTagsByCategory]);
+					$('#' + domID + '-review-1 ul').append("<li>" + review1tagsByCategory.join("</li><li>"));
+					$('#' + domID + '-review-2 ul').append("<li>" + review2tagsByCategory.join("</li><li>"));										
+
 				});
 
 				review1tagsMain = makeArray(review1tags, '1', 'if_main', 'maintag');
-				$('#main-review-1 ul').append("<li>" + review1tagsMain.join("</li><li>"));
-
 				review2tagsMain = makeArray(review2tags, '1', 'if_main', 'maintag');
-				$('#main-review-2 ul').append("<li>" + review1tagsMain.join("</li><li>"));
-
 				sharedTagsMain = _.intersection(review1tagsMain, review2tagsMain);
+
+				review1tagsMain = _.difference(review1tagsMain, sharedTagsMain);
+				review2tagsMain = _.difference(review2tagsMain, sharedTagsMain);
+
 				$('input#main').select2('val', [sharedTagsMain]);
+				$('#main-review-1 ul').append("<li>" + review1tagsMain.join("</li><li>"));
+				$('#main-review-2 ul').append("<li>" + review2tagsMain.join("</li><li>"));
+
 			});
 		});
 
-		$.getJSON('../includes/json.php?p=themes&id=' + id, function(data){
+		$.getJSON('../includes/json.php?p=themes&id=' + id1, function(data){
 
 			review1themes = data;
-						
-			$.getJSON('../includes/json.php?p=themes&id=' + id, function(data){
+									
+			$.getJSON('../includes/json.php?p=themes&id=' + id1 + '&rid=' + id2, function(data){
 				review2themes = data;
 
 				review1themesMain = makeArray(review1themes, '1', 'if_main', 'maintheme');
-				$('#main-review-1 ul').append("<li>" + review1themesMain.join("</li><li>"));
-
 				review2themesMain = makeArray(review2themes, '1', 'if_main', 'maintheme');				
-				$('#main-review-2 ul').append("<li>" + review2themesMain.join("</li><li>"));
-
 				sharedThemesMain = _.intersection(review1themesMain, review2themesMain);
+
+				review1themesMain = _.difference(review1themesMain, sharedThemesMain);
+				review2themesMain = _.difference(review2themesMain, sharedThemesMain);
+
 				mainList = $('input#main').select2('val');
 				mainList = mainList.concat(sharedThemesMain);
+
 				$('input#main').select2('val', [mainList]);
+				$('#main-review-1 ul').append("<li>" + review1themesMain.join("</li><li>"));
+				$('#main-review-2 ul').append("<li>" + review2themesMain.join("</li><li>"));
 
 				review1themes = _.pluck(review1themes, 'theme');
-				$('#themes-list-review-1 ul').append("<li>" + review1themes.join("</li><li>"));
-
 				review2themes = _.pluck(review2themes, 'theme');
+				sharedThemes = _.intersection(review1themes, review2themes);
+
+				review1themes = _.difference(review1themes, sharedThemes);
+				review2themes = _.difference(review2themes, sharedThemes);
+
+				$('input#themes-list').select2('val', [sharedThemes]);
+				$('#themes-list-review-1 ul').append("<li>" + review1themes.join("</li><li>"));
 				$('#themes-list-review-2 ul').append("<li>" + review2themes.join("</li><li>"));
 
-				sharedThemes = _.intersection(review1themes, review2themes);
-				$('input#themes-list').select2('val', [sharedThemes]);
 			});
 		});
 
