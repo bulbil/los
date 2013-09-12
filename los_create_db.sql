@@ -16,6 +16,16 @@ TRUNCATE Articles_Themes;
 -- ('jj', 'John', 'Joe', 'jjoe', 'what');
 -- ('rec')
 
+INSERT INTO Reviewers VALUES
+('JT', 'John', 'Toe', 'jtoe', 'what'),
+('JH', 'Joshua', 'Hubbard', 'jhub', 'what'),
+('AW', 'Ari', 'Weinberg', 'awein', 'what'),
+('RM', 'Rachel', 'Miller', 'rmill', 'what'),
+('MB', 'Michael', 'Barera', 'mbar', 'what'),
+('VMR', 'Valentina', 'Montero-Roe', 'vroe', 'what'),
+('SH', 'Steven', 'Hoelscher', 'shoe', 'what'),
+('jj', 'Justin', 'Joque', 'jjoe', 'what'),
+('rec');
 
 CREATE DATABASE los DEFAULT CHARSET UTF8;
 
@@ -100,7 +110,7 @@ CREATE TABLE Articles_Tags (
 	reviewer_id TINYINT UNSIGNED,
 	if_main BOOLEAN NOT NULL,
 
-	PRIMARY KEY(article_id, tag_id),
+	PRIMARY KEY(reviewer_id, article_id, tag_id),
 	FOREIGN KEY(article_id) REFERENCES Articles(article_id),
 	FOREIGN KEY(tag_id) REFERENCES Tags(tag_id)		
 );
