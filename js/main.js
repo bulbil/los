@@ -41,7 +41,9 @@ var losFormViews = {
 	themesList: function() { 
 
 		$.getJSON('../includes/json.php?p=themes_list', function(data){
+			console.log('fire themesList');
 			themes = _.pluck(data, 'theme');
+			console.log(themes[0]);
 			$('input#themes').select2({
 			width: '100%',
 			tags: themes,
