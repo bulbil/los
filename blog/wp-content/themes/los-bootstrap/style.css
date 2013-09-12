@@ -8,6 +8,8 @@ Author URI: http://320press.com
 Tags: black, white, one-column, two-columns, flexible-width, custom-background, custom-colors, custom-menu, full-width-template, theme-options
 License: GNU General Public License v2.0 & Apache License 2.0
 License URI: http://www.gnu.org/licenses/gpl-2.0.html http://www.apache.org/licenses/LICENSE-2.0
+
+modified by nabil kashyap for the Land of Sunshine blog (www.landofsunshine.org/blog)
 */
 
 /* micro clearfix: http://nicolasgallagher.com/micro-clearfix-hack/ */
@@ -737,3 +739,18 @@ blockquote.pull-left{
 		padding-right: 0;
 	}
 }
+
+
+.navbar-brand{
+
+	border-bottom: 1px solid #ddd;
+	color: #666;
+	font-family: "minion pro", garamond, "times new roman", serif;
+	font-style: italic;
+}
+
+.navbar {width: 50%; margin-left: 25%;}
+
+.navbar-header{margin-left: 68px;}
+
+.navbar li a {color: #FFC425;}

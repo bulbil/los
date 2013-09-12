@@ -23,7 +23,7 @@ get_header(); ?>
     </header>
 
   <div class="row content">
-    <div class="span8">
+    <div class="span8"">
         <?php the_content(); ?>
         <?php wp_link_pages( array('before' => '<div class="page-links">' . __('Pages:', 'bootstrapwp'), 'after' => '</div>')); ?>
         <?php edit_post_link(__('Edit', 'bootstrapwp'), '<span class="edit-link">', '</span>'); ?>

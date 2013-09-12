@@ -24,28 +24,28 @@
           href="<?php echo get_template_directory_uri();?>/assets/ico/apple-touch-icon-57-precomposed.png">
     <?php wp_head(); ?>
 </head>
-<body <?php body_class(); ?>  data-spy="scroll" data-target=".bs-docs-sidebar" data-offset="10">
-    <div class="navbar navbar-inverse navbar-relative-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>
-                <a class="brand" href="<?php echo home_url('/'); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home">
-                    <?php bloginfo('name'); ?></a>
+<body <?php body_class(); ?> >
+    
+    <div class='container'>
+        <div class='row'>
+                <div id="masthead" class="span8 offset2">
+
+                    <div id="brand">
+                        <a href="http://localhost:8888/los/php/home.php"><img src="http://localhost:8888/los/img/los_masthead.png" alt="the land of sunshine log" /></a>
+                    </div>
+
+                <div class="navbar navbar-collapse">
                 <?php wp_nav_menu(
                         array(
                             'menu' => 'main-menu',
                             'container_class' => 'nav-collapse collapse',
-                            'menu_class' => 'nav',
+                            'menu_class' => 'nav nav-justified',
                             'fallback_cb' => '',
                             'menu_id' => 'main-menu',
                             'walker' => new Bootstrapwp_Walker_Nav_Menu()
                         )
                     ); ?>
+
             </div>
         </div>
     </div>
-    <!-- End Header. Begin Template Content -->

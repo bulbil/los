@@ -22,3 +22,45 @@ Comfortable with LESS?  Check out the /assets/css/less folder where the bootstra
 
 Not comfortable with LESS?  You can override the compiled bootstrapwp.css file by adding custom styles here.
 -------------------------------------------------- */
+
+#masthead #brand a, #masthead #brand a:hover {text-decoration: none; background: none;}
+
+#masthead #brand a p {
+
+	font-size: 800%;
+	color: #ffaa00;
+	font-family: "minion pro", garamond, "times new roman", serif;
+	font-style: italic;
+	line-height: .8em;
+	display: inline;
+	vertical-align: top;}
+
+#masthead #brand {
+	background: #eee;
+	margin-top: 30px;
+	overflow: hidden;
+}
+
+#masthead li a {color: }
+
+ul#main-menu { margin-top: 5px;}
+
+ul#main-menu li { color: #ffaa00;}
+
+.nav-justified {width: 100%;}
+.nav-justified > li {float: none;}
+.nav-justified > li > a {text-align: center;}
+.nav-justified > li {width: 25%;}
+
+ul#main-menu li a:hover{
+	margin: 0px;
+	background: #eee;
+	text-shadow: none;
+	color: #ffaa00;
+}
+
+.post {border-bottom: 1px #eee solid;}
+
+#sidebar{margin-top: 10px;}
+
+body a:hover, #sidebar a:hover{background: #fff; text-decoration: underline; color: #ffaa00;}
