@@ -142,23 +142,27 @@ var losFormViews = {
 	},
 
 	appendTags: function(id, str = '') { 
-
+		console.log('fire');
 		$.getJSON('../includes/json.php?p=tags&id=' + id, function(data) {
-			
+			console.log('fire json success');
 			tags = data;
 			_.each(losFormViews.categories, function(e) {
 				category = e;
 				tagsCategory = _.filter(tags, function(e) { return e.category == category; });
 				tagsCategory = _.pluck(tagsCategory, 'tag');
+				console.log('fire tags category lists');
+				console.log(tagsCategory);
 				$('input#' + category).select2('val', [tagsCategory]);
 			});
-
+			console.log('fire main tags lists');
 			mainTags = _.filter(tags, function(e) { return e.if_main == 1; });
 			mainTags = _.map(mainTags, function(e) { 
 				prefix = e.category.charAt(0).toUpperCase() + e.category.substr(1) + ': ';
 				return  prefix + e.tag; });
+			console.log(mainTags);
 			mainList = $('input#main').select2('val');
 			mainList = mainList.concat(mainTags);
+			console.log(mainList);
 			$('input#main').select2('val', [mainList]);
 		});
 	},

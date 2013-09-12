@@ -27,6 +27,9 @@ INSERT INTO Reviewers VALUES
 ('jj', 'Justin', 'Joque', 'jjoe', 'what'),
 ('rec');
 
+INSERT INTO `Reviewers` VALUES (`initials`, `first_name`, `last_name`, `username`, `password`)
+('JT', 'John', 'Toe', 'jtoe', 'what');
+
 CREATE DATABASE los DEFAULT CHARSET UTF8;
 
 USE los;
