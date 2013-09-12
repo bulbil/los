@@ -42,7 +42,7 @@ var losFormViews = {
 
 		$.getJSON('../includes/json.php?p=themes_list', function(data){
 			themes = _.pluck(data, 'theme');
-			$('input#themes-list').select2({
+			$('input#themes').select2({
 			width: '100%',
 			tags: themes,
 			createSearchChoice: function(term){return '';},
@@ -122,7 +122,7 @@ var losFormViews = {
 				console.log(review[key]);
 				losFormViews.appendInput(key, review[key]);
 			})
-			$("input[name='timestamp']").val(review[timestamp]);
+			$("input[name='timestamp']").val(review['timestamp']);
 		});
 	},
 
@@ -130,7 +130,7 @@ var losFormViews = {
 		$.getJSON('../includes/json.php?p=themes&id=' + id, function(data) {
 
 			articleThemes = _.pluck(data, 'theme');
-			$('input#themes-list').select2('val', [articleThemes]);
+			$('input#themes').select2('val', [articleThemes]);
 			mainThemes = _.filter(data, function(e) { return e.if_main == 1; })
 			mainThemes = _.pluck(mainThemes, 'theme');
 			mainThemes = _.map(mainThemes, function(e) { return 'Theme: ' + e; });
@@ -142,27 +142,26 @@ var losFormViews = {
 	},
 
 	appendTags: function(id, str = '') { 
-		console.log('fire');
+
 		$.getJSON('../includes/json.php?p=tags&id=' + id, function(data) {
-			console.log('fire json success');
+
 			tags = data;
 			_.each(losFormViews.categories, function(e) {
 				category = e;
+				domID = category.replace('_','-')
 				tagsCategory = _.filter(tags, function(e) { return e.category == category; });
 				tagsCategory = _.pluck(tagsCategory, 'tag');
-				console.log('fire tags category lists');
-				console.log(tagsCategory);
 				$('input#' + category).select2('val', [tagsCategory]);
 			});
-			console.log('fire main tags lists');
+
 			mainTags = _.filter(tags, function(e) { return e.if_main == 1; });
 			mainTags = _.map(mainTags, function(e) { 
 				prefix = e.category.charAt(0).toUpperCase() + e.category.substr(1) + ': ';
 				return  prefix + e.tag; });
-			console.log(mainTags);
+
 			mainList = $('input#main').select2('val');
 			mainList = mainList.concat(mainTags);
-			console.log(mainList);
+
 			$('input#main').select2('val', [mainList]);
 		});
 	},
@@ -185,7 +184,7 @@ var losFormViews = {
 							mainTags = mainTags.concat(categoryTags);
 						});
 
-						mainTags = mainTags.concat(_.map($('input#themes-list').select2('val'), function(e) { return 'Theme: ' + e;}));
+						mainTags = mainTags.concat(_.map($('input#themes').select2('val'), function(e) { return 'Theme: ' + e;}));
 						return mainTags;	
 					}
 				});
@@ -372,9 +371,9 @@ var losFormViews = {
 				review1themes = _.difference(review1themes, sharedThemes);
 				review2themes = _.difference(review2themes, sharedThemes);
 
-				$('input#themes-list').select2('val', [sharedThemes]);
-				$('#themes-list-review-1 ul').append("<li>" + review1themes.join("</li><li>"));
-				$('#themes-list-review-2 ul').append("<li>" + review2themes.join("</li><li>"));
+				$('input#themes').select2('val', [sharedThemes]);
+				$('#themes-review-1 ul').append("<li>" + review1themes.join("</li><li>"));
+				$('#themes-review-2 ul').append("<li>" + review2themes.join("</li><li>"));
 
 			});
 		});
