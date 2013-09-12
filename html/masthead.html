@@ -16,12 +16,12 @@
 	</div>
 	<div class="navbar-collapse collapse">
 		<ul class="nav nav-justified">
-			<li class="active"><a href="http://www.landofsunshine.org/blog/">home</a></li>
-			<li><a href="http://localhost:8888/los/views/data-table.php">data</a></li>
-			<li><a href="http://localhost:8888/los/views/visualization.php">visualization</a></li>
+			<li class="active"><a href="http://www.landofsunshine.org/los/blog/">home</a></li>
+			<li><a href="data-table.php">data</a></li>
+			<li><a href="visualization.php">visualization</a></li>
 
-			<?php $tag = (isset($_SESSION['username'])) ? "<li><a href='http://localhost:8888/los/views/reviewer.php'>reviews</a></li>" :
-					"<li><a href='http://localhost:8888/los/views/login.php'>login</a></li>";
+			<?php $tag = (isset($_SESSION['username'])) ? 
+				"<li><a href='reviewer.php'>reviews</a></li>" : "<li><a href='login.php'>login</a></li>";
 			echo $tag ?>
 		</ul>
 	</div>

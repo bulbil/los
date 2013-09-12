@@ -117,12 +117,15 @@ var losFormViews = {
 
 		$.getJSON('../includes/json.php?p=review&id=' + id, function(data) {
 
-			review = _.pairs(data[0]);
-			_.each(review, function(i) {
-				losFormViews.appendInput(i[0], i[1]);
+			review = data[0];
+			_.each(_.keys(review), function(key) {
+				console.log(review[key]);
+				losFormViews.appendInput(key, review[key]);
 			})
+			$("input[name='timestamp']").val(review[timestamp]);
 		});
 	},
+
 	appendThemes: function(id) { 
 		$.getJSON('../includes/json.php?p=themes&id=' + id, function(data) {
 

@@ -34,18 +34,18 @@ function csvToArray($url) {
 		'title',
 		'author',
 		'location',
-		'page_start',
-		'page_end',
+		'page-start',
+		'page-end',
 		'volume',
 		'issue',
-		'date_published',
+		'date-published',
 		'type',
 		'groups',
 		'persons',
 		'entities',
 		'places',
 		'activities',
-		'flora_fauna',
+		'flora-fauna',
 		'commodities',
 		'events',
 		'works',
@@ -56,12 +56,12 @@ function csvToArray($url) {
 		'summary',
 		'notes',
 		'x',
-		'research_notes',
+		'research-notes',
 		'narration',
-		'narration_pov',
-		'narration_embedded',
-		'narration_tense',
-		'narration_tenseshift'
+		'narration-pov',
+		'narration-embedded',
+		'narration-tense',
+		'narration-tenseshift'
 		);
 
 	// creates an associative array out of each row of the csv -- each cell is the value, each $columns element is the key
@@ -121,6 +121,7 @@ try {
 		echo_line('article id: ' . $article_id);
 		echo_line('reviewer id: ' . $reviewer_id);
 
+		$row['timestamp'] = string_format($row['timestamp'], 'timestamp');
 		edit_row_review($article_id, $reviewer_id, $row, $stmt_reviews, $dbh);
 
 		// echo_line($row['initials']);

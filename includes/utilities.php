@@ -19,27 +19,29 @@
 /////////////////////////////////////////////////////////
 
 // for getting stuff into the articles table
-function edit_row_article($array, $obj) {
-
+function edit_row_article($array, $obj, $rec = false) {
+		
 		bind_value($array['title'], $obj, 'title');
 
 		bind_value($array['author'], $obj, 'author');
 
 		bind_value($array['location'], $obj, 'location');
 
-		bind_value($array['page_start'], $obj, 'page_start');
+		bind_value($array['page-start'], $obj, 'page_start');
 
-		bind_value($array['page_end'], $obj, 'page_end');
+		bind_value($array['page-end'], $obj, 'page_end');
 
 		bind_value($array['volume'], $obj, 'volume');
 
 		bind_value($array['issue'], $obj, 'issue');
 
-		$date = string_format($array['date_published'], 'date_published');
+		$date = string_format($array['date-published'], 'date_published');
 		bind_value($date, $obj, 'date_published');
 
 		$type = string_format($array['type'],'type');
 		bind_value($type, $obj, 'type');
+
+		bind_value($rec, $obj, 'reconciled'); 
 
 		$obj->execute();
 }
@@ -49,25 +51,24 @@ function edit_row_review($article_id, $reviewer_id, $array, $obj) {
 		bind_value($article_id, $obj, 'article_id');
 
 		bind_value($reviewer_id, $obj, 'reviewer_id');
-
-		$timestamp = string_format($array['timestamp'], 'timestamp');
-		bind_value($timestamp, $obj, 'timestamp');
+		
+		bind_value($array['timestamp'], $obj, 'timestamp');
 
 		bind_value($array['summary'], $obj, 'summary');
 
 		bind_value($array['notes'], $obj, 'notes');
 
-		bind_value($array['research_notes'], $obj, 'research_notes');
+		bind_value($array['research-notes'], $obj, 'research_notes');
 
-		bind_value($array['narration_pov'], $obj, 'narration_pov');
+		bind_value($array['narration-pov'], $obj, 'narration_pov');
 
-		$narration_embedded = string_format($array['narration_embedded'], 'bool');
+		$narration_embedded = (isset($array['narration-embedded'])) ? string_format($array['narration-embedded'], 'bool') : false;
 		bind_value($narration_embedded, $obj, 'narration_embedded');
 
-		bind_value($array['narration_tense'], $obj, 'narration_tense');
+		bind_value($array['narration-tense'], $obj, 'narration_tense');
 
-		$narration_tenseshift = string_format($array['narration_tenseshift'], 'bool');
-		bind_value($array['narration_tenseshift'], $obj, 'narration_tenseshift');
+		$narration_tenseshift = (isset($array['narration-tenseshift'])) ? string_format($array['narration-tenseshift'], 'bool') : false;
+		bind_value($narration_tenseshift, $obj, 'narration_tenseshift');
 
 		$obj->execute();
 }
@@ -78,13 +79,18 @@ function edit_themes($article_id, $reviewer_id, $str, $obj, $pdo) {
 
 		$value = string_format($theme, 'theme');
 		$theme_id = return_id('theme_id', array($theme), array('theme'), 'Themes', $pdo);
-		echo_line($value);
+		
 		if($theme_id && !if_exists(array($theme_id, $article_id, $reviewer_id), array('theme_id','article_id', 'reviewer_id'), 'Articles_Themes', $pdo)){			
 
 			bind_value($theme_id, $obj, 'theme_id');
 			bind_value($article_id, $obj, 'article_id');
 			bind_value($reviewer_id, $obj, 'reviewer_id');			
-			$obj->execute();									
+			$obj->execute();
+
+		} if( if_exists(array($theme_id, $article_id, $reviewer_id), array('theme_id','article_id', 'reviewer_id'), 'Articles_Themes', $pdo)) {
+
+			echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $value . '</strong> already attached to this review');
+
 		} else { echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $value . '</strong> not a theme ... check data'); }
 	}
 }
@@ -95,7 +101,6 @@ function edit_themes($article_id, $reviewer_id, $str, $obj, $pdo) {
 // HELPER FUNCTIONS FOR GETTING STUFF INTO THE DB
 //
 /////////////////////////////////////////////////////////
-
 
 // arrays for the different tables
 
@@ -108,7 +113,8 @@ $articles = array(
 	'volume',
 	'issue',
 	'date_published',
-	'type'
+	'type',
+	'reconciled'
 	);
 
 $reviews = array(
@@ -161,14 +167,26 @@ $dump = array(
 	'narration_tenseshift'
 	);
 
+
 // creates the SQL queries for PDO prepared statements from an array
+function pdo_update($n) { return $n . " = :" . $n; }
+
 function sql_implode($array, $table, $param = '', $column = '', $str = '') {
 
-	$sql_columns = implode(', ', $array);
-	$sql_values = implode(', :', $array);
-	$query = ($param != 'update') ? "INSERT INTO `$table` ($sql_columns) VALUES (:$sql_values)" :
-									"UPDATE `$table` SET $sql_columns WHERE $column = '$str')";
-	return $query;
+	if($param == 'update') {	
+		$update_array = array_map("pdo_update", $array);
+		$update_array = implode(',', $update_array);
+		$query = "UPDATE `$table` SET $update_array WHERE $column = $str";
+		return $query;
+
+	} else {
+
+		$sql_columns = implode(', ', $array);
+		$sql_values = implode(', :', $array);
+
+		$query = "INSERT INTO `$table` ($sql_columns) VALUES (:$sql_values)";
+		return $query;
+	}
 }
 
 
@@ -214,14 +232,11 @@ function if_exists($filterArray, $columnArray, $table, $pdo) {
 	return $exists[0];
 }
 
-function return_reviewer_id($str, $article_id, $pdo) {
+function if_article_exists($row, $dbh){
 
-	// grabs the reviewer_id or, if two sets of initials appear as in a reconciled article, sets the initials to 'rec'
-	$id = (strlen($str) < 4) ? return_id('reviewer_id', array($str), array('initials'), 'Reviewers', $pdo)
-		: 9;
-	// if reconciled, updates the corresponding article in the Articles table to 'reconciled'
-	if($id == 'rec') {update_reconciled($article_id, $pdo);}
-	return $id;
+		$current_article = array($row['page_start'], $row['page_end'], $row['volume'], $row['issue']);
+		$article_check = array('page_start', 'page_end', 'volume', 'issue');
+		return if_exists($current_article, $article_check, 'Articles', $dbh); 
 }
 
 
@@ -239,9 +254,21 @@ function return_id($column, $filterArray, $columnArray, $table, $pdo) {
 	return $result[0];
 }
 
+
+function return_reviewer_id($str, $article_id, $pdo) {
+
+	// grabs the reviewer_id or, if two sets of initials appear as in a reconciled article, sets the initials to 'rec'
+	$id = (strlen($str) < 4) ? return_id('reviewer_id', array($str), array('initials'), 'Reviewers', $pdo)
+		: 9;
+	// if reconciled, updates the corresponding article in the Articles table to 'reconciled'
+	if($id == 'rec') {update_reconciled($article_id, $pdo);}
+	return $id;
+}
+
+
 function return_article_id($row, $pdo) {
 
-	$filterArray = array($row['page_start'],$row['page_end'],$row['volume'],$row['issue']);
+	$filterArray = array($row['page-start'],$row['page-end'],$row['volume'],$row['issue']);
 	$columnArray = array('page_start','page_end','volume','issue');
 
 	if(if_exists($filterArray, $columnArray, 'Articles', $pdo)) {
@@ -249,6 +276,7 @@ function return_article_id($row, $pdo) {
 		return $article_id;
 	} else { $article_id = $pdo->lastInsertId();}
 }
+
 
 // takes a string of tags delimited by semicolons, inserts the tag into Tags table if new and associates tags with articles and reviewers
 function tag_array($array, $category, $article_id, $reviewer_id, $obj, $pdo){
@@ -341,7 +369,8 @@ function string_format($str, $param = 'default') {
 		case('array'):
 
 			$str = rtrim($str, ';');
-			$str = explode(';', $str);
+			$str = preg_split('/(;|,)/', $str);
+			print_r($str);
 			return $str;
 
 		case('bool'): 	
@@ -366,12 +395,8 @@ function string_format($str, $param = 'default') {
 
 		case('timestamp'): 	
 
-			if($str){	
-
 				$d = DateTime::createFromFormat('j/n/Y G:i:s', $str);
-				return $d->format('YY-MM-DD H:i:s');
-
-			} else { return 0; }
+				return $d->format('Y-m-d H:i:s');
 
 		case('theme'):
 			$str = trim($str);
@@ -440,12 +465,11 @@ function table_reconcile_cell($id) {
 	$sql = "SELECT EXISTS (SELECT COUNT(*) FROM Reviews WHERE article_id = $id HAVING COUNT(*) > 1)";
 	$results = $dbh->query($sql, PDO::FETCH_COLUMN, 0);
 	$results = $results->fetchAll();
-	if($results[0]) { 
-
-		$sql = "SELECT reviewer_id FROM Reviews WHERE article_id = $id AND reviewer_id <> $reviewer_id"; 
-		$results = $dbh->query($sql, PDO::FETCH_COLUMN, 0);
+	if($results[0] == 1) { 
+		$sql = "SELECT Reviews.reviewer_id FROM Reviews JOIN Articles ON Reviews.article_id = Articles.article_id WHERE Reviews.article_id = $id AND Reviews.reviewer_id <> $reviewer_id AND Articles.reconciled = 0"; 
+		$results = $dbh->query($sql, PDO::FETCH_NUM);
 		$results = $results->fetchAll();
-		return "<td><a href='reconcile-form.php?form=reconcile&id=" . $id . "&rid=" . $results[0] . "'>reconcile</a></td>";
+		if($results) return "<td><a href='reconcile-form.php?form=reconcile&id=" . $id . "&rid=" . $results[0][0] . "'>reconcile</a></td>";
 	}
 }
 
