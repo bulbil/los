@@ -4,7 +4,7 @@
 
     <h2 id="form-tabs-title"><?= getFormTitle() ?></h2>
 
-    <form action="../includes/form-submit.php" method="post">
+    <form action="../views/form-submit.php" method="post">
     <input type="hidden" name="form" value = <?= "'" . $_GET['form'] . "'" ?> >
     <input type="hidden" name="id" value = <? $id = (isset($_GET['id'])) ? $_GET['id'] : ''; echo "'" . $id . "'"; ?> >
     <input type="hidden" name="timestamp">

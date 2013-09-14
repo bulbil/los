@@ -33,11 +33,11 @@ function csvToArray($url) {
 		'title',
 		'author',
 		'location',
-		'page-start',
-		'page-end',
+		'page_start',
+		'page_end',
 		'volume',
 		'issue',
-		'date-published',
+		'date_published',
 		'type',
 		'groups',
 		'persons',
@@ -55,12 +55,12 @@ function csvToArray($url) {
 		'summary',
 		'notes',
 		'x',
-		'research-notes',
+		'research_notes',
 		'narration',
-		'narration-pov',
-		'narration-embedded',
-		'narration-tense',
-		'narration-tenseshift'
+		'narration_pov',
+		'narration_embedded',
+		'narration_tense',
+		'narration_tenseshift'
 		);
 
 	// creates an associative array out of each row of the csv -- each cell is the value, each $columns element is the key
@@ -97,8 +97,16 @@ try {
 		$i++;
 		echo_line('<strong>' . $row['title'] . '</strong>');
 
-// binds values and executes to the Articles table statement
-		edit_row_article($row, $stmt_articles);
+// if there's no existing article, binds values and executes the Articles table statement
+// or article_id is false
+		$article_id = return_article_id($row, $dbh);
+		echo_line('article id 1: ' . $article_id);
+		if($article_id == null) {
+			$row['date_published'] = string_format($row['date_published'], 'date_csv');
+			edit_article($row, $stmt_articles); 
+			$article_id = $dbh->lastInsertId();
+			echo_line('article id 2: ' . $article_id);
+		}
 		// echo_line($row['author']);
 		// echo_line($row['location']);
 		// echo_line($row['page_start']);
@@ -111,17 +119,16 @@ try {
 // binds values and executes Reviews table statement
 
 		// sets the current article_id as the last updated row, from the Articles table in this case
-		
-
-		$article_id = return_article_id($row, $dbh);
-		echo_line($article_id);
 		// $article_id = return_article_id($row, $dbh->lastInsertId();
 		$reviewer_id = return_reviewer_id($row['initials'], $article_id, $dbh);
 		echo_line('article id: ' . $article_id);
 		echo_line('reviewer id: ' . $reviewer_id);
 
 		$row['timestamp'] = string_format($row['timestamp'], 'timestamp');
-		edit_row_review($article_id, $reviewer_id, $row, $stmt_reviews, $dbh);
+		$row['narration_embedded'] = (isset($row['narration_embedded'])) ? string_format($row['narration_embedded'], 'bool') : 0;
+		$row['narration_tenseshift'] = (isset($row['narration_tenseshift'])) ? string_format($row['narration_tenseshift'], 'bool') : 0;
+
+		edit_review($article_id, $reviewer_id, $row, $stmt_reviews, $dbh);
 
 		// echo_line($row['initials']);
 		// echo_line($reviewer_id);
@@ -135,7 +142,7 @@ try {
 		// echo_line($row['narration_tenseshift']);
 
 // binds values and executes Articles_Themes table statement
-		edit_themes($article_id, $reviewer_id, $row['themes'], $stmt_articles_themes, $dbh);
+		edit_article_themes($article_id, $reviewer_id, $row['themes'], $stmt_articles_themes, $dbh);
 
 // binds values and executes Articles_Tags table statement, adds tags to Tags table if new
 
@@ -146,29 +153,19 @@ try {
 				case ('entities') :
 				case ('places') :
 				case ('activities') :
-				case ('flora_fauna') :
+				case ('flora-fauna') :
 				case ('commodities') :
 				case ('events') :
 				case ('works') :
 				case ('technologies') :
-				case ('environments') : tag_array($value, $key, $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
-				// tag_array($row['groups'], 'groups', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
-				// tag_array($row['entities'], 'entities', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
-				// tag_array($row['places'], 'places', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
-				// tag_array($row['activities'], 'activities', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
-				// tag_array($row['flora_fauna'], 'flora_fauna', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
-				// tag_array($row['commodities'], 'commodities', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
-				// tag_array($row['events'], 'events', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
-				// tag_array($row['works'], 'works', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
-				// tag_array($row['technologies'], 'technologies', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
-				// tag_array($row['environments'], 'environments', $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
+				case ('environments') : edit_article_tags($value, $key, $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
 			}
 		}
 
 // updates Articles_Tags and Articles_Themes tables if marked as a Main Element
 		foreach (string_format($row['main'], 'array') as $value) {
 			// echo_line($value);
-			update_main($value, $dbh);
+			update_main($value, $article_id, $reviewer_id, $dbh);
 		}
 
 	}

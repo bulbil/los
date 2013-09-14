@@ -12,9 +12,10 @@
 // functions for modifying form values
 var losFormViews = {
 
-	categories: ['groups','persons','entities', 'places', 'activities','flora_fauna','commodities','events','works','technologies','environments'],
+	// categories for the tags
+	categories: ['groups','persons','entities', 'places', 'activities','flora-fauna','commodities','events','works','technologies','environments'],
 
-	// functions for validating entries
+	// functions for validating entries ... add more id's to the array to validate additional fields
 	formValidation: function(){
 
 		inputIDs = ['page-start', 'page-end', 'issue', 'volume'];
@@ -52,6 +53,7 @@ var losFormViews = {
 		});
 	},
 
+// adds the tags lists to the different tag category inputs
 	tagsLists: function(){
 
 		$.getJSON('../includes/json.php?p=dump_tags', function(data){
@@ -59,11 +61,11 @@ var losFormViews = {
 			tags = data;
 
 			_.each(losFormViews.categories, function(category) {
-
+				domID = category.replace('_','-');
 				tagsCategory = _.filter(tags, function(e) { return e.category == category; });
 				tagsCategory = _.pluck(tagsCategory, 'tag');
-				input = $('input#' + category.replace('_','-'));
-				input.select2({ 
+				// initializes each tag input as a select2 thing so the library can do its magic
+				$('input#' + domID).select2({ 
 					width: '100%',
 					tags: tagsCategory,
 				});
@@ -71,6 +73,7 @@ var losFormViews = {
 		});
 	},
 
+// initializes input#main as a select2 object so the select2 library can do its magic
 	mainList: function() {
 
 		$('input#main').select2({
@@ -79,6 +82,7 @@ var losFormViews = {
 		})
 	},
 
+// initializes input#type as a select2 object so the select2 library can do its magic
 	typeList: function() {
 		$('input#type').select2({
 			width: '100%',
@@ -87,13 +91,33 @@ var losFormViews = {
 		});
 	},
 
+// helper function for appending info to a particular form input type, whether input or textarea
 	appendInput: function(key, value) {
-		key = key.replace('_','-');
-		if($('form input#' + key)[0]) $('input#' + key).attr('value', value);
-		if($('form textarea#' + key)[0]) $('textarea#' + key).append(value);
-		if($('form select#' + key)[0]) $('textarea#' + key).append(value);
+		domID = key.replace('_','-');
+		if($('form input#' + domID)[0]) $('input#' + domID).attr('value', value);
+		if($('form textarea#' + domID)[0]) $('textarea#' + domID).append(value);
+		if($("input[name='" + key + "']")[0]) $("input[name='" + key + "']").attr('checked', value);
 	 },
 
+// helper function for returning a nicely formatted array for different purposes from data
+	makeArray: function(object, filter, column, p = '') {
+
+		array = _.chain(object)
+			.filter(function(e) { return e[column] == filter;})
+			.map(function(e) { 
+				
+				switch(p){
+					case 'tag': return e.tag;
+					case 'maintag': return e.category.charAt(0).toUpperCase() + e.category.substr(1) + ': ' + e.tag;
+					case 'theme': return e.theme;
+					case 'maintheme': return 'Theme: ' + e.theme; 
+				}
+			})
+			.value();
+		return array;
+	},
+
+// on ajax success appends Articles table json to form fields
 	appendArticle: function(id) {
 
 				$.getJSON('../includes/json.php?p=article&id=' + id, function(data) {
@@ -113,163 +137,26 @@ var losFormViews = {
 				});
 		});
 	},
-	appendReview: function(id) { 
 
-		$.getJSON('../includes/json.php?p=review&id=' + id, function(data) {
-
+// on ajax success appends Review table json to form fields	
+	appendReview: function(id, id2 = '') { 
+		idParam = '&rid=' + id2;
+		$.getJSON('../includes/json.php?p=review&id=' + id + idParam, function(data) {
 			review = data[0];
 			_.each(_.keys(review), function(key) {
 				losFormViews.appendInput(key, review[key]);
+
 			})
 			$("input[name='timestamp']").val(review['timestamp']);
 		});
 	},
 
-	appendThemes: function(id) { 
-		$.getJSON('../includes/json.php?p=themes&id=' + id, function(data) {
+	appendRecReviews: function(id1, id2, id3 = '') {
 
-			articleThemes = _.pluck(data, 'theme');
-			$('input#themes').select2('val', [articleThemes]);
-			mainThemes = _.filter(data, function(e) { return e.if_main == 1; })
-			mainThemes = _.pluck(mainThemes, 'theme');
-			mainThemes = _.map(mainThemes, function(e) { return 'Theme: ' + e; });
-			mainList = $('input#main').select2('val');
-			mainList = mainList.concat(mainThemes);
-			$('input#main').select2('val', [mainList]);
-		}); 
+		idParam = (id3) ? '&rid=' + id3 : '';
 
-	},
-
-	appendTags: function(id, str = '') { 
-
-		$.getJSON('../includes/json.php?p=tags&id=' + id, function(data) {
-
-			tags = data;
-			_.each(losFormViews.categories, function(e) {
-				category = e;
-				domID = category.replace('_','-')
-				tagsCategory = _.filter(tags, function(e) { return e.category == category; });
-				tagsCategory = _.pluck(tagsCategory, 'tag');
-				$('input#' + category).select2('val', [tagsCategory]);
-			});
-
-			mainTags = _.filter(tags, function(e) { return e.if_main == 1; });
-			mainTags = _.map(mainTags, function(e) { 
-				prefix = e.category.charAt(0).toUpperCase() + e.category.substr(1) + ': ';
-				return  prefix + e.tag; });
-
-			mainList = $('input#main').select2('val');
-			mainList = mainList.concat(mainTags);
-
-			$('input#main').select2('val', [mainList]);
-		});
-	},
-
-	appendMain: function() {
-
-		$('#s2id_main ul.select2-choices').click(function() {
-				$('input#main').select2({
-					tags: function(){ 
-
-						mainTags = [];
-
-						_.each(losFormViews.categories, function(category) { 
-
-							input = $('input#' + category);
-							categoryTags = _.chain(input.select2('val'))
-								.filter( function(e) { if(!_.isObject(e)) return e; })
-								.map( function(e) { return prefix = category.charAt(0).toUpperCase() + category.substr(1) + ': ' + e; })
-								.value();
-							mainTags = mainTags.concat(categoryTags);
-						});
-
-						mainTags = mainTags.concat(_.map($('input#themes').select2('val'), function(e) { return 'Theme: ' + e;}));
-						return mainTags;	
-					}
-				});
-			;})
-	},
-
-// appends data to the form in order to edit an existing review	
-	editReview: function(id) {
-
-		losFormViews.formValidation();
-		losFormViews.themesList();
-		losFormViews.tagsLists();
-		losFormViews.mainList();
-		losFormViews.typeList();
-
-		losFormViews.appendArticle(id);
-		losFormViews.appendReview(id);
-		losFormViews.appendThemes(id);
-		losFormViews.appendTags(id);
-		losFormViews.appendMain();
-
-	},
-
-// appends data to the form from the last review by the current reviewer
-	lastReview: function() {
-
-		losFormViews.formValidation();
-		losFormViews.themesList();
-		losFormViews.tagsLists();
-		losFormViews.mainList();
-		losFormViews.typeList();
-		losFormViews.appendMain();
-
-		$.getJSON('../includes/json.php?p=last', function(data) {
-
-			lastReview = data[0];
-			losFormViews.appendInput('issue', lastReview.issue);
-			losFormViews.appendInput('volume', lastReview.volume);
-			d = lastReview.date_published.split('-');
-			d = d[1] + '-' + d[0];
-			losFormViews.appendInput('date_published', d);
-		})
-	},
-
-	reconcileReview: function(id1, id2) {
-
-		losFormViews.formValidation();
-		losFormViews.themesList();
-		losFormViews.tagsLists();
-		losFormViews.mainList();
-		losFormViews.typeList();
-		losFormViews.appendArticle(id1); 
-
-		function makeArray(object, filter, column, p = '') {
-
-			array = _.chain(object)
-				.filter(function(e) { return e[column] == filter;})
-				.map(function(e) { 
-					
-					switch(p){
-						case 'tag': return e.tag;
-						case 'maintag': return e.category.charAt(0).toUpperCase() + e.category.substr(1) + ': ' + e.tag;
-						case 'theme': return e.theme;
-						case 'maintheme': return 'Theme: ' + e.theme; 
-					}
-				})
-				.value();
-			return array;
-		}
-
-		$.getJSON('../includes/json.php?p=reviewer', function(data) {
-
-			reviewer1 = data[0].initials;
-
-			$.getJSON('../includes/json.php?p=reviewer&rid=' + id2, function(data){
-					
-				reviewer2 = data[0].initials;
-				$('#narration-pov-review-1 h5').html(reviewer1);
-				$('#narration-pov-review-2 h5').html(reviewer2);
-				$('.one li.reviewer').html(reviewer1);
-				$('.two li.reviewer').html(reviewer2);
-
-			});
-		});
-
-		$.getJSON('../includes/json.php?p=review&id=' + id1, function(data){
+	// on ajax success gets Reviews data for two reviews and appends them to DOM elements and the values for input fields
+		$.getJSON('../includes/json.php?p=review&id=' + id1 + idParam, function(data){
 
 			review1 = data[0];
 			
@@ -302,8 +189,114 @@ var losFormViews = {
 				reviewBool('narration_tenseshift');
 			});
 		});
+	},
 
-		$.getJSON('../includes/json.php?p=tags&id=' + id1, function(data){
+// on ajax success appends Articles_Themes table json to form fields
+	appendThemes: function(id, id2 = '') {
+		idParam = '&rid=' + id2;
+		$.getJSON('../includes/json.php?p=themes&id=' + id + idParam, function(data) {
+			articleThemes = _.pluck(data, 'theme');
+			$('input#themes').select2('val', articleThemes);
+			mainThemes = _.filter(data, function(e) { return e.if_main == 1; })
+			mainThemes = _.pluck(mainThemes, 'theme');
+			// for the main input, adds the prefix Theme
+			mainThemes = _.map(mainThemes, function(e) { return 'Theme: ' + e; });
+			mainList = $('input#main').select2('val');
+			mainList = mainList.concat(mainThemes);
+			$('input#main').select2('val', [mainList]);
+		}); 
+	},
+
+	appendRecThemes: function(id1, id2, id3 = '') {
+
+		idParam = (id3) ? '&rid' + id3 : '';
+
+	// on ajax success gets Articles_Themes data for two reviews and appends them to DOM elements and updates values for input fields 
+		$.getJSON('../includes/json.php?p=themes&id=' + id1 + idParam, function(data){
+
+			review1themes = data;
+									
+			$.getJSON('../includes/json.php?p=themes&id=' + id1 + '&rid=' + id2, function(data){
+				
+				review2themes = data;
+
+				review1themesMain = losFormViews.makeArray(review1themes, '1', 'if_main', 'maintheme');
+				review2themesMain = losFormViews.makeArray(review2themes, '1', 'if_main', 'maintheme');				
+				if(!idParam){
+
+					sharedThemesMain = _.intersection(review1themesMain, review2themesMain);
+					review1themesMain = _.difference(review1themesMain, sharedThemesMain);
+					review2themesMain = _.difference(review2themesMain, sharedThemesMain);
+				
+					mainList = $('input#main').select2('val');
+					mainList = mainList.concat(sharedThemesMain);
+					// adds shared main theme values to main input field
+					$('input#main').select2('val', [mainList]);
+				}
+				// append reviewer main theme values to unordered lists				
+				$('#main-review-1 ul').append("<li>" + review1themesMain.join("</li><li>"));
+				$('#main-review-2 ul').append("<li>" + review2themesMain.join("</li><li>"));
+
+				losFormViews.recListsAddOnClick($('#main-review-1 ul li'), 'main');
+				losFormViews.recListsAddOnClick($('#main-review-2 ul li'), 'main');
+
+				review1themes = _.pluck(review1themes, 'theme');
+				review2themes = _.pluck(review2themes, 'theme');
+
+				if(!idParam){
+					sharedThemes = _.intersection(review1themes, review2themes);
+	
+					review1themes = _.difference(review1themes, sharedThemes);
+					review2themes = _.difference(review2themes, sharedThemes);
+					// adds shared theme values to main input field
+					$('input#themes').select2('val', [sharedThemes]);
+				}
+
+				// append reviewer theme values to unordered lists								
+				$('#themes-review-1 ul').append("<li>" + review1themes.join("</li><li>"));
+				$('#themes-review-2 ul').append("<li>" + review2themes.join("</li><li>"));
+
+				losFormViews.recListsAddOnClick($('#themes-review-1 ul li'), 'themes');				
+				losFormViews.recListsAddOnClick($('#themes-review-2 ul li'), 'themes');							
+			});
+		});
+	},
+
+// on ajax success appends Article_Tags table json to form fields
+	appendTags: function(id, id2 = '') {
+
+		idParam = '&rid=' + id2;
+
+		$.getJSON('../includes/json.php?p=tags&id=' + id + idParam, function(data) {
+		
+			tags = data;
+			_.each(losFormViews.categories, function(e) {
+				category = e;
+				domID = category.replace('_','-')
+				// tagsCategory = _.filter(tags, function(e) { return e.category == category; });
+				// tagsCategory = _.pluck(tagsCategory, 'tag');
+				tagsCategory = losFormViews.makeArray(tags, category, 'category', 'tag');
+				$('input#' + category).select2('val', [tagsCategory]);
+			});
+
+			// mainTags = _.filter(tags, function(e) { return e.if_main == 1; });
+			// mainTags = _.map(mainTags, function(e) { 
+			// 	prefix = e.category.charAt(0).toUpperCase() + e.category.substr(1) + ': ';
+			// 	return  prefix + e.tag; });
+			mainTags = losFormViews.makeArray(tags, '1', 'if_main', 'maintag');
+
+			mainList = $('input#main').select2('val');
+			mainList = mainList.concat(mainTags);
+
+			$('input#main').select2('val', [mainList]);
+		});
+	},
+
+	appendRecTags: function(id1, id2, id3 = '') {
+	
+		idParam = (id3) ? '&rid=' + id3 : '';
+	// on ajax success gets Articles_Tags data for two reviews and appends them to DOM elements and the values for input fields
+		$.getJSON('../includes/json.php?p=tags&id=' + id1 + idParam, function(data){
 
 			review1tags = data;
 				
@@ -315,70 +308,177 @@ var losFormViews = {
 
 					domID = category.replace('_','-');
 
-					review1tagsByCategory = makeArray(review1tags, category, 'category', 'tag');
-					review2tagsByCategory = makeArray(review2tags, category, 'category', 'tag');
-					sharedTagsByCategory = _.intersection(review1tagsByCategory, review2tagsByCategory);
-					
-					review1tagsByCategory = _.difference(review1tagsByCategory, sharedTagsByCategory);
-					review2tagsByCategory = _.difference(review2tagsByCategory, sharedTagsByCategory);
+					review1tagsByCategory = losFormViews.makeArray(review1tags, category, 'category', 'tag');
+					review2tagsByCategory = losFormViews.makeArray(review2tags, category, 'category', 'tag');
 
-					$('input#' + domID).select2('val', [sharedTagsByCategory]);
+					if(!idParam){
+						sharedTagsByCategory = _.intersection(review1tagsByCategory, review2tagsByCategory);
+						review1tagsByCategory = _.difference(review1tagsByCategory, sharedTagsByCategory);
+						review2tagsByCategory = _.difference(review2tagsByCategory, sharedTagsByCategory);
+
+						// adds shared tag values to appropriate tag category input fields
+						$('input#' + domID).select2('val', [sharedTagsByCategory]);
+					}
+
+				// append reviewer tags to unordered lists
 					$('#' + domID + '-review-1 ul').append("<li>" + review1tagsByCategory.join("</li><li>"));
 					$('#' + domID + '-review-2 ul').append("<li>" + review2tagsByCategory.join("</li><li>"));										
 
+					losFormViews.recListsAddOnClick($('#' + domID + '-review-1 ul li'), domID);
+					losFormViews.recListsAddOnClick($('#' + domID + '-review-2 ul li'), domID);
+
 				});
 
-				review1tagsMain = makeArray(review1tags, '1', 'if_main', 'maintag');
-				review2tagsMain = makeArray(review2tags, '1', 'if_main', 'maintag');
-				sharedTagsMain = _.intersection(review1tagsMain, review2tagsMain);
+				review1tagsMain = losFormViews.makeArray(review1tags, '1', 'if_main', 'maintag');
+				review2tagsMain = losFormViews.makeArray(review2tags, '1', 'if_main', 'maintag');
 
-				review1tagsMain = _.difference(review1tagsMain, sharedTagsMain);
-				review2tagsMain = _.difference(review2tagsMain, sharedTagsMain);
+				if(!idParam){
+					sharedTagsMain = _.intersection(review1tagsMain, review2tagsMain);
+					review1tagsMain = _.difference(review1tagsMain, sharedTagsMain);
+					review2tagsMain = _.difference(review2tagsMain, sharedTagsMain);
+					// adds shared main tag values to main input field
+					$('input#main').select2('val', [sharedTagsMain]);
+				}
 
-				$('input#main').select2('val', [sharedTagsMain]);
+				// append reviewer main tag values to unordered lists
 				$('#main-review-1 ul').append("<li>" + review1tagsMain.join("</li><li>"));
 				$('#main-review-2 ul').append("<li>" + review2tagsMain.join("</li><li>"));
 
+				// losFormViews.recListsAddOnClick($('#main-review-1 ul li'), 'main');
+				// losFormViews.recListsAddOnClick($('#main-review-2 ul li'), 'main');
 			});
 		});
+	},
 
-		$.getJSON('../includes/json.php?p=themes&id=' + id1, function(data){
+// when the input#main select2 is clicked, appends values from what is currently entered into the tag category & themes fields
+	appendMain: function() {
 
-			review1themes = data;
-									
-			$.getJSON('../includes/json.php?p=themes&id=' + id1 + '&rid=' + id2, function(data){
-				review2themes = data;
+		$('#s2id_main ul.select2-choices').click(function() {
+				$('input#main').select2({
+					tags: function(){ 
 
-				review1themesMain = makeArray(review1themes, '1', 'if_main', 'maintheme');
-				review2themesMain = makeArray(review2themes, '1', 'if_main', 'maintheme');				
-				sharedThemesMain = _.intersection(review1themesMain, review2themesMain);
+						mainTags = [];
 
-				review1themesMain = _.difference(review1themesMain, sharedThemesMain);
-				review2themesMain = _.difference(review2themesMain, sharedThemesMain);
+						_.each(losFormViews.categories, function(category) {
 
-				mainList = $('input#main').select2('val');
-				mainList = mainList.concat(sharedThemesMain);
+							domID = category.replace('_', '-');
+							categoryTags = $('input#' + domID).select2('val');
+							categoryTags = _.chain(categoryTags)
+								.map(function(e) { return category.charAt(0).toUpperCase() + category.substr(1) + ': ' + e; })
+								.value();
+							mainTags = mainTags.concat(categoryTags);
+						});
 
-				$('input#main').select2('val', [mainList]);
-				$('#main-review-1 ul').append("<li>" + review1themesMain.join("</li><li>"));
-				$('#main-review-2 ul').append("<li>" + review2themesMain.join("</li><li>"));
+						mainTags = mainTags.concat(_.map($('input#themes').select2('val'), function(e) { return 'Theme: ' + e;}));
+						return mainTags;	
+					}
+				});
+			;})
+	},
 
-				review1themes = _.pluck(review1themes, 'theme');
-				review2themes = _.pluck(review2themes, 'theme');
-				sharedThemes = _.intersection(review1themes, review2themes);
+	appendInitials: function(id1, id2 = '') {
+		idParam = '&rid=' + id1;
+		// gets reviewer initials and adds them to DOM elements
+		$.getJSON('../includes/json.php?p=reviewer' + idParam, function(data) {
+			reviewer1 = data[0].initials;
 
-				review1themes = _.difference(review1themes, sharedThemes);
-				review2themes = _.difference(review2themes, sharedThemes);
-
-				$('input#themes').select2('val', [sharedThemes]);
-				$('#themes-review-1 ul').append("<li>" + review1themes.join("</li><li>"));
-				$('#themes-review-2 ul').append("<li>" + review2themes.join("</li><li>"));
+			$.getJSON('../includes/json.php?p=reviewer&rid=' + id2, function(data){
+					
+				reviewer2 = data[0].initials;
+				$('#narration-pov-review-1 h5').html(reviewer1);
+				$('#narration-pov-review-2 h5').html(reviewer2);
+				$('.one li.reviewer').html(reviewer1);
+				$('.two li.reviewer').html(reviewer2);
 
 			});
 		});
+	},
 
+	recListsAddOnClick: function(obj,domID) {
+
+			$(obj).css('cursor','pointer')			
+				.click(function(e) {				
+					tagList = $('input#' + domID).select2('val');
+					tagList.push(e.target.innerHTML);
+					$(this).css('background', '#ddd');
+					$('input#' + domID).select2('val', tagList);				
+				});
+
+	},
+
+// edit view : appends all data from an existing review (Articles, Review, Articles_Tags, Articles_Themes)
+	editReview: function(id) {
+		losFormViews.tagsLists();
+		losFormViews.formValidation();
+		losFormViews.mainList();
+		losFormViews.typeList();
+
+		losFormViews.appendArticle(id);
+		losFormViews.appendReview(id);
+		losFormViews.appendTags(id);
+
+		losFormViews.themesList();
+		losFormViews.appendThemes(id);
 		losFormViews.appendMain();
 	},
 
-	dataTable: function() { }
+// add review view : appends data to the form from the last review by the current reviewer
+	lastReview: function() {
+
+		losFormViews.formValidation();
+		losFormViews.typeList();
+		losFormViews.tagsLists();
+		losFormViews.themesList();
+		losFormViews.mainList();
+		losFormViews.appendMain();
+
+		$.getJSON('../includes/json.php?p=last', function(data) {
+
+			lastReview = data[0];
+			losFormViews.appendInput('issue', lastReview.issue);
+			losFormViews.appendInput('volume', lastReview.volume);
+			d = lastReview.date_published.split('-');
+			d = d[1] + '-' + d[0];
+			losFormViews.appendInput('date_published', d);
+		})
+	},
+
+	editReconciled: function(id1,id2,id3) {
+
+		losFormViews.formValidation();
+		losFormViews.typeList();
+		losFormViews.tagsLists();
+		losFormViews.themesList();
+		losFormViews.mainList();
+		
+		losFormViews.appendArticle(id1);
+		losFormViews.appendReview(id1,9);
+		losFormViews.appendThemes(id1,9);
+		losFormViews.appendTags(id1,9);
+
+ 		losFormViews.appendInitials(id2,id3);
+ 		losFormViews.appendRecReviews(id1,id2,id3);
+ 		losFormViews.appendRecTags(id1,id2,id3);
+ 		losFormViews.appendRecThemes(id1,id2,id3);
+ 		losFormViews.appendMain();
+	},
+// reconcile view : a kind of heinous number of lines to append data to the form from two existing reviews (Articles, Review, Articles_Tags, Articles_Themes)
+	reconcileReview: function(id1, id2) {
+
+		losFormViews.formValidation();
+		losFormViews.typeList();
+		losFormViews.tagsLists();
+		losFormViews.themesList();
+		losFormViews.mainList();
+		
+		losFormViews.appendArticle(id1);
+ 		losFormViews.appendInitials(id2);
+ 
+ 		losFormViews.appendRecReviews(id1,id2);
+ 		losFormViews.appendRecTags(id1,id2);
+ 		losFormViews.appendRecThemes(id1,id2);
+ 		losFormViews.appendMain();
+
+
+	}
 }

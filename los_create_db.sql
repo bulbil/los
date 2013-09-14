@@ -90,17 +90,17 @@ CREATE TABLE Tags (
 
 	tag_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
 	category ENUM(
+		'activities',
+		'commodities',
+		'entities',
+		'environments',
+		'events',
+		'flora-fauna',
 		'groups',
 		'persons',
-		'entities',
 		'places',
-		'activities',
-		'flora_fauna',
-		'commodities',
-		'events',
-		'works',
 		'technologies',
-		'environments'),
+		'works',
 	tag VARCHAR(128),
 
 	PRIMARY KEY(tag_id)

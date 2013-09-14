@@ -22,13 +22,13 @@ $html = "<div class='row'>
 
 echo $html;
 
-$table_columns = array('timestamp', 'id', 'title', 'issue', 'volume', 'date', 'reconciled','');
+$table_columns = array('title','volume','issue', 'date_published');
 
-table_start($table_columns);
+table_start($table_columns,2);
 
 while ($row = $results->fetch(PDO::FETCH_ASSOC)) {
 
-	table_row($row, $row['article_id']);
+	table_row($row, $table_columns, $row['article_id']);
 }
 
 table_end();
