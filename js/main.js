@@ -100,7 +100,9 @@ var losFormViews = {
 	 },
 
 // helper function for returning a nicely formatted array for different purposes from data
-	makeArray: function(object, filter, column, p = '') {
+	makeArray: function(object, filter, column, p) {
+
+		p = (typeof p !== 'undefined') ? p : '';
 
 		array = _.chain(object)
 			.filter(function(e) { return e[column] == filter;})
@@ -139,8 +141,11 @@ var losFormViews = {
 	},
 
 // on ajax success appends Review table json to form fields	
-	appendReview: function(id, id2 = '') { 
+	appendReview: function(id, id2) {
+
+		id2 = (typeof id2 !== 'undefined') ? id2 : '';
 		idParam = '&rid=' + id2;
+
 		$.getJSON('../includes/json.php?p=review&id=' + id + idParam, function(data) {
 			review = data[0];
 			_.each(_.keys(review), function(key) {
@@ -151,8 +156,9 @@ var losFormViews = {
 		});
 	},
 
-	appendRecReviews: function(id1, id2, id3 = '') {
+	appendRecReviews: function(id1, id2, id3) {
 
+		id3 = (typeof id3 !== 'undefined') ? id3 : '';
 		idParam = (id3) ? '&rid=' + id3 : '';
 
 	// on ajax success gets Reviews data for two reviews and appends them to DOM elements and the values for input fields
@@ -192,8 +198,11 @@ var losFormViews = {
 	},
 
 // on ajax success appends Articles_Themes table json to form fields
-	appendThemes: function(id, id2 = '') {
+	appendThemes: function(id, id2) {
+
+		id2 = (typeof id2 !== 'undefined') ? id2 : '';
 		idParam = '&rid=' + id2;
+
 		$.getJSON('../includes/json.php?p=themes&id=' + id + idParam, function(data) {
 			articleThemes = _.pluck(data, 'theme');
 			$('input#themes').select2('val', articleThemes);
@@ -207,8 +216,9 @@ var losFormViews = {
 		}); 
 	},
 
-	appendRecThemes: function(id1, id2, id3 = '') {
+	appendRecThemes: function(id1, id2, id3) {
 
+		id3 = (typeof id3 !== 'undefined') ? id3 : '';
 		idParam = (id3) ? '&rid' + id3 : '';
 
 	// on ajax success gets Articles_Themes data for two reviews and appends them to DOM elements and updates values for input fields 
@@ -263,8 +273,9 @@ var losFormViews = {
 	},
 
 // on ajax success appends Article_Tags table json to form fields
-	appendTags: function(id, id2 = '') {
+	appendTags: function(id, id2) {
 
+		id2 = (typeof id2 !== 'undefined') ? id2 : '';
 		idParam = '&rid=' + id2;
 
 		$.getJSON('../includes/json.php?p=tags&id=' + id + idParam, function(data) {
@@ -292,8 +303,9 @@ var losFormViews = {
 		});
 	},
 
-	appendRecTags: function(id1, id2, id3 = '') {
+	appendRecTags: function(id1, id2, id3) {
 	
+		id3 = (typeof id3 !== 'undefined') ? id3 : '';
 		idParam = (id3) ? '&rid=' + id3 : '';
 	// on ajax success gets Articles_Tags data for two reviews and appends them to DOM elements and the values for input fields
 		$.getJSON('../includes/json.php?p=tags&id=' + id1 + idParam, function(data){
@@ -376,8 +388,11 @@ var losFormViews = {
 			;})
 	},
 
-	appendInitials: function(id1, id2 = '') {
+	appendInitials: function(id1, id2) {
+
+		id2 = (typeof id2 !== 'undefined') ? id2 : '';	
 		idParam = '&rid=' + id1;
+		
 		// gets reviewer initials and adds them to DOM elements
 		$.getJSON('../includes/json.php?p=reviewer' + idParam, function(data) {
 			reviewer1 = data[0].initials;
