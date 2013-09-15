@@ -83,7 +83,7 @@ try {
 				case ('entities') :
 				case ('places') :
 				case ('activities') :
-				case ('flora-fauna') :
+				case ('florafauna') :
 				case ('commodities') :
 				case ('events') :
 				case ('works') :
