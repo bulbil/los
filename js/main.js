@@ -287,6 +287,7 @@ var losFormViews = {
 				// tagsCategory = _.filter(tags, function(e) { return e.category == category; });
 				// tagsCategory = _.pluck(tagsCategory, 'tag');
 				tagsCategory = losFormViews.makeArray(tags, category, 'category', 'tag');
+				$('input#' + category).attr('style','border: 1px solid #f00l');
 				$('input#' + category).select2('val', tagsCategory);
 			});
 
