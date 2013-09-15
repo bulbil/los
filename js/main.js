@@ -282,11 +282,8 @@ var losFormViews = {
 			tags = data;
 			_.each(losFormViews.categories, function(e) {
 				category = e;
-				domID = category.replace('_','-')
-				// tagsCategory = _.filter(tags, function(e) { return e.category == category; });
-				// tagsCategory = _.pluck(tagsCategory, 'tag');
 				tagsCategory = losFormViews.makeArray(tags, category, 'category', 'tag');
-				$('input#' + category).select2('val', tagsCategory);
+				$('input#' + category).select2('val', [tagsCategory]);
 			});
 
 			// mainTags = _.filter(tags, function(e) { return e.if_main == 1; });
