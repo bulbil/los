@@ -13,7 +13,7 @@
 var losFormViews = {
 
 	// categories for the tags
-	categories: ['groups','persons','entities', 'places', 'activities','flora-fauna','commodities','events','works','technologies','environments'],
+	categories: ['groups','persons','entities', 'places', 'activities','florafauna','commodities','events','works','technologies','environments'],
 
 	// functions for validating entries ... add more id's to the array to validate additional fields
 	formValidation: function(){
