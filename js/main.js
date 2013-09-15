@@ -61,7 +61,6 @@ var losFormViews = {
 			tags = data;
 
 			_.each(losFormViews.categories, function(category) {
-				domID = category.replace('_','-');
 				tagsCategory = _.filter(tags, function(e) { return e.category == category; });
 				tagsCategory = _.pluck(tagsCategory, 'tag');
 				// initializes each tag input as a select2 thing so the library can do its magic
