@@ -83,10 +83,11 @@ function edit_article_themes($article_id, $reviewer_id, $str, $obj, $pdo) {
 			bind_value($article_id, $obj, 'article_id');
 			bind_value($reviewer_id, $obj, 'reviewer_id');			
 			$obj->execute();
+			return;
 
 		} elseif( if_exists(array($theme_id, $article_id, $reviewer_id), array('theme_id','article_id', 'reviewer_id'), 'Articles_Themes', $pdo)) {
 
-			echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> already attached to this review');
+			echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> already attached to this review'); return;
 
 		} else { echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> not a theme ... check data'); }
 	}
