@@ -65,7 +65,7 @@ var losFormViews = {
 				tagsCategory = _.pluck(tagsCategory, 'tag');
 				// initializes each tag input as a select2 thing so the library can do its magic
 				console.log(tagsCategory);
-				$('input#' + domID).select2({ 
+				$('input#' + category).select2({ 
 					width: '100%',
 					tags: tagsCategory,
 				});
