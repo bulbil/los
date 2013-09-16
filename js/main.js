@@ -39,22 +39,24 @@ var losFormViews = {
 	},
 
 // adds the themes to the themes list
-	themesList: function() { 
+	themesList: function(id) { 
 
 		$.getJSON('../includes/json.php?p=themes_list', function(data){
 			themes = _.pluck(data, 'theme');
 			$('input#themes').select2({
-			width: '100%',
-			tags: themes,
-			createSearchChoice: function(term){return '';},
-			closeOnSelect: false,
-			openOnEnter: false
+				width: '100%',
+				tags: themes,
+				createSearchChoice: function(term){return '';},
+				closeOnSelect: false,
+				openOnEnter: false
 			});
+
+			losFormViews.appendThemes(id);
 		});
 	},
 
 // adds the tags lists to the different tag category inputs
-	tagsLists: function(){
+	tagsLists: function(id){
 
 		$.getJSON('../includes/json.php?p=dump_tags', function(data){
 			
@@ -69,6 +71,9 @@ var losFormViews = {
 					tags: tagsCategory,
 				});
 			});
+
+			losFormViews.appendTags(id);
+
 		});
 	},
 
@@ -204,7 +209,7 @@ var losFormViews = {
 
 		$.getJSON('../includes/json.php?p=themes&id=' + id + idParam, function(data) {
 			articleThemes = _.pluck(data, 'theme');
-			$('input#themes').select2('val', articleThemes);
+			$('input#themes').select2('val', [articleThemes]);
 			mainThemes = _.filter(data, function(e) { return e.if_main == 1; })
 			mainThemes = _.pluck(mainThemes, 'theme');
 			// for the main input, adds the prefix Theme
@@ -280,16 +285,11 @@ var losFormViews = {
 		$.getJSON('../includes/json.php?p=tags&id=' + id + idParam, function(data) {
 		
 			tags = data;
-			_.each(losFormViews.categories, function(e) {
-				category = e;
+			_.each(losFormViews.categories, function(category) {
 				tagsCategory = losFormViews.makeArray(tags, category, 'category', 'tag');
 				$('input#' + category).select2('val', [tagsCategory]);
 			});
 
-			// mainTags = _.filter(tags, function(e) { return e.if_main == 1; });
-			// mainTags = _.map(mainTags, function(e) { 
-			// 	prefix = e.category.charAt(0).toUpperCase() + e.category.substr(1) + ': ';
-			// 	return  prefix + e.tag; });
 			mainTags = losFormViews.makeArray(tags, '1', 'if_main', 'maintag');
 
 			mainList = $('input#main').select2('val');
@@ -385,15 +385,16 @@ var losFormViews = {
 	},
 
 	appendInitials: function(id1, id2) {
-
-		id2 = (typeof id2 !== 'undefined') ? id2 : '';	
-		idParam = '&rid=' + id1;
+	
+		idParam = (id2) ? '&rid=' + id1 : '';
+		id = (id2) ? id2 : id1;
+		
 		
 		// gets reviewer initials and adds them to DOM elements
 		$.getJSON('../includes/json.php?p=reviewer' + idParam, function(data) {
 			reviewer1 = data[0].initials;
 
-			$.getJSON('../includes/json.php?p=reviewer&rid=' + id2, function(data){
+			$.getJSON('../includes/json.php?p=reviewer&rid=' + id, function(data){
 					
 				reviewer2 = data[0].initials;
 				$('#narration-pov-review-1 h5').html(reviewer1);
@@ -419,17 +420,16 @@ var losFormViews = {
 
 // edit view : appends all data from an existing review (Articles, Review, Articles_Tags, Articles_Themes)
 	editReview: function(id) {
-		losFormViews.tagsLists();
+
+		losFormViews.tagsLists(id);
 		losFormViews.formValidation();
 		losFormViews.mainList();
 		losFormViews.typeList();
 
 		losFormViews.appendArticle(id);
 		losFormViews.appendReview(id);
-		losFormViews.appendTags(id);
 
-		losFormViews.themesList();
-		losFormViews.appendThemes(id);
+		losFormViews.themesList(id);
 		losFormViews.appendMain();
 	},
 
@@ -453,6 +453,25 @@ var losFormViews = {
 			losFormViews.appendInput('date_published', d);
 		})
 	},
+	// reconcile view : a kind of heinous number of lines to append data to the form from two existing reviews (Articles, Review, Articles_Tags, Articles_Themes)
+	reconcileReview: function(id1, id2) {
+
+		losFormViews.formValidation();
+		losFormViews.typeList();
+		losFormViews.tagsLists();
+		losFormViews.themesList();
+		losFormViews.mainList();
+		
+		losFormViews.appendArticle(id1);
+ 		losFormViews.appendInitials(id2);
+ 
+ 		losFormViews.appendRecReviews(id1,id2);
+ 		losFormViews.appendRecTags(id1,id2);
+ 		losFormViews.appendRecThemes(id1,id2);
+ 		losFormViews.appendMain();
+
+
+	},
 
 	editReconciled: function(id1,id2,id3) {
 
@@ -472,24 +491,5 @@ var losFormViews = {
  		losFormViews.appendRecTags(id1,id2,id3);
  		losFormViews.appendRecThemes(id1,id2,id3);
  		losFormViews.appendMain();
-	},
-// reconcile view : a kind of heinous number of lines to append data to the form from two existing reviews (Articles, Review, Articles_Tags, Articles_Themes)
-	reconcileReview: function(id1, id2) {
-
-		losFormViews.formValidation();
-		losFormViews.typeList();
-		losFormViews.tagsLists();
-		losFormViews.themesList();
-		losFormViews.mainList();
-		
-		losFormViews.appendArticle(id1);
- 		losFormViews.appendInitials(id2);
- 
- 		losFormViews.appendRecReviews(id1,id2);
- 		losFormViews.appendRecTags(id1,id2);
- 		losFormViews.appendRecThemes(id1,id2);
- 		losFormViews.appendMain();
-
-
 	}
 }

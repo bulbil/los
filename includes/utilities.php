@@ -671,7 +671,7 @@ function js_form_functions() {
 
 				case('recedit'):
 					$a_id = $_GET['id'];
-					$r1_id = (isset($_GET['rid2'])) ? $_GET['rid2'] : $_SESSION['reviewer_id'];
+					$r1_id = $_SESSION['reviewer_id'];
 					$r2_id = $_GET['rid'];
 					$js .= "losFormViews.editReconciled($a_id, $r1_id, $r2_id);";
 					$js .= '</script>';

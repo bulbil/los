@@ -27,6 +27,7 @@ try {
 
 	} else {
 
+		$_POST['date_published'] = string_format($_POST['date_published'], 'date_submit');
 		$stmt_articles = prepare_pdo_statement($articles, 'Articles', $dbh);
 	}
 
@@ -96,8 +97,9 @@ try {
 
 		if($_POST['main']){
 			foreach (string_format($_POST['main'], 'array') as $value) {
-				$value = preg_split('/:/', $value)[1];
-				echo_line($value);
+				$value = preg_split('/:/', $value);
+				$value = $value[1];
+				echo_line('update main: ' . $value);
 				update_main($value, $article_id, $reviewer_id, $dbh);
 			}
 		}
