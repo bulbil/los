@@ -78,16 +78,14 @@ function edit_article_themes($article_id, $reviewer_id, $str, $obj, $pdo) {
 		$theme_id = return_id('theme_id', array($theme), array('theme'), 'Themes', $pdo);
 		
 		if($theme_id && !if_exists(array($theme_id, $article_id, $reviewer_id), array('theme_id','article_id', 'reviewer_id'), 'Articles_Themes', $pdo)){			
-
 			bind_value($theme_id, $obj, 'theme_id');
 			bind_value($article_id, $obj, 'article_id');
 			bind_value($reviewer_id, $obj, 'reviewer_id');			
 			$obj->execute();
-			return;
 
 		} elseif( if_exists(array($theme_id, $article_id, $reviewer_id), array('theme_id','article_id', 'reviewer_id'), 'Articles_Themes', $pdo)) {
 
-			echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> already attached to this review'); return;
+			echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> already attached to this review');
 
 		} else { echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> not a theme ... check data'); }
 	}
@@ -97,30 +95,60 @@ function edit_article_themes($article_id, $reviewer_id, $str, $obj, $pdo) {
 function edit_article_tags($array, $category, $article_id, $reviewer_id, $obj, $pdo){
 
 	foreach (string_format($array, 'array') as $tag){
-		$tag = string_format($tag);
 
+		$tag = string_format($tag);
+		echo_line($tag);
 		if (strlen($tag) > 1 &&	$tag != 'n/a'){	
 
-			$tag_id = return_id('tag_id', array($tag, $category), array('tag_id', 'category'), 'Tags', $pdo);
+			if(if_exists(array($tag, $category), array('tag', 'category'), 'Tags', $pdo)){
 
-			if(!$tag_id) {
+				$tag_id = return_id('tag_id', array($tag, $category), array('tag', 'category'), 'Tags', $pdo);
+
+			} else {
 
 				$tag = $pdo->quote($tag);
-				insert_value($tag, 'Tags', 'tag', $pdo, $category, 'category'); 
+				insert_value($tag, 'Tags', 'tag', $pdo, $category, 'category');
 				$tag_id = $pdo->lastInsertId();
-			} 
+			}
 
-			// just in case the tag appears twice in the same category with reference to the same article
-			if (!if_exists(array($tag_id, $article_id), array('tag_id', 'article_id'), 'Articles_Tags', $pdo)){
-				
+			if (!if_exists(array($tag_id, $article_id, $reviewer_id), array('tag_id', 'article_id', 'reviewer_id'), 'Articles_Tags', $pdo)){
+
 				bind_value($tag_id, $obj, 'tag_id');
 				bind_value($article_id, $obj, 'article_id');
 				bind_value($reviewer_id, $obj, 'reviewer_id');
 				$obj->execute();
-			}		
+			}
 		} 
 	}
 }	
+
+// function edit_article_tags($array, $category, $article_id, $reviewer_id, $obj, $pdo){
+
+// 	foreach (string_format($array, 'array') as $tag){
+// 		$tag = string_format($tag);
+
+// 		if (strlen($tag) > 1 &&	$tag != 'n/a'){	
+
+// 			$tag_id = return_id('tag_id', array($tag, $category), array('tag_id', 'category'), 'Tags', $pdo);
+
+// 			if(!$tag_id) {
+
+// 				$tag = $pdo->quote($tag);
+// 				insert_value($tag, 'Tags', 'tag', $pdo, $category, 'category'); 
+// 				$tag_id = $pdo->lastInsertId();
+// 			} 
+
+// 			// just in case the tag appears twice in the same category with reference to the same article
+// 			if (!if_exists(array($tag_id, $article_id), array('tag_id', 'article_id'), 'Articles_Tags', $pdo)){
+				
+// 				bind_value($tag_id, $obj, 'tag_id');
+// 				bind_value($article_id, $obj, 'article_id');
+// 				bind_value($reviewer_id, $obj, 'reviewer_id');
+// 				$obj->execute();
+// 			}		
+// 		} 
+// 	}
+// }	
 
 
 /////////////////////////////////////////////////////////
@@ -327,13 +355,10 @@ function update_reconciled($str, $pdo) {
 // updates boolean column for Themes and Tags tables
 function update_main($str, $article_id, $reviewer_id, $pdo) {
 
-	echo_line('raw ' . $str);
 	if (if_exists(array(string_format($str,'theme')), array('theme'), 'Themes', $pdo)) {
 		
 		$theme = string_format($str,'theme');
-		echo_line('theme '. $theme);
 		$id = return_id('theme_id', array($theme), array('theme'), 'Themes', $pdo);
-		echo_line('theme id '. $id);
 
 		$sql = "UPDATE Articles_Themes SET `if_main` = '1' 
 				WHERE `theme_id` = :theme_id AND `article_id` = :article_id AND `reviewer_id` = :reviewer_id";
@@ -342,14 +367,13 @@ function update_main($str, $article_id, $reviewer_id, $pdo) {
 		$stmt->bindValue('article_id', $article_id);
 		$stmt->bindValue('reviewer_id', $reviewer_id);		
 		$stmt->execute();
+		echo_line('update main theme: ' . $theme);
 		}
 
-	elseif (if_exists(array(string_format($str)), array('tag'), 'Tags', $pdo)) {
+	if (if_exists(array(string_format($str)), array('tag'), 'Tags', $pdo)) {
 
 		$tag = string_format($str);
-		echo_line('tag ' . $tag);
 		$id = return_id('tag_id', array($tag), array('tag'), 'Tags', $pdo);
-		echo_line('tag id '. $id);
 
 		$sql = "UPDATE Articles_Tags SET `if_main` = '1' 
 				WHERE `tag_id` = :tag_id AND `article_id` = :article_id AND `reviewer_id` = :reviewer_id";
@@ -359,6 +383,7 @@ function update_main($str, $article_id, $reviewer_id, $pdo) {
 		$stmt->bindValue('article_id', $article_id);
 		$stmt->bindValue('reviewer_id', $reviewer_id);
 		$stmt->execute();
+		echo_line('update main tag: ' . $id . ' ' . $tag);
 		}
 
 	else { echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $str . '</strong> main not found ... check data');}
@@ -420,7 +445,7 @@ function string_format($str, $param = 'default') {
 				return $d->format('Y-m-d H:i:s');
 
 		case('theme'):
-
+			$str = trim($str);
 			$str = preg_replace('/\./', '', $str);
 			$str = preg_replace('/\s?--\s?/', '--', $str);
 			$str = preg_replace('/\s?-\s?/', '-', $str);

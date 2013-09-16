@@ -120,13 +120,11 @@ try {
 
 		// sets the current article_id as the last updated row, from the Articles table in this case
 		// $article_id = return_article_id($row, $dbh->lastInsertId();
-		echo_line('initials: ' . $row['initials']);
 		$reviewer_id = return_reviewer_id($row['initials'], $article_id, $dbh);
-		echo_line('article id: ' . $article_id);
-		echo_line('reviewer id: ' . $reviewer_id);
 		$row['timestamp'] = string_format($row['timestamp'], 'timestamp');
 		$row['narration_embedded'] = (isset($row['narration_embedded'])) ? string_format($row['narration_embedded'], 'bool') : 0;
 		$row['narration_tenseshift'] = (isset($row['narration_tenseshift'])) ? string_format($row['narration_tenseshift'], 'bool') : 0;
+
 		edit_review($article_id, $reviewer_id, $row, $stmt_reviews, $dbh);
 		// echo_line($row['initials']);
 		// echo_line($reviewer_id);

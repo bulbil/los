@@ -16,7 +16,7 @@ TRUNCATE Articles_Themes;
 
 CREATE TABLE Articles (
 
-	article_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	article_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	title VARCHAR(255) NOT NULL,
 	author VARCHAR(128) NOT NULL,
 	location VARCHAR(128) NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE Articles (
 
 CREATE TABLE Reviewers (
 
-	reviewer_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	reviewer_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	initials CHAR(3) NOT NULL,
 	first_name VARCHAR(20) NOT NULL,
 	last_name VARCHAR(20) NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE Reviewers (
 
 CREATE TABLE Themes (
 
-	theme_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	theme_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	theme VARCHAR(128) NOT NULL,
 	if_secondary BOOLEAN NOT NULL,
 
@@ -70,14 +70,14 @@ CREATE TABLE Articles_Themes (
 
 CREATE TABLE Tags (
 
-	tag_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	tag_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	category ENUM(
 		'activities',
 		'commodities',
 		'entities',
 		'environments',
 		'events',
-		'flora-fauna',
+		'florafauna',
 		'groups',
 		'persons',
 		'places',
@@ -106,7 +106,7 @@ CREATE TABLE Articles_Tags (
 
 CREATE TABLE Reviews (
 
-	review_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	review_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	article_id SMALLINT UNSIGNED,
 	reviewer_id TINYINT UNSIGNED,
 	timestamp DATETIME NOT NULL ,
@@ -129,16 +129,16 @@ CREATE TABLE Reviews (
 
 -- just for shits, for testing table with test values
 
--- INSERT INTO Reviewers (`initials`, `first_name`, `last_name`, `username`, `password`) VALUES
--- ('JT', 'John', 'Toe', 'jtoe', 'what'),
--- ('JH', 'Joshua', 'Hubbard', 'jhub', 'what'),
--- ('AW', 'Ari', 'Weinberg', 'awein', 'what'),
--- ('RM', 'Rachel', 'Miller', 'rmill', 'what'),
--- ('MB', 'Michael', 'Barera', 'mbar', 'what'),
--- ('VMR', 'Valentina', 'Montero-Roe', 'vroe', 'what'),
--- ('SH', 'Steven', 'Hoelscher', 'shoe', 'what'),
--- ('jj', 'Justin', 'Joque', 'jjoe', 'what'),
--- ('rec','rec' , 'rec', 'rec','rec');
+INSERT INTO Reviewers (`initials`, `first_name`, `last_name`, `username`, `password`) VALUES
+('JT', 'John', 'Toe', 'jtoe', 'what'),
+('JH', 'Joshua', 'Hubbard', 'jhub', 'what'),
+('AW', 'Ari', 'Weinberg', 'awein', 'what'),
+('RM', 'Rachel', 'Miller', 'rmill', 'what'),
+('MB', 'Michael', 'Barera', 'mbar', 'what'),
+('VMR', 'Valentina', 'Montero-Roe', 'vroe', 'what'),
+('SH', 'Steven', 'Hoelscher', 'shoe', 'what'),
+('jj', 'Justin', 'Joque', 'jjoe', 'what'),
+('rec','rec' , 'rec', 'rec','rec');
 
 -- INSERT INTO Articles (title, author, location, page_start, page_end, volume, issue, date_published, type, reconciled) VALUES
 -- ('what', 'waht', 'what', '1', '2', '1','2','2000-10-10','poetry','0'),
