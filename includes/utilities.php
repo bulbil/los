@@ -19,105 +19,89 @@
 /////////////////////////////////////////////////////////
 
 // for getting stuff into the articles table
-function edit_article($array, $obj, $rec = false) {
-		
-		bind_value($array['title'], $obj, 'title');
+function execute_article($array, $obj, $rec = 0) {
 
-		bind_value($array['author'], $obj, 'author');
+	global $articles;
+	$array['type'] = string_format($array['type'],'type');
+	$array['reconciled'] = $rec;
 
-		bind_value($array['location'], $obj, 'location');
-
-		bind_value($array['page_start'], $obj, 'page_start');
-
-		bind_value($array['page_end'], $obj, 'page_end');
-
-		bind_value($array['volume'], $obj, 'volume');
-
-		bind_value($array['issue'], $obj, 'issue');
-
-		bind_value($array['date_published'], $obj, 'date_published');
-
-		$type = string_format($array['type'],'type');
-		bind_value($type, $obj, 'type');
-
-		bind_value($rec, $obj, 'reconciled'); 
-
-		$obj->execute();
+	foreach($articles as $column) {
+		bind_value($array[$column], $obj, $column);
+	}
+	$obj->execute();
 }
 
-function edit_review($article_id, $reviewer_id, $array, $obj) {
+function execute_review($article_id, $reviewer_id, $array, $obj) {
 
-		bind_value($article_id, $obj, 'article_id');
+	global $reviews;
 
-		bind_value($reviewer_id, $obj, 'reviewer_id');
-		
-		$timestamp = ($array['timestamp']) ? $array['timestamp'] : date('Y-m-d H:i:s');
-		bind_value($timestamp, $obj, 'timestamp');
+	$array['article_id'] = $article_id;
+	$array['reviewer_id'] = $reviewer_id;
+	$array['timestamp'] = ($array['timestamp']) ? $array['timestamp'] : date('Y-m-d H:i:s');		
 
-		bind_value($array['summary'], $obj, 'summary');
+	foreach($reviews as $column) {
 
-		bind_value($array['notes'], $obj, 'notes');
-
-		bind_value($array['research_notes'], $obj, 'research_notes');
-
-		bind_value($array['narration_pov'], $obj, 'narration_pov');
-
-		bind_value($array['narration_embedded'], $obj, 'narration_embedded');
-
-		bind_value($array['narration_tense'], $obj, 'narration_tense');
-
-		bind_value($array['narration_tenseshift'], $obj, 'narration_tenseshift');
-
-		$obj->execute();
+		bind_value($array[$column], $obj, $column);
+	}
+	
+	$obj->execute();
 }
 
-function edit_article_themes($article_id, $reviewer_id, $str, $obj, $pdo) {
+function execute_article_themes($article_id, $reviewer_id, $str, $obj, $pdo) {
+
+	global $articles_themes;
+
+	$sql = "DELETE FROM Articles_Themes WHERE (`article_id`, `reviewer_id`) = ('$article_id', '$reviewer_id')";
+	$pdo->query($sql);
 
 	foreach(string_format($str, 'array') as $theme) {
-		$theme = string_format($theme,'theme');
-		$theme_id = return_id('theme_id', array($theme), array('theme'), 'Themes', $pdo);
+
+		if($theme){
+
+			$theme = string_format($theme,'theme');
+			$theme_id = return_id('theme_id', array($theme), array('theme'), 'Themes', $pdo);
+				
+				if($theme_id) {
+					
+					if (!if_exists(array($article_id, $theme_id, $reviewer_id), $articles_themes, 'Articles_Themes', $pdo)){			
 		
-		if($theme_id && !if_exists(array($theme_id, $article_id, $reviewer_id), array('theme_id','article_id', 'reviewer_id'), 'Articles_Themes', $pdo)){			
-			bind_value($theme_id, $obj, 'theme_id');
-			bind_value($article_id, $obj, 'article_id');
-			bind_value($reviewer_id, $obj, 'reviewer_id');			
-			$obj->execute();
-
-		} elseif( if_exists(array($theme_id, $article_id, $reviewer_id), array('theme_id','article_id', 'reviewer_id'), 'Articles_Themes', $pdo)) {
-
-			echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> already attached to this review');
-
-		} else { echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> not a theme ... check data'); }
+						bind_value($theme_id, $obj, 'theme_id');
+						bind_value($article_id, $obj, 'article_id');
+						bind_value($reviewer_id, $obj, 'reviewer_id');			
+						$obj->execute();
+		
+					} else echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> already attached to this review');
+		
+			} else echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> not a theme ... check data');
+		}
 	}
 }
 
+
 // takes a string of tags delimited by semicolons, inserts the tag into Tags table if new and associates tags with articles and reviewers
-function edit_article_tags($array, $category, $article_id, $reviewer_id, $obj, $pdo){
+function execute_article_tags($array, $category, $article_id, $reviewer_id, $obj, $pdo){
+
+	global $articles_tags;
 
 	foreach (string_format($array, 'array') as $tag){
 
 		$tag = string_format($tag);
-		echo_line($tag);
 		if (strlen($tag) > 1 &&	$tag != 'n/a'){	
 
-			if(if_exists(array($tag, $category), array('tag', 'category'), 'Tags', $pdo)){
-
-				$tag_id = return_id('tag_id', array($tag, $category), array('tag', 'category'), 'Tags', $pdo);
-
-			} else {
+			$tag_id = return_id('tag_id', array($tag, $category), array('tag', 'category'), 'Tags', $pdo);
+			if($tag_id == 0) {
 
 				$tag = $pdo->quote($tag);
 				insert_value($tag, 'Tags', 'tag', $pdo, $category, 'category');
 				$tag_id = $pdo->lastInsertId();
 			}
 
-			if (!if_exists(array($tag_id, $article_id, $reviewer_id), array('tag_id', 'article_id', 'reviewer_id'), 'Articles_Tags', $pdo)){
-
+			if (!if_exists(array($article_id, $tag_id, $reviewer_id), $articles_tags, 'Articles_Tags', $pdo)){
 				bind_value($tag_id, $obj, 'tag_id');
 				bind_value($article_id, $obj, 'article_id');
 				bind_value($reviewer_id, $obj, 'reviewer_id');
 				$obj->execute();
-			}
+				}
 		} 
 	}
 }	
@@ -170,6 +154,13 @@ $articles = array(
 	'date_published',
 	'type',
 	'reconciled'
+	);
+
+$article_check = array(
+	'page_start', 
+	'page_end', 
+	'volume', 
+	'issue'
 	);
 
 $reviews = array(
@@ -256,7 +247,6 @@ function prepare_pdo_statement($array, $table, $pdo) {
 
 // binds value to PDO prepared statement
 function bind_value($str, $obj, $column) {
-
 	$str = string_format($str);
 	$obj->bindValue($column, $str);
 	return $obj;
@@ -290,7 +280,7 @@ function if_exists($filterArray, $columnArray, $table, $pdo) {
 function if_article_exists($row, $dbh){
 
 		$current_article = array($row['page_start'], $row['page_end'], $row['volume'], $row['issue']);
-		$article_check = array('page_start', 'page_end', 'volume', 'issue');
+
 		return if_exists($current_article, $article_check, 'Articles', $dbh); 
 }
 
@@ -306,7 +296,9 @@ function return_id($column, $filterArray, $columnArray, $table, $pdo) {
 	$stmt->execute($filters);
 	
 	$result = $stmt->fetch(PDO::FETCH_NUM);
-	return $result[0];
+	// $stmt->pdoParam
+	$result = ($result[0]) ? $result[0] : 0;
+	return $result;
 }
 
 
@@ -323,15 +315,25 @@ function return_reviewer_id($str, $article_id, $pdo) {
 
 function return_article_id($row, $pdo) {
 
-	$filterArray = array($row['page_start'],$row['page_end'],$row['volume'],$row['issue']);
-	$columnArray = array('page_start','page_end','volume','issue');
+	global $article_check;
+	foreach ($article_check as $check) $filterArray[] = $row[$check];
 
-	if(if_exists($filterArray, $columnArray, 'Articles', $pdo)) {
-		$article_id = return_id('article_id', $filterArray, $columnArray, 'Articles', $pdo);
+	if(if_exists($filterArray, $article_check, 'Articles', $pdo)) {
+		$article_id = return_id('article_id', $filterArray, $article_check, 'Articles', $pdo);
 		return $article_id;
 	} else { return false;}
 }
 
+function return_row($returnArray, $filterArray, $columnArray, $table, $pdo) {
+
+	$returns = implode(',', $returnArray);
+	$columns = implode(' = ? AND ', $columnArray);
+	$sql = "SELECT $returns FROM $table WHERE $columns = ?";
+	$stmt = $pdo->prepare($sql);
+	$stmt->execute($filterArray);
+	$results = $stmt->fetch(PDO::FETCH_ASSOC);
+	return $results;
+}
 
 // just for inserting themes from the google spreadsheet themes list 
 function insert_theme_id($str, $obj) {
@@ -346,27 +348,40 @@ function insert_theme_id($str, $obj) {
 // updates boolean column for Articles table
 function update_reconciled($str, $pdo) {
 
-		$sql = "UPDATE Articles SET reconciled = 1 WHERE article_id = ?";
-		$stmt = $pdo->prepare($sql);
-		$stmt->execute(array($str));
+	$sql = "UPDATE Articles SET reconciled = 1 WHERE article_id = ?";
+	$stmt = $pdo->prepare($sql);
+	$stmt->execute(array($str));
 }
 
+$articles_themes = array(
+	'article_id',
+	'theme_id',
+	'reviewer_id'
+	);
+
+$articles_tags = array(
+	'article_id',
+	'tag_id',
+	'reviewer_id'
+	);
 
 // updates boolean column for Themes and Tags tables
 function update_main($str, $article_id, $reviewer_id, $pdo) {
+
+	global $articles_themes;
+	global $articles_tags;
 
 	if (if_exists(array(string_format($str,'theme')), array('theme'), 'Themes', $pdo)) {
 		
 		$theme = string_format($str,'theme');
 		$id = return_id('theme_id', array($theme), array('theme'), 'Themes', $pdo);
 
+		$themes_array = implode(' = ? AND ', $articles_themes);
 		$sql = "UPDATE Articles_Themes SET `if_main` = '1' 
-				WHERE `theme_id` = :theme_id AND `article_id` = :article_id AND `reviewer_id` = :reviewer_id";
-		$stmt = $pdo->prepare($sql);		
-		$stmt->bindValue('theme_id', $id);
-		$stmt->bindValue('article_id', $article_id);
-		$stmt->bindValue('reviewer_id', $reviewer_id);		
-		$stmt->execute();
+				WHERE $themes_array = ?";
+
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array($article_id, $id, $reviewer_id));
 		echo_line('update main theme: ' . $theme);
 		}
 
@@ -375,14 +390,12 @@ function update_main($str, $article_id, $reviewer_id, $pdo) {
 		$tag = string_format($str);
 		$id = return_id('tag_id', array($tag), array('tag'), 'Tags', $pdo);
 
+		$tags_array = implode(' = ? AND ', $articles_tags);
 		$sql = "UPDATE Articles_Tags SET `if_main` = '1' 
-				WHERE `tag_id` = :tag_id AND `article_id` = :article_id AND `reviewer_id` = :reviewer_id";
+				WHERE $tags_array = ?";
 
 		$stmt = $pdo->prepare($sql);
-		$stmt->bindValue('tag_id', $id);
-		$stmt->bindValue('article_id', $article_id);
-		$stmt->bindValue('reviewer_id', $reviewer_id);
-		$stmt->execute();
+		$stmt->execute(array($article_id, $id, $reviewer_id));
 		echo_line('update main tag: ' . $id . ' ' . $tag);
 		}
 
@@ -416,6 +429,12 @@ function string_format($str, $param = 'default') {
 		case('bool'): 	
 
 			return ($str == 'Yes') ? true : false;
+
+		case('date_check'):
+
+			$date = preg_split('/-/', $str);
+			$date = $date[1] . '-' . $date[0];
+			return $date;
 
 		case('date_csv'):	
 

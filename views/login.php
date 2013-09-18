@@ -14,7 +14,6 @@ if (isset($_POST['username']) && isset($_POST['password']) && strlen($_POST['use
   if(if_exists(array($username, $password), array('username', 'password'), 'Reviewers', $dbh)){
     
     $reviewer_id = return_id('reviewer_id', array($username), array('username'), 'Reviewers', $dbh);
-
     $_SESSION['username'] = $username;
     $_SESSION['reviewer_id'] = $reviewer_id;
     header('location: home.php');

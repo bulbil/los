@@ -22,47 +22,47 @@ $gcsv_rec_test = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdHgtM
 $gcsv_copy = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdGN0OFpuVGZFYnRSdFhjd05HYVFncEE&output=csv';
 $gcsv_short = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdEhrSkVqQ3Ezb2p5ZV9UWnFUMGV5dEE&output=csv';
 
+// an array for mapping columns to table variables
+$columns = array(
+	'timestamp',
+	'initials',
+	'title',
+	'author',
+	'location',
+	'page_start',
+	'page_end',
+	'volume',
+	'issue',
+	'date_published',
+	'type',
+	'groups',
+	'persons',
+	'entities',
+	'places',
+	'activities',
+	'florafauna',
+	'commodities',
+	'events',
+	'works',
+	'technologies',
+	'environments',
+	'themes',
+	'main',
+	'summary',
+	'notes',
+	'x',
+	'research_notes',
+	'narration',
+	'narration_pov',
+	'narration_embedded',
+	'narration_tense',
+	'narration_tenseshift'
+	);
+
 function csvToArray($url) {
 
+	global $columns;
 	$handle = fopen($url, 'r');
-
-	// an array for mapping columns to table variables
-	$columns = array(
-		'timestamp',
-		'initials',
-		'title',
-		'author',
-		'location',
-		'page_start',
-		'page_end',
-		'volume',
-		'issue',
-		'date_published',
-		'type',
-		'groups',
-		'persons',
-		'entities',
-		'places',
-		'activities',
-		'florafauna',
-		'commodities',
-		'events',
-		'works',
-		'technologies',
-		'environments',
-		'themes',
-		'main',
-		'summary',
-		'notes',
-		'x',
-		'research_notes',
-		'narration',
-		'narration_pov',
-		'narration_embedded',
-		'narration_tense',
-		'narration_tenseshift'
-		);
-
 	// creates an associative array out of each row of the csv -- each cell is the value, each $columns element is the key
 	while ($row = fgetcsv($handle)) {
 
@@ -103,7 +103,7 @@ try {
 		echo_line('article id 1: ' . $article_id);
 		if($article_id == null) {
 			$row['date_published'] = string_format($row['date_published'], 'date_csv');
-			edit_article($row, $stmt_articles); 
+			execute_article($row, $stmt_articles); 
 			$article_id = $dbh->lastInsertId();
 			echo_line('article id 2: ' . $article_id);
 		}
@@ -125,7 +125,7 @@ try {
 		$row['narration_embedded'] = (isset($row['narration_embedded'])) ? string_format($row['narration_embedded'], 'bool') : 0;
 		$row['narration_tenseshift'] = (isset($row['narration_tenseshift'])) ? string_format($row['narration_tenseshift'], 'bool') : 0;
 
-		edit_review($article_id, $reviewer_id, $row, $stmt_reviews, $dbh);
+		execute_review($article_id, $reviewer_id, $row, $stmt_reviews, $dbh);
 		// echo_line($row['initials']);
 		// echo_line($reviewer_id);
 		// echo_line(string_format($row['timestamp'], 'timestamp'));
@@ -138,7 +138,7 @@ try {
 		// echo_line($row['narration_tenseshift']);
 
 // binds values and executes Articles_Themes table statement
-		edit_article_themes($article_id, $reviewer_id, $row['themes'], $stmt_articles_themes, $dbh);
+		execute_article_themes($article_id, $reviewer_id, $row['themes'], $stmt_articles_themes, $dbh);
 
 // binds values and executes Articles_Tags table statement, adds tags to Tags table if new
 
@@ -154,7 +154,7 @@ try {
 				case ('events') :
 				case ('works') :
 				case ('technologies') :
-				case ('environments') : edit_article_tags($value, $key, $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
+				case ('environments') : execute_article_tags($value, $key, $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
 			}
 		}
 

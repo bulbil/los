@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+if(isset($_SESSION['confirm'])) unset($_SESSION['confirm']);
+if(isset($_SESSION['db_data'])) unset($_SESSION['db_data']);
+if(isset($_SESSION['form_data'])) unset($_SESSION['form_data']);
+
 require '../html/header.html';
 include '../html/masthead.html';
 include '../includes/db.php';

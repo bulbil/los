@@ -69,6 +69,8 @@ var losFormViews = {
 				$('input#' + category).select2({ 
 					width: '100%',
 					tags: tagsCategory,
+					closeOnSelect: false,
+					openOnEnter: false
 				});
 			});
 
@@ -82,7 +84,8 @@ var losFormViews = {
 
 		$('input#main').select2({
 			width: '440px',
-			tags: []
+			tags: [],
+			closeOnSelect: false
 		})
 	},
 
