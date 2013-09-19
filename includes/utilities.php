@@ -644,7 +644,7 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
 			$sql = 	"SELECT theme, if_main FROM Themes 
 					JOIN Articles_Themes ON Articles_Themes.theme_id = Themes.theme_id 
-					WHERE (Articles_Themes.article_id, Articles_Themes.reviewer_id) = ($article_id, $id)";
+					WHERE (Articles_Themes.article_id, Articles_Themes.reviewer_id) = ($article_id, $id) ORDER BY theme";
 			return query($sql);
 
 		// 	all the tags for a review from the Articles_Tags table for a particular article id / reviewer_id
@@ -653,13 +653,13 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
 			$sql = "SELECT category, tag, if_main FROM Tags 
 					JOIN Articles_Tags ON Tags.tag_id = Articles_Tags.tag_id 
-					WHERE (Articles_Tags.article_id, Articles_Tags.reviewer_id) = ($article_id, $id)";
+					WHERE (Articles_Tags.article_id, Articles_Tags.reviewer_id) = ($article_id, $id) ORDER BY tag";
 			return query($sql);
 
 		// 	all the themes
 		case('themes_list'):
 
-			$sql = "SELECT theme FROM Themes";
+			$sql = "SELECT theme FROM Themes ORDER BY theme";
 			return query($sql);	
 
 		// 	all the Articles table data
@@ -688,7 +688,7 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 			$sql = "SELECT category, tag FROM Tags";
 			$sql_alt = "SELECT category, article_id, reviewer_id, category, tag 
 					FROM Tags JOIN Articles_Tags 
-					ON Tags.tag_id = Articles_Tags.tag_id";
+					ON Tags.tag_id = Articles_Tags.tag_id ORDER BY tag";
 			return query($sql);
 
 		case('test_table'):
