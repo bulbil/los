@@ -3,5 +3,10 @@ session_start();
 include '../html/header.html';
 include '../html/masthead.html';
 include '../includes/utilities.php';
-echo "<div class='row'><div class='col-md-6 col-md-offset-5'><h3><em>coming soon!</em></h3></div></div>";
+
+$table_columns = array('date','title', 'author', 'main');
+
+table_start($table_columns, 'data-table');
+table_end();
+
 include '../html/footer.html';

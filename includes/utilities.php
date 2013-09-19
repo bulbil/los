@@ -518,11 +518,12 @@ function getFormTitle(){
 
 // for outputting tables, php to html
 
-function table_start($array, $padding ='') {
+function table_start($array, $id, $padding ='') {
 
 	$html = "<div class='row'>";
 	$html .= "<div class='col-md-10 col-md-offset-1'>";
-	$html .= "<table class='table table-striped'><tr>";
+	$html .= "<table class='table table-striped'";
+	$html .= "id='$id'><tr>";
 	foreach($array as $column) { $html .= '<th>' . $column . '</th>'; }
 	for($i = 0; $i < $padding; $i++) $html .= "<th>&nbsp;</th>";
 	$html .= '</tr>';
@@ -690,13 +691,16 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 					ON Tags.tag_id = Articles_Tags.tag_id";
 			return query($sql);
 
-		// case('dump'):
-
-		// 	$sql_columns = implode(',', $dump);
-		// 	$sql = "SELECT $sql_columns FROM Articles 
-		// 				JOIN Reviews ON Articles.article_id = Reviews.article_id
-		// 				Articles_Themes JOIN Themes ON Articles_Themes.ar"
-
+		case('test_table'):
+			$columnsArray = array('date_published', 'title', 'author', 'tag', 'theme');
+			$sql_columns = implode(',', $columnsArray);
+			$sql = "SELECT $sql_columns FROM Articles 
+					JOIN Articles_Tags ON Articles.article_id = Articles_Tags.article_id
+					JOIN Articles_Themes ON Articles.article_id = Articles_Themes.article_id
+					JOIN Tags ON Articles_Tags.tag_id = Tags.tag_id
+					JOIN Themes ON Articles_Themes.theme_id = Themes.theme_id
+					WHERE Articles_Tags.if_main = 1 AND Articles_Themes.if_main = 1";
+			return query($sql);
 		}
 }
 

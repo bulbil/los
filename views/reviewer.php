@@ -27,7 +27,7 @@ echo $html;
 
 $table_columns = array('title','volume','issue', 'date_published');
 
-table_start($table_columns,2);
+table_start($table_columns, 'reviewer', 2);
 
 while ($row = $results->fetch(PDO::FETCH_ASSOC)) {
 

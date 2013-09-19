@@ -25,7 +25,14 @@ var losForm = {
 				val = Number($(this).val());
 				if(val > 0) $('#' + e + '-group').removeClass('has-error');
 				if(!val) $('#' + e + '-group').addClass('has-error');
+				disableSubmit();
 			});
+		}
+
+		function disableSubmit() {
+
+			if($('.has-error').length != 0) $('input#form-submit').attr('disabled','disabled');
+			else $('input#form-submit').removeAttr('disabled');
 		}
 
 		_.each(inputIDs, function(e) { validateNum(e); })
@@ -35,6 +42,7 @@ var losForm = {
 			reg = new RegExp(/\d{2}-\d{4}/);
 			if($(this).val().match(reg)) $('#date-published-group').removeClass('has-error');
 			if(!$(this).val().match(reg)) $('#date-published-group').addClass('has-error');
+			disableSubmit();
 		})
 	},
 
@@ -487,3 +495,15 @@ var losForm = {
  		losForm.appendRecThemes(id1,id2,id3);
 	}
 }
+
+// var losTable = {
+
+// 	draw: function(){
+
+// 		$.getJSON('../includes/json.php?p=test_table', function(data){
+
+// 			$('table#data-table').add('tr');
+// 		})
+// 	}
+
+// }
