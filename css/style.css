@@ -45,6 +45,9 @@ div.select2-container {width: 100%;}
 
 .review-list ul li {display: inline-block; padding: 5px; margin: 5px 3px; border: 1px #ddd solid; border-radius: 3px;}
 
+div#main-review-1.review-list ul {border-left: 1px solid #f0ad4e; text-align: right;}
+div#main-review-1.review-list ul {border-left: 1px solid #2a6496; text-align: right;}
+
 div#main-review-1.review-list ul li,
 div#main-review-2.review-list ul li {border: none;}
 
