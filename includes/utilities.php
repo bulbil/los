@@ -189,17 +189,17 @@ $articles_tags = array(
 	);
 
 $categories = array(
+	'activities',
+	'commodities',
+	'entities',
+	'environments',
+	'events',
+	'florafauna',
 	'groups',
 	'persons',
-	'entities',
 	'places',
-	'activities',
-	'florafauna',
-	'commodities',
-	'events',
-	'works',
 	'technologies',
-	'environments'
+	'works'
 	);
 
 $dump = array(
