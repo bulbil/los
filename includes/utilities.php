@@ -189,6 +189,7 @@ $articles_tags = array(
 	);
 
 $categories = array(
+	'groups',
 	'persons',
 	'entities',
 	'places',
