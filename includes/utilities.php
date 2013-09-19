@@ -685,10 +685,10 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 
 		// 	all the Articles_Tags table data
 		case('dump_tags'):
-			$sql = "SELECT category, tag FROM Tags";
+			$sql = "SELECT category, tag FROM Tags ORDER BY tag";
 			$sql_alt = "SELECT category, article_id, reviewer_id, category, tag 
 					FROM Tags JOIN Articles_Tags 
-					ON Tags.tag_id = Articles_Tags.tag_id ORDER BY tag";
+					ON Tags.tag_id = Articles_Tags.tag_id";
 			return query($sql);
 
 		case('test_table'):
