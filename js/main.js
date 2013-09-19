@@ -226,10 +226,9 @@ var losFormViews = {
 	appendRecThemes: function(id1, id2, id3) {
 
 		id3 = (typeof id3 !== 'undefined') ? id3 : '';
-		idParam = (id3) ? '&rid' + id3 : '';
+		// on ajax success gets Articles_Themes data for two reviews and appends them to DOM elements and updates values for input fields 
 
-	// on ajax success gets Articles_Themes data for two reviews and appends them to DOM elements and updates values for input fields 
-		$.getJSON('../includes/json.php?p=themes&id=' + id1 + idParam, function(data){
+		$.getJSON('../includes/json.php?p=themes&id=' + id1 + '&rid=' + id3, function(data){
 
 			review1themes = data;
 									
@@ -238,8 +237,9 @@ var losFormViews = {
 				review2themes = data;
 
 				review1themesMain = losFormViews.makeArray(review1themes, '1', 'if_main', 'maintheme');
-				review2themesMain = losFormViews.makeArray(review2themes, '1', 'if_main', 'maintheme');				
-				if(!idParam){
+				review2themesMain = losFormViews.makeArray(review2themes, '1', 'if_main', 'maintheme');
+
+				if(id3.length == 0){
 
 					sharedThemesMain = _.intersection(review1themesMain, review2themesMain);
 					review1themesMain = _.difference(review1themesMain, sharedThemesMain);
@@ -250,6 +250,7 @@ var losFormViews = {
 					// adds shared main theme values to main input field
 					$('input#main').select2('val', [mainList]);
 				}
+				
 				// append reviewer main theme values to unordered lists				
 				$('#main-review-1 ul').append("<li>" + review1themesMain.join("</li><li>"));
 				$('#main-review-2 ul').append("<li>" + review2themesMain.join("</li><li>"));
@@ -260,7 +261,8 @@ var losFormViews = {
 				review1themes = _.pluck(review1themes, 'theme');
 				review2themes = _.pluck(review2themes, 'theme');
 
-				if(!idParam){
+				if(id3.length == 0){
+
 					sharedThemes = _.intersection(review1themes, review2themes);
 	
 					review1themes = _.difference(review1themes, sharedThemes);
@@ -305,9 +307,9 @@ var losFormViews = {
 	appendRecTags: function(id1, id2, id3) {
 	
 		id3 = (typeof id3 !== 'undefined') ? id3 : '';
-		idParam = (id3) ? '&rid=' + id3 : '';
-	// on ajax success gets Articles_Tags data for two reviews and appends them to DOM elements and the values for input fields
-		$.getJSON('../includes/json.php?p=tags&id=' + id1 + idParam, function(data){
+
+		// on ajax success gets Articles_Tags data for two reviews and appends them to DOM elements and the values for input fields
+		$.getJSON('../includes/json.php?p=tags&id=' + id1 + '&rid=' + id3, function(data){
 
 			review1tags = data;
 				
@@ -322,7 +324,7 @@ var losFormViews = {
 					review1tagsByCategory = losFormViews.makeArray(review1tags, category, 'category', 'tag');
 					review2tagsByCategory = losFormViews.makeArray(review2tags, category, 'category', 'tag');
 
-					if(!idParam){
+					if(id3.length == 0){
 						sharedTagsByCategory = _.intersection(review1tagsByCategory, review2tagsByCategory);
 						review1tagsByCategory = _.difference(review1tagsByCategory, sharedTagsByCategory);
 						review2tagsByCategory = _.difference(review2tagsByCategory, sharedTagsByCategory);
@@ -343,7 +345,7 @@ var losFormViews = {
 				review1tagsMain = losFormViews.makeArray(review1tags, '1', 'if_main', 'maintag');
 				review2tagsMain = losFormViews.makeArray(review2tags, '1', 'if_main', 'maintag');
 
-				if(!idParam){
+				if(id3.length == 0){
 					sharedTagsMain = _.intersection(review1tagsMain, review2tagsMain);
 					review1tagsMain = _.difference(review1tagsMain, sharedTagsMain);
 					review2tagsMain = _.difference(review2tagsMain, sharedTagsMain);
@@ -472,8 +474,6 @@ var losFormViews = {
  		losFormViews.appendRecTags(id1,id2);
  		losFormViews.appendRecThemes(id1,id2);
  		losFormViews.appendMain();
-
-
 	},
 
 	editReconciled: function(id1,id2,id3) {

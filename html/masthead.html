@@ -1,5 +1,6 @@
-<div class="row"><div class="col-md-8 col-md-offset-2" id="login">
-		<?php if(isset($_SESSION['username'])) { echo "<h5>" . $_SESSION['username'] . " / <a href='../index.php'>logout</a></h5>";} ?>
+<div class="row"><div class="col-md-8 col-md-offset-2" id="login" style="z-index: 1;">
+		<?php 	if(isset($_SESSION['username'])) { echo "<h5>" . $_SESSION['username'] . " / <a href='../index.php'>logout</a></h5>"; }
+				if (isset($_SESSION['login_error'])) echo "<h4><em class='alert-danger pull-right'>you must login to see this page</em></h4>"; ?>
 </div></div>
 
 <div class="row">

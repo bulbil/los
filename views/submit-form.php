@@ -1,5 +1,8 @@
 <?php
 session_start();
+
+if(!isset($_SESSION['username'])) { $_SESSION['login_error'] = '1'; header('Location: home.php'); }
+
 include '../html/header.html';
 include '../html/masthead.html';
 include '../includes/db.php';

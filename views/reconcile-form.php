@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+if(!isset($_SESSION['username'])) { $_SESSION['login_error'] = '1'; header('Location: home.php'); }
+
 if(isset($_SESSION['confirm'])) unset($_SESSION['confirm']);
 if(isset($_SESSION['db_data'])) unset($_SESSION['db_data']);
 if(isset($_SESSION['form_data'])) unset($_SESSION['form_data']);

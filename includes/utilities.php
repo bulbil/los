@@ -22,6 +22,7 @@
 function execute_article($array, $obj, $rec = 0) {
 
 	global $articles;
+
 	$array['type'] = string_format($array['type'],'type');
 	$array['reconciled'] = $rec;
 
@@ -43,7 +44,6 @@ function execute_review($article_id, $reviewer_id, $array, $obj) {
 
 		bind_value($array[$column], $obj, $column);
 	}
-	
 	$obj->execute();
 }
 
@@ -188,6 +188,19 @@ $articles_tags = array(
 	'reviewer_id'
 	);
 
+$categories = array(
+	'persons',
+	'entities',
+	'places',
+	'activities',
+	'florafauna',
+	'commodities',
+	'events',
+	'works',
+	'technologies',
+	'environments'
+	);
+
 $dump = array(
 	'article_id',
 	'title',
@@ -217,12 +230,15 @@ $dump = array(
 // creates the SQL queries for PDO prepared statements from an array
 function pdo_update($n) { return $n . " = :" . $n; }
 
-function sql_implode($array, $table, $param = '', $column = '', $str = '') {
+function sql_implode($array, $table, $param = '', $columnArray = '', $filterArray = '') {
 
 	if($param == 'update') {	
 		$update_array = array_map("pdo_update", $array);
 		$update_array = implode(',', $update_array);
-		$query = "UPDATE `$table` SET $update_array WHERE $column = $str";
+		$columns = implode(',', $columnArray);
+		$filters = implode(',', $filterArray);
+
+		$query = "UPDATE `$table` SET $update_array WHERE ($columns) = ($filters)";
 		return $query;
 
 	} else {
@@ -302,13 +318,13 @@ function return_id($column, $filterArray, $columnArray, $table, $pdo) {
 }
 
 
-function return_reviewer_id($str, $article_id, $pdo) {
-
+function return_reviewer_id($str, $pdo) {
+	$str = string_format($str);
 	// grabs the reviewer_id or, if two sets of initials appear as in a reconciled article, sets the initials to 'rec'
 	$id = (strlen($str) < 4) ? return_id('reviewer_id', array($str), array('initials'), 'Reviewers', $pdo)
-		: 9;
+		: '9';
 	// if reconciled, updates the corresponding article in the Articles table to 'reconciled'
-	if($id == 'rec') {update_reconciled($article_id, $pdo);}
+	// if($id == 'rec') {update_reconciled($article_id, $pdo);}
 	return $id;
 }
 
@@ -346,12 +362,12 @@ function insert_theme_id($str, $obj) {
 
 
 // updates boolean column for Articles table
-function update_reconciled($str, $pdo) {
+// function update_reconciled($str, $pdo) {
 
-	$sql = "UPDATE Articles SET reconciled = 1 WHERE article_id = ?";
-	$stmt = $pdo->prepare($sql);
-	$stmt->execute(array($str));
-}
+// 	$sql = "UPDATE Articles SET reconciled = 1 WHERE article_id = ?";
+// 	$stmt = $pdo->prepare($sql);
+// 	$stmt->execute(array($str));
+// }
 
 $articles_themes = array(
 	'article_id',
@@ -371,35 +387,29 @@ function update_main($str, $article_id, $reviewer_id, $pdo) {
 	global $articles_themes;
 	global $articles_tags;
 
-	if (if_exists(array(string_format($str,'theme')), array('theme'), 'Themes', $pdo)) {
-		
-		$theme = string_format($str,'theme');
-		$id = return_id('theme_id', array($theme), array('theme'), 'Themes', $pdo);
-
+	echo_line($str);
+	$id = return_id('theme_id', array($str), array('theme'), 'Themes', $pdo);
+	if($id) { 
+		echo_line('theme id ' . $id);
 		$themes_array = implode(' = ? AND ', $articles_themes);
 		$sql = "UPDATE Articles_Themes SET `if_main` = '1' 
 				WHERE $themes_array = ?";
 
 		$stmt = $pdo->prepare($sql);
-		$stmt->execute(array($article_id, $id, $reviewer_id));
-		echo_line('update main theme: ' . $theme);
-		}
 
-	if (if_exists(array(string_format($str)), array('tag'), 'Tags', $pdo)) {
+	}else{
 
-		$tag = string_format($str);
-		$id = return_id('tag_id', array($tag), array('tag'), 'Tags', $pdo);
-
-		$tags_array = implode(' = ? AND ', $articles_tags);
-		$sql = "UPDATE Articles_Tags SET `if_main` = '1' 
-				WHERE $tags_array = ?";
-
-		$stmt = $pdo->prepare($sql);
-		$stmt->execute(array($article_id, $id, $reviewer_id));
-		echo_line('update main tag: ' . $id . ' ' . $tag);
-		}
-
-	else { echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $str . '</strong> main not found ... check data');}
+		$id = return_id('tag_id', array($str), array('tag'), 'Tags', $pdo);
+		echo_line('tag id ' . $id);
+		if($id) {
+			$tags_array = implode(' = ? AND ', $articles_tags);
+			$sql = "UPDATE Articles_Tags SET `if_main` = '1' 
+					WHERE $tags_array = ?";
+			$stmt = $pdo->prepare($sql);
+		} else { echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $str . '</strong> main not found ... check data'); return;}
+	}
+	echo_line($id);
+	$stmt->execute(array($article_id, $id, $reviewer_id)); 
 }
 
 
@@ -460,7 +470,7 @@ function string_format($str, $param = 'default') {
 
 		case('timestamp'): 	
 
-				$d = DateTime::createFromFormat('j/n/Y G:i:s', $str);
+				$d = DateTime::createFromFormat('n/j/Y G:i:s', $str);
 				return $d->format('Y-m-d H:i:s');
 
 		case('theme'):
@@ -540,9 +550,8 @@ function table_reconcile_cell($id, $bool) {
 	if($bool) {
 		$sql = "SELECT Reviews.reviewer_id FROM Reviews JOIN Articles 
 				ON Reviews.article_id = Articles.article_id 
-				WHERE Articles.reconciled = 1 AND Reviews.article_id = $id 
-				AND Reviews.reviewer_id <> $reviewer_id AND Reviews.reviewer_id <> '9'"; 
-		
+				WHERE Articles.reconciled = 1 AND Reviews.article_id = $id
+				AND Reviews.reviewer_id <> $reviewer_id AND Reviews.reviewer_id <> '9'";
 		$results = $dbh->query($sql, PDO::FETCH_NUM);
 		$results = $results->fetchAll();
 		$rid = $results[0][0];

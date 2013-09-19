@@ -16,7 +16,10 @@
 // a variable to carry the url of the google spreadsheet:
 // -- the spreadsheet must be 'published to the web' in google docs for it to be accessible
 // -- the the suffix needs to be 'output=csv'
-$gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdHA2R3pHLTBrZHJFbE1kOUtZLV9GSEE&output=csv';
+
+$gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AtVEb6YM9oi8dDE0cEx1eVpqN2pBQkpxVjdpeGZ4WkE&output=csv';
+
+$gcsv_full_test = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdHA2R3pHLTBrZHJFbE1kOUtZLV9GSEE&output=csv';
 $gcsv_local = 'http://localhost:8888/los/textdata_short.csv';
 $gcsv_rec_test = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdHgtMDVpLVRvcnNDdmJIS1liMFRRQ1E&output=csv';
 $gcsv_copy = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdGN0OFpuVGZFYnRSdFhjd05HYVFncEE&output=csv';
@@ -99,14 +102,18 @@ try {
 
 // if there's no existing article, binds values and executes the Articles table statement
 // or article_id is false
+
 		$article_id = return_article_id($row, $dbh);
-		echo_line('article id 1: ' . $article_id);
-		if($article_id == null) {
+		$reviewer_id = return_reviewer_id($row['initials'], $dbh);
+		$row['timestamp'] = string_format($row['timestamp'], 'timestamp');
+		$row['narration_embedded'] = (isset($row['narration_embedded'])) ? string_format($row['narration_embedded'], 'bool') : 0;
+		$row['narration_tenseshift'] = (isset($row['narration_tenseshift'])) ? string_format($row['narration_tenseshift'], 'bool') : 0;
+
+		if(!$article_id) {
 			$row['date_published'] = string_format($row['date_published'], 'date_csv');
-			execute_article($row, $stmt_articles); 
+			execute_article($row, $stmt_articles, $rec); 
 			$article_id = $dbh->lastInsertId();
-			echo_line('article id 2: ' . $article_id);
-		}
+			}
 		// echo_line($row['author']);
 		// echo_line($row['location']);
 		// echo_line($row['page_start']);
@@ -120,10 +127,6 @@ try {
 
 		// sets the current article_id as the last updated row, from the Articles table in this case
 		// $article_id = return_article_id($row, $dbh->lastInsertId();
-		$reviewer_id = return_reviewer_id($row['initials'], $article_id, $dbh);
-		$row['timestamp'] = string_format($row['timestamp'], 'timestamp');
-		$row['narration_embedded'] = (isset($row['narration_embedded'])) ? string_format($row['narration_embedded'], 'bool') : 0;
-		$row['narration_tenseshift'] = (isset($row['narration_tenseshift'])) ? string_format($row['narration_tenseshift'], 'bool') : 0;
 
 		execute_review($article_id, $reviewer_id, $row, $stmt_reviews, $dbh);
 		// echo_line($row['initials']);
@@ -160,7 +163,7 @@ try {
 
 // updates Articles_Tags and Articles_Themes tables if marked as a Main Element
 		foreach (string_format($row['main'], 'array') as $value) {
-			// echo_line($value);
+
 			update_main($value, $article_id, $reviewer_id, $dbh);
 		}
 
