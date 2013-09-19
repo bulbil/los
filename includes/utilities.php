@@ -704,6 +704,7 @@ function js_form_functions() {
 
 		$view = (isset($_GET['form'])) ? $_GET['form'] : '';
 		$js = '<script>';
+		// $js .= 'losForm.prepare;';
 
 		if(isset($view)){
 			switch($view) {
@@ -712,13 +713,13 @@ function js_form_functions() {
 
 				case('add'): 
 
-					$js .= 'losFormViews.lastReview();';
+					$js .= 'losForm.lastReview();';
 					$js .= '</script>'; 
 					return $js;
 
 				case('edit'):
 					$a_id = $_GET['id'];
-					$js .= "losFormViews.editReview($a_id);";
+					$js .= "losForm.editReview($a_id);";
 					$js .= '</script>';
 					return $js;
 
@@ -726,14 +727,14 @@ function js_form_functions() {
 					$a_id = $_GET['id'];
 					$r1_id = $_SESSION['reviewer_id'];
 					$r2_id = $_GET['rid'];
-					$js .= "losFormViews.editReconciled($a_id, $r1_id, $r2_id);";
+					$js .= "losForm.editReconciled($a_id, $r1_id, $r2_id);";
 					$js .= '</script>';
 					return $js;
 
 				case('reconcile'):
 					$a_id = $_GET['id'];
 					$r_id = $_GET['rid'];
-					$js .= "losFormViews.reconcileReview($a_id, $r_id);";
+					$js .= "losForm.reconcileReview($a_id, $r_id);";
 					$js .= '</script>';
 					return $js;
 
