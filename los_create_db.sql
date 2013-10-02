@@ -140,6 +140,8 @@ INSERT INTO Reviewers (`initials`, `first_name`, `last_name`, `username`, `passw
 ('jj', 'Justin', 'Joque', 'jjoe', 'what'),
 ('rec','rec' , 'rec', 'rec','rec');
 
+UPDATE Reviewers SET username = , password = 'lummisexpandsthesoul' WHERE reviewer_id = 2;
+
 -- INSERT INTO Articles (title, author, location, page_start, page_end, volume, issue, date_published, type, reconciled) VALUES
 -- ('what', 'waht', 'what', '1', '2', '1','2','2000-10-10','poetry','0'),
 -- ('two', 'two', 'two', '1', '3', '4','5','2000-10-10','poetry','0');
