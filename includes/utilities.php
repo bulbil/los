@@ -702,7 +702,8 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 						WHERE category = 'places' GROUP BY tag"
 					: 	"SELECT tag FROM Tags 
 						JOIN Articles_Tags ON Articles_Tags.tag_id = Tags.tag_id 
-						WHERE category = 'places' ORDER BY tag";								
+						WHERE category = 'places' ORDER BY tag";
+			}								
 			return query($sql);
 
 		case('test_table'):
