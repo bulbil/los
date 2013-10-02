@@ -693,7 +693,7 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 
 		case('places'):
 
-			if (!$article_id) "SELECT tag FROM Tags WHERE category = 'places' ORDER BY tag" 
+			if (!$article_id) "SELECT tag FROM Tags WHERE category = 'places' ORDER BY tag";
 			else { 
 
 				$sql = ($article_id == '2') ? 
