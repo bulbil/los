@@ -1,5 +1,3 @@
-branch test adds this what what
-
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE Articles;
 TRUNCATE Tags;
