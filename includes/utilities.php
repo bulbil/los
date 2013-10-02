@@ -691,6 +691,15 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 					ON Tags.tag_id = Articles_Tags.tag_id";
 			return query($sql);
 
+		case('places'):
+			$count = ($article_id == '2') ? ", COUNT(*) count" : '';
+			$sql = (!$article_id) ? "SELECT tag FROM Tags WHERE category = 'places' ORDER BY tag"
+								: "SELECT tag $count FROM Tags 
+									JOIN Articles_Tags ON Articles_Tags.tag_id = Tags.tag_id 
+									WHERE category = 'places' GROUP BY tag";
+			echo_line($sql);									
+			return query($sql);
+
 		case('test_table'):
 			$columnsArray = array('date_published', 'title', 'author', 'tag', 'theme');
 			$sql_columns = implode(',', $columnsArray);
@@ -701,7 +710,7 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 					JOIN Themes ON Articles_Themes.theme_id = Themes.theme_id
 					WHERE Articles_Tags.if_main = 1 AND Articles_Themes.if_main = 1";
 			return query($sql);
-		}
+	}
 }
 
 // for writes js functions into the footer based on get 'form' value, adding the appropriate article/reviewer id values

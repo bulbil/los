@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(!isset($_SESSION['username'])) { echo "<a href='../index.php'><em>sorry bro, not logged in ...</em></a>"; sleep(3); header('Location: ../index.php'); }
+if(!isset($_SESSION['username'])) { echo "<a href='../index.php'><em>sorry bro, not logged in ...</em></a>"; die; }
 include 'db.php';
 include 'utilities.php';
 $p = (isset($_GET['p'])) ? $_GET['p'] : '';
