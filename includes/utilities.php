@@ -692,11 +692,17 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 			return query($sql);
 
 		case('places'):
-			$count = ($article_id == '2') ? ", COUNT(*) count" : '';
-			$sql = (!$article_id) ? "SELECT tag FROM Tags WHERE category = 'places' ORDER BY tag"
-								: "SELECT tag $count FROM Tags 
-									JOIN Articles_Tags ON Articles_Tags.tag_id = Tags.tag_id 
-									WHERE category = 'places' GROUP BY tag";								
+
+			if (!$article_id) "SELECT tag FROM Tags WHERE category = 'places' ORDER BY tag" 
+			else { 
+
+				$sql = ($article_id == '2') ? 
+						"SELECT tag, COUNT(*) as count FROM Tags 
+						JOIN Articles_Tags ON Articles_Tags.tag_id = Tags.tag_id 
+						WHERE category = 'places' GROUP BY tag"
+					: 	"SELECT tag FROM Tags 
+						JOIN Articles_Tags ON Articles_Tags.tag_id = Tags.tag_id 
+						WHERE category = 'places' ORDER BY tag";								
 			return query($sql);
 
 		case('test_table'):
