@@ -67,12 +67,7 @@ var losForm = {
 
 		function disableSubmit(array) {
 
-			empty = false;
-			_.each(array, function(e) {
-				empty = (e.length == 0) ? true : empty;
-			});
-
-			if($('.has-error').length != 0 || empty == true ) { 
+			if($('.has-error').length != 0 || !_.every(array) ) { 
 				$('input#form-submit').attr('disabled','disabled');
 			} else $('input#form-submit').removeAttr('disabled');
 		}
@@ -143,18 +138,30 @@ var losForm = {
 
 		$('input#type').change(function() {
 
-			if($(this).val() == 'Image') {
-			
+			if($(this).val() === 'Image') {
+				
+				$('textarea#summary').attr('name', 'img_description');
+				$('textarea#notes').attr('name', 'img_notes');
+				$('textarea#research-notes').attr('name', 'img_research_notes');
+
+
 				$("#article-related >").removeAttr('disabled','disabled');
 				$("#article-related > >").removeAttr('disabled','disabled');
-				$('textarea#img-description').removeAttr('disabled', 'disabled');
 				$('ul#form-tabs li#img').removeClass('disabled');
 				$('ul#form-tabs li#narr').addClass('disabled');
 
 				$('input#img-type').select2({tags: ['drawing', 'engraving', 'photograph']});
-				$('input#img-placement').select2({tags: ['1', '2', '3', '4', '5', '6']});
+				$('input#img-placement').select2({
+
+					tags: ['1', '2', '3', '4', '5', '6'], 
+					createSearchChoice: function(term){return '';},
+				});
 
 			} else {
+
+				$('textarea#summary').attr('name', 'summary');
+				$('textarea#notes').attr('name', 'notes');
+				$('textarea#research-notes').attr('name', 'research_notes');
 
 				$("#article-related >").attr('disabled','disabled');
 				$("#article-related > >").attr('disabled','disabled');
@@ -180,8 +187,7 @@ var losForm = {
 
 	 	$("input[name='article_related']").change(function() {
 
-	 		value = $(this).val();
-	 		if( value == 1) {
+	 		if( $(this).is(':checked') === true) {
 
 	 			losForm.appendInput('img_volume', $('input#volume').val());
 	 			losForm.appendInput('img_issue', $('input#issue').val());

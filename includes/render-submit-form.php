@@ -3,13 +3,13 @@
 <div class="col-md-6 col-md-offset-3">
 <?php
 // the main thing is comparing article ids and fields from $POST data and the db
-if(!isset($_SESSION['confirm'])) compare_article_fields();
+if(!isset($_SESSION['confirm'])) compare_fields();
 
 // sets the session confirm status based on successful submission of the confirm edit form
 if(isset($_POST['confirm'])) $_SESSION['confirm'] = $_POST['confirm'];
 
 // sets some variables depending on the state
-$confirm = (isset($_SESSION['confirm'])) ? $_SESSION['confirm'] : 'not set';
+$confirm = (isset($_SESSION['confirm'])) ? $_SESSION['confirm'] : '';
 $form = (isset($_POST['form'])) ? $_POST['form'] : $_SESSION['form_data']['form'];
 $form_data = (isset($_SESSION['form_data'])) ? $_SESSION['form_data'] : $_POST;
 
@@ -53,17 +53,12 @@ function return_alert($str) {
 	}
 }
 
-// foreach($_POST as $key => $value) {
-// $html = (!is_array($value)) ? $key . ': ' . $value : $key . ': ' . implode(',', $value);
-// $html . "</div></div>";
-// echo_line($html);
-// }
-
 // checks to see if either the article id is provided or, if not, whether 
 // the page start + end, volume, issue correspond to an existing article in the db
-function compare_article_fields() {
+function compare_fields() {
 	// get rid of the reconciled field from the array	
 	$articles = $GLOBALS['articles'];
+	$images = $GLOBALS['images'];
 
 	unset($articles[9]);
 
@@ -73,7 +68,7 @@ function compare_article_fields() {
 
 		$dbh = db_connect();
 		
-		$post_id = (isset($_POST['id'])) ? $_POST['id'] : null;
+		$post_id = $_POST['id'];
 		// returns an article id base on the page_start / page_end / volume / issue		
 		$db_id = return_article_id($_POST, $dbh);
 		// if no article id in the db, add an article + add review / themes / tags

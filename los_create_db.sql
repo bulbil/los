@@ -31,6 +31,25 @@ CREATE TABLE Articles (
 	PRIMARY KEY(article_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE Images (
+
+	img_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	article_id SMALLINT UNSIGNED NULL,
+	img_caption VARCHAR(255) NOT NULL,
+	img_volume TINYINT UNSIGNED NOT NULL,
+	img_issue TINYINT UNSIGNED NOT NULL,
+	img_page SMALLINT UNSIGNED NOT NULL,
+	img_creator VARCHAR(128) NOT NULL,
+	img_engraver VARCHAR(128) NOT NULL,
+	img_date DATE NOT NULL,
+
+	PRIMARY KEY(img_id),
+	FOREIGN KEY(article_id) REFERENCES Articles(article_id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 CREATE TABLE Reviewers (
 
 	reviewer_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -58,6 +77,7 @@ CREATE TABLE Articles_Themes (
 	theme_id SMALLINT UNSIGNED,
 	reviewer_id TINYINT UNSIGNED,
 	if_main BOOLEAN NOT NULL,
+	if_image BOOLEAN NOT NULL,
 
 	PRIMARY KEY(article_id, theme_id, reviewer_id),
 	FOREIGN KEY(article_id) REFERENCES Articles(article_id)
@@ -94,6 +114,7 @@ CREATE TABLE Articles_Tags (
 	tag_id SMALLINT UNSIGNED,
 	reviewer_id TINYINT UNSIGNED,
 	if_main BOOLEAN NOT NULL,
+	if_image BOOLEAN NOT NULL,
 
 	PRIMARY KEY(reviewer_id, article_id, tag_id),
 	FOREIGN KEY(article_id) REFERENCES Articles(article_id)
@@ -123,6 +144,27 @@ CREATE TABLE Reviews (
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,	
 	FOREIGN KEY(reviewer_id) REFERENCES Reviewers(reviewer_id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE Image_Reviews (
+
+	img_review_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	img_id SMALLINT UNSIGNED,
+	reviewer_id TINYINT UNSIGNED,
+	timestamp DATETIME NOT NULL ,
+	img_description MEDIUMTEXT NOT NULL,
+	img_notes MEDIUMTEXT NOT NULL,
+	img_research_notes MEDIUMTEXT NOT NULL,
+	img_rotated BOOLEAN NOT NULL,
+	img_placement VARCHAR(16) NOT NULL,
+
+	PRIMARY KEY(img_review_id),
+	FOREIGN KEY(reviewer_id) REFERENCES Reviewers(reviewer_id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+	FOREIGN KEY(img_id) REFERENCES Images(img_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

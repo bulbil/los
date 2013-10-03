@@ -156,6 +156,18 @@ $articles = array(
 	'reconciled'
 	);
 
+$images = array(
+	'img_id',
+	'article_id',
+	'img_caption',
+	'img_volume',
+	'img_issue',
+	'img_page',
+	'img_creator',
+	'img_engraver',
+	'img_date'
+	);
+
 $article_check = array(
 	'page_start', 
 	'page_end', 
@@ -174,6 +186,18 @@ $reviews = array(
 	'narration_embedded',
 	'narration_tense',
 	'narration_tenseshift'
+	);
+
+$image_reviews = array(
+	'img_review_id',
+	'img_id',
+	'reviewer_id',
+	'timestamp',
+	'img_description',
+	'img_notes',
+	'img_research_notes',
+	'img_rotated',
+	'img_placement' 
 	);
 
 $articles_themes = array(
