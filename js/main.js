@@ -135,41 +135,16 @@ var losForm = {
 			tags: ['Advertisement', 'Editorial', 'Fiction', 'Image', 'Nonfiction', 'Poetry'],
 			createSearchChoice: function(term){return '';},
 		});
+	},
 
-		$('input#type').change(function() {
+	imageLists: function() {
 
-			if($(this).val() === 'Image') {
-				
-				$('textarea#summary').attr('name', 'img_description');
-				$('textarea#notes').attr('name', 'img_notes');
-				$('textarea#research-notes').attr('name', 'img_research_notes');
+		$('input#img-type').select2({tags: ['drawing', 'engraving', 'photograph']});
+		$('input#img-placement').select2({
 
-
-				$("#article-related >").removeAttr('disabled','disabled');
-				$("#article-related > >").removeAttr('disabled','disabled');
-				$('ul#form-tabs li#img').removeClass('disabled');
-				$('ul#form-tabs li#narr').addClass('disabled');
-
-				$('input#img-type').select2({tags: ['drawing', 'engraving', 'photograph']});
-				$('input#img-placement').select2({
-
-					tags: ['1', '2', '3', '4', '5', '6'], 
-					createSearchChoice: function(term){return '';},
-				});
-
-			} else {
-
-				$('textarea#summary').attr('name', 'summary');
-				$('textarea#notes').attr('name', 'notes');
-				$('textarea#research-notes').attr('name', 'research_notes');
-
-				$("#article-related >").attr('disabled','disabled');
-				$("#article-related > >").attr('disabled','disabled');
-				$('textarea#img-description').attr('disabled', 'disabled');
-				$('ul#form-tabs li#img').addClass('disabled');
-				$('ul#form-tabs li#narr').removeClass('disabled');
-			}
-		})
+			tags: ['1', '2', '3', '4', '5', '6'], 
+			createSearchChoice: function(term){return '';},
+		});
 	},
 
 // helper function for appending info to a particular form input type, whether input or textarea
@@ -180,31 +155,77 @@ var losForm = {
 		if($("input[name='" + key + "']")[0]) $("input[name='" + key + "']").attr('checked', value);
 	 },
 
+	toggleDisable: function (array, p = 0) {
+
+	 	_.each(array, function(e) {
+	 		if(p == 1) $(e).removeAttr('disabled', 'disabled');
+	 		else $(e).attr('disabled', 'disabled');
+	 	});
+	},
+
+	imageCheck: function() {
+
+		$('input#type').change(function() {
+
+			disableArray = ['#img-freestanding >', '#img-freestanding > >'];
+
+			if($(this).val() === 'Image') {
+				
+				$('textarea#summary').attr('name', 'img_description');
+				$('textarea#notes').attr('name', 'img_notes');
+				$('textarea#research-notes').attr('name', 'img_research_notes');
+
+				losForm.toggleDisable(disableArray, 1);
+				$('ul#form-tabs li#img').removeClass('disabled');
+				$('ul#form-tabs li#narr').addClass('disabled');
+
+			 	losForm.imageArticleFields();
+
+			} else {
+
+				$('textarea#summary').attr('name', 'summary');
+				$('textarea#notes').attr('name', 'notes');
+				$('textarea#research-notes').attr('name', 'research_notes');
+
+				losForm.toggleDisable(disableArray);
+				$("input[name='img_freestanding']").attr('checked', false);
+				$('ul#form-tabs li#img').addClass('disabled');
+				$('ul#form-tabs li#narr').removeClass('disabled');
+
+			 	losForm.imageArticleFields(1);
+			}
+		})
+
+	 },
+
+	 imageArticleFields: function(p = 0) {
+
+			fields = ['volume', 'issue', 'date-published'];
+
+			_.each(fields, function(e) {
+
+				value = (p == 0) ? $('input#' + e).val() : '';
+				e = (e === 'date-published') ? 'date' : e;
+				$('input#img-' + e).val(value);
+
+			});
+	 },
 
 // for an image, if article-related is selected, populates the image data fields with the appropriate article level values
 // and repopulates them if the fields change
-	 appendImage: function() {
+	 imageArticleCheck: function() {
 
-	 	$("input[name='article_related']").change(function() {
+	 	toggle = 0;
 
-	 		if( $(this).is(':checked') === true) {
+	 	$("input[name='img_freestanding']").change(function() {
+	
+			disableArray = ['input#title', 'input#author', 'input#location', 'input#page-start', 
+							'input#page-end', 'input#volume', 'input#issue', 'input#date-published'];
 
-	 			losForm.appendInput('img_volume', $('input#volume').val());
-	 			losForm.appendInput('img_issue', $('input#issue').val());
-	 			losForm.appendInput('img_date', $('input#date-published').val());
+ 			losForm.toggleDisable(disableArray, toggle);
+ 			losForm.imageArticleFields(!toggle);
 
-	 			articleFields = ['volume', 'issue', 'page', 'date-published'];
-
-	 			_.each(articleFields, function(e) {
-
-	 				$('input#' + e).change(function() {
-
-			 			losForm.appendInput('img_volume', $('input#volume').val());
-			 			losForm.appendInput('img_issue', $('input#issue').val());
-			 			losForm.appendInput('img_date', $('input#date-published').val());
-	 				});
-	 			});
-	 		}
+ 			toggle = !toggle;
 	 	});
 	 },
 
@@ -529,7 +550,9 @@ var losForm = {
 
 		losForm.formValidation();
 		losForm.typeList();
-		losForm.appendImage();
+		losForm.imageLists();
+		losForm.imageCheck();
+		losForm.imageArticleCheck();
 		losForm.tagsLists();
 		losForm.themesList();
 		losForm.mainList();
