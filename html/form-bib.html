@@ -1,4 +1,4 @@
-<div class="tab-pane fade in active" id="bib">
+<div class="tab-pane fade in active" id="article">
 	<fieldset>
 
 		<legend>bibliographic information</legend>
@@ -8,7 +8,7 @@
 		<div class='row'>
 		<div class="form-group col-md-4">
 			<label  for="title">Title</label>
-			<input class="form-control" id="title" name="title" type="text" placeholder="loading . . .">
+			<input class="form-control" id="title" name="title" type="text">
 		</div>
 
 		<!-- AUTHOR -->
@@ -16,7 +16,8 @@
 			<label  for="author">Author</label>
 				<input class="form-control" id="author" name="author" type="text">
 		</div>
-				<!-- TYPE -->
+		
+		<!-- TYPE -->
 		<div class="form-group col-md-4">
 			<label for="type">Type</label>
 				<input type='text' id="type" name="type">
@@ -49,9 +50,19 @@
 				</div>
 		</div>
 
-		<div class='row'>
+		<!-- WHETHER AN IMAGE IS PART OF AN ARTICLE -->
+		<div class="form-group col-md-4" id='article-related'>
+			<label>&nbsp;</label>
+			<label class='form-control' disabled='disabled'>
+				<input disabled='disabled' type='checkbox' name='article_related' value='1'>
+				is this image related to an article?
+			</label>
 
 		</div>
+
+		</div>
+
+		<div class='row'>
 
 		<!-- VOLUME -->
 		<div class="form-group col-md-2" id='volume-group'>

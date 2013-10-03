@@ -30,32 +30,54 @@ var losForm = {
 	// functions for validating entries ... add more id's to the array to validate additional fields
 	formValidation: function(){
 
-		inputIDs = ['page-start', 'page-end', 'issue', 'volume'];
+		first = 1;
 
-		function validateNum(e) {
-			$('input#' + e).change(function() {
-				val = Number($(this).val());
-				if(val > 0) $('#' + e + '-group').removeClass('has-error');
-				if(!val) $('#' + e + '-group').addClass('has-error');
-				disableSubmit();
+		inputIDs = ['page-start', 'page-end', 'issue', 'volume', 'date-published'];
+
+		function validateNum(array) {
+
+			_.each(array, function(e) {
+
+				$('input#' + e).change(function() {
+
+					if(e == 'date-published') { 
+
+						val = $(this).val();
+						reg = new RegExp(/\d{2}-\d{4}/);
+						if($(this).val().match(reg)) $('#date-published-group').removeClass('has-error');
+						if(!$(this).val().match(reg)) $('#date-published-group').addClass('has-error');
+
+					}else{
+
+						val = Number($(this).val());
+						if(val > 0) $('#' + e + '-group').removeClass('has-error');
+						if(!val) $('#' + e + '-group').addClass('has-error');
+					}
+
+					fieldVals = [];
+
+					_.each(array, function(e){
+						fieldVals.push($('input#' + e).val());
+					});
+
+					disableSubmit(fieldVals);
+				});
 			});
 		}
 
-		function disableSubmit() {
+		function disableSubmit(array) {
 
-			if($('.has-error').length != 0) $('input#form-submit').attr('disabled','disabled');
-			else $('input#form-submit').removeAttr('disabled');
+			empty = false;
+			_.each(array, function(e) {
+				empty = (e.length == 0) ? true : empty;
+			});
+
+			if($('.has-error').length != 0 || empty == true ) { 
+				$('input#form-submit').attr('disabled','disabled');
+			} else $('input#form-submit').removeAttr('disabled');
 		}
 
-		_.each(inputIDs, function(e) { validateNum(e); })
-
-		$('input#date-published').change(function() {
-
-			reg = new RegExp(/\d{2}-\d{4}/);
-			if($(this).val().match(reg)) $('#date-published-group').removeClass('has-error');
-			if(!$(this).val().match(reg)) $('#date-published-group').addClass('has-error');
-			disableSubmit();
-		})
+		validateNum(inputIDs);
 	},
 
 // adds the themes to the themes list
@@ -110,12 +132,37 @@ var losForm = {
 	},
 
 // initializes input#type as a select2 object so the select2 library can do its magic
+// if image is selected, makes the image fields available, disables the narration fields, sets up
+// the select lists (image type, page placement) under the image tab
 	typeList: function() {
 		$('input#type').select2({
 			width: '100%',
-			tags: ['Advertisement', 'Editorial', 'Fiction', 'Nonfiction', 'Poetry'],
+			tags: ['Advertisement', 'Editorial', 'Fiction', 'Image', 'Nonfiction', 'Poetry'],
 			createSearchChoice: function(term){return '';},
 		});
+
+		$('input#type').change(function() {
+
+			if($(this).val() == 'Image') {
+			
+				$("#article-related >").removeAttr('disabled','disabled');
+				$("#article-related > >").removeAttr('disabled','disabled');
+				$('textarea#img-description').removeAttr('disabled', 'disabled');
+				$('ul#form-tabs li#img').removeClass('disabled');
+				$('ul#form-tabs li#narr').addClass('disabled');
+
+				$('input#img-type').select2({tags: ['drawing', 'engraving', 'photograph']});
+				$('input#img-placement').select2({tags: ['1', '2', '3', '4', '5', '6']});
+
+			} else {
+
+				$("#article-related >").attr('disabled','disabled');
+				$("#article-related > >").attr('disabled','disabled');
+				$('textarea#img-description').attr('disabled', 'disabled');
+				$('ul#form-tabs li#img').addClass('disabled');
+				$('ul#form-tabs li#narr').removeClass('disabled');
+			}
+		})
 	},
 
 // helper function for appending info to a particular form input type, whether input or textarea
@@ -124,6 +171,35 @@ var losForm = {
 		if($('form input#' + domID)[0]) $('input#' + domID).attr('value', value);
 		if($('form textarea#' + domID)[0]) $('textarea#' + domID).append(value);
 		if($("input[name='" + key + "']")[0]) $("input[name='" + key + "']").attr('checked', value);
+	 },
+
+
+// for an image, if article-related is selected, populates the image data fields with the appropriate article level values
+// and repopulates them if the fields change
+	 appendImage: function() {
+
+	 	$("input[name='article_related']").change(function() {
+
+	 		value = $(this).val();
+	 		if( value == 1) {
+
+	 			losForm.appendInput('img_volume', $('input#volume').val());
+	 			losForm.appendInput('img_issue', $('input#issue').val());
+	 			losForm.appendInput('img_date', $('input#date-published').val());
+
+	 			articleFields = ['volume', 'issue', 'page', 'date-published'];
+
+	 			_.each(articleFields, function(e) {
+
+	 				$('input#' + e).change(function() {
+
+			 			losForm.appendInput('img_volume', $('input#volume').val());
+			 			losForm.appendInput('img_issue', $('input#issue').val());
+			 			losForm.appendInput('img_date', $('input#date-published').val());
+	 				});
+	 			});
+	 		}
+	 	});
 	 },
 
 // helper function for returning a nicely formatted array for different purposes from data
@@ -149,21 +225,21 @@ var losForm = {
 // on ajax success appends Articles table json to form fields
 	appendArticle: function(id) {
 
-				$.getJSON('../includes/json.php?p=article&id=' + id, function(data) {
+		$.getJSON('../includes/json.php?p=article&id=' + id, function(data) {
 
-				article = data[0];
-				d = article.date_published.split('-');
-				article.date_published = d[1] + '-' + d[0];
+			article = data[0];
+			d = article.date_published.split('-');
+			article.date_published = d[1] + '-' + d[0];
 
-				article.type = article.type.charAt(0).toUpperCase() + article.type.substr(1); 
-				$('input#type').select2('val', [article.type]);
+			article.type = article.type.charAt(0).toUpperCase() + article.type.substr(1); 
+			$('input#type').select2('val', [article.type]);
 
-				recMessage = (article.reconciled == 1) ? "<span style='color: #5cb85c'><em>yes</em></span>" : "<span style='color: #428bca;'><em>nope</em></span>";
-				$('label#reconciled').append(recMessage);
+			recMessage = (article.reconciled == 1) ? "<span style='color: #5cb85c'><em>yes</em></span>" : "<span style='color: #428bca;'><em>nope</em></span>";
+			$('label#reconciled').append(recMessage);
 
-				_.each(_.keys(article), function(key){
-					losForm.appendInput(key, article[key]);
-				});
+			_.each(_.keys(article), function(key){
+				losForm.appendInput(key, article[key]);
+			});
 		});
 	},
 
@@ -447,6 +523,7 @@ var losForm = {
 
 		losForm.formValidation();
 		losForm.typeList();
+		losForm.appendImage();
 		losForm.tagsLists();
 		losForm.themesList();
 		losForm.mainList();
