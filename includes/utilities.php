@@ -706,6 +706,14 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 			}								
 			return query($sql);
 
+		case('locations'):
+
+				$sql = ($article_id == '1') ? 
+						"SELECT location, COUNT(*) as count FROM Articles GROUP BY location"
+					: 	"SELECT location FROM Articles GROUP BY location";
+
+			return query($sql);
+
 		case('test_table'):
 			$columnsArray = array('date_published', 'title', 'author', 'tag', 'theme');
 			$sql_columns = implode(',', $columnsArray);
