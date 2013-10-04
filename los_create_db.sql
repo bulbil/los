@@ -42,6 +42,7 @@ CREATE TABLE Images (
 	img_creator VARCHAR(128) NOT NULL,
 	img_engraver VARCHAR(128) NOT NULL,
 	img_date DATE NOT NULL,
+	img_type VARCHAR(64) NOT NULL,
 
 	PRIMARY KEY(img_id),
 	FOREIGN KEY(article_id) REFERENCES Articles(article_id)
@@ -77,10 +78,25 @@ CREATE TABLE Articles_Themes (
 	theme_id SMALLINT UNSIGNED,
 	reviewer_id TINYINT UNSIGNED,
 	if_main BOOLEAN NOT NULL,
-	if_image BOOLEAN NOT NULL,
 
 	PRIMARY KEY(article_id, theme_id, reviewer_id),
 	FOREIGN KEY(article_id) REFERENCES Articles(article_id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+	FOREIGN KEY(theme_id) REFERENCES Themes(theme_id)	
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE Images_Themes (
+
+	img_id SMALLINT UNSIGNED,
+	theme_id SMALLINT UNSIGNED,
+	reviewer_id TINYINT UNSIGNED,
+	if_main BOOLEAN NOT NULL,
+
+	PRIMARY KEY(img_id, theme_id, reviewer_id),
+	FOREIGN KEY(img_id) REFERENCES Images(img_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
 	FOREIGN KEY(theme_id) REFERENCES Themes(theme_id)	
@@ -114,10 +130,25 @@ CREATE TABLE Articles_Tags (
 	tag_id SMALLINT UNSIGNED,
 	reviewer_id TINYINT UNSIGNED,
 	if_main BOOLEAN NOT NULL,
-	if_image BOOLEAN NOT NULL,
 
 	PRIMARY KEY(reviewer_id, article_id, tag_id),
 	FOREIGN KEY(article_id) REFERENCES Articles(article_id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+	FOREIGN KEY(tag_id) REFERENCES Tags(tag_id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE Images_Tags (
+
+	img_id SMALLINT UNSIGNED,
+	tag_id SMALLINT UNSIGNED,
+	reviewer_id TINYINT UNSIGNED,
+	if_main BOOLEAN NOT NULL,
+
+	PRIMARY KEY(reviewer_id, img_id, tag_id),
+	FOREIGN KEY(img_id) REFERENCES Images(img_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
 	FOREIGN KEY(tag_id) REFERENCES Tags(tag_id)

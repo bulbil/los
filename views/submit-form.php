@@ -9,8 +9,8 @@ include '../includes/db.php';
 include '../includes/utilities.php';
 include '../includes/insert-form.php';
 
+include '../includes/render-submit-form.php';
+include '../html/footer.html';
+
 var_dump($_POST);
 echo_line('<br /><br />');
-var_dump($_SESSION);
-// include '../includes/render-submit-form.php';
-include '../html/footer.html';

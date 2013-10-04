@@ -60,16 +60,10 @@ var losForm = {
 						fieldVals.push($('input#' + e).val());
 					});
 
-					disableSubmit(fieldVals);
+					toggle = ($('.has-error').length != 0 || !_.every(fieldVals)) ? false : true; 
+					losForm.toggleDisable(['input#form-submit'],toggle);
 				});
 			});
-		}
-
-		function disableSubmit(array) {
-
-			if($('.has-error').length != 0 || !_.every(array) ) { 
-				$('input#form-submit').attr('disabled','disabled');
-			} else $('input#form-submit').removeAttr('disabled');
 		}
 
 		validateNum(inputIDs);
@@ -112,7 +106,6 @@ var losForm = {
 			});
 
 			losForm.appendTags(id);
-
 		});
 	},
 
@@ -137,6 +130,7 @@ var losForm = {
 		});
 	},
 
+// initializes inputs for image fields
 	imageLists: function() {
 
 		$('input#img-type').select2({tags: ['drawing', 'engraving', 'photograph']});
@@ -155,6 +149,7 @@ var losForm = {
 		if($("input[name='" + key + "']")[0]) $("input[name='" + key + "']").attr('checked', value);
 	 },
 
+// helper function for disabling form fields
 	toggleDisable: function (array, p = 0) {
 
 	 	_.each(array, function(e) {
@@ -163,6 +158,8 @@ var losForm = {
 	 	});
 	},
 
+// when image is selected as type makes the image tab available, disables the narration tab, changes the form
+// field names for summary fields so that $POST data has the right names for the database
 	imageCheck: function() {
 
 		$('input#type').change(function() {
@@ -174,6 +171,7 @@ var losForm = {
 				$('textarea#summary').attr('name', 'img_description');
 				$('textarea#notes').attr('name', 'img_notes');
 				$('textarea#research-notes').attr('name', 'img_research_notes');
+				$("input[name='id']").attr('name', 'img_id');
 
 				losForm.toggleDisable(disableArray, 1);
 				$('ul#form-tabs li#img').removeClass('disabled');
@@ -186,6 +184,7 @@ var losForm = {
 				$('textarea#summary').attr('name', 'summary');
 				$('textarea#notes').attr('name', 'notes');
 				$('textarea#research-notes').attr('name', 'research_notes');
+				$("input[name='img_id']").attr('name', 'id');
 
 				losForm.toggleDisable(disableArray);
 				$("input[name='img_freestanding']").attr('checked', false);
@@ -198,6 +197,7 @@ var losForm = {
 
 	 },
 
+// helper function appends or clears input for the article-synced image fields
 	 imageArticleFields: function(p = 0) {
 
 			fields = ['volume', 'issue', 'date-published'];
@@ -223,6 +223,7 @@ var losForm = {
 							'input#page-end', 'input#volume', 'input#issue', 'input#date-published'];
 
  			losForm.toggleDisable(disableArray, toggle);
+ 			losForm.toggleDisable(['input#form-submit'], !toggle);
  			losForm.imageArticleFields(!toggle);
 
  			toggle = !toggle;
@@ -286,6 +287,7 @@ var losForm = {
 		});
 	},
 
+// same as above but for reconciled reviews
 	appendRecReviews: function(id1, id2, id3) {
 
 		id3 = (typeof id3 !== 'undefined') ? id3 : '';
@@ -346,6 +348,7 @@ var losForm = {
 		}); 
 	},
 
+// same as above but for reconciled reviews
 	appendRecThemes: function(id1, id2, id3) {
 
 		id3 = (typeof id3 !== 'undefined') ? id3 : '';
@@ -427,6 +430,7 @@ var losForm = {
 		});
 	},
 
+// same as above but for reconciled reviews
 	appendRecTags: function(id1, id2, id3) {
 	
 		id3 = (typeof id3 !== 'undefined') ? id3 : '';
@@ -479,9 +483,6 @@ var losForm = {
 				// append reviewer main tag values to unordered lists
 				$('#main-review-1 ul').append("<li>" + review1tagsMain.join("</li><li>"));
 				$('#main-review-2 ul').append("<li>" + review2tagsMain.join("</li><li>"));
-
-				// losForm.recListsAddOnClick($('#main-review-1 ul li'), 'main');
-				// losForm.recListsAddOnClick($('#main-review-2 ul li'), 'main');
 			});
 		});
 	},
@@ -543,7 +544,6 @@ var losForm = {
 					$(this).css('background', '#ddd');
 					$('input#' + domID).select2('val', tagList);				
 				});
-
 	},
 
 	prepare: function() {

@@ -3,39 +3,49 @@
 <div class="col-md-6 col-md-offset-3">
 <?php
 // the main thing is comparing article ids and fields from $POST data and the db
-if(!isset($_SESSION['confirm'])) compare_fields();
-
+if(!isset($_SESSION['confirm'])) {
+	if (isset($_POST['img_freestanding'])) $_SESSION['confirm'] = 2;
+	else { 
+		compare_articles();
+		$_SESSION['confirm'] = '';
+	}
+}
 // sets the session confirm status based on successful submission of the confirm edit form
 if(isset($_POST['confirm'])) $_SESSION['confirm'] = $_POST['confirm'];
 
 // sets some variables depending on the state
-$confirm = (isset($_SESSION['confirm'])) ? $_SESSION['confirm'] : '';
+$confirm = $_SESSION['confirm'];
+
+var_dump($_SESSION);
+
 $form = (isset($_POST['form'])) ? $_POST['form'] : $_SESSION['form_data']['form'];
 $form_data = (isset($_SESSION['form_data'])) ? $_SESSION['form_data'] : $_POST;
+if($form_data['type'] == 'Image' && isset($form_data['img_freestanding'])) $confirm = 2;
 
 switch ($confirm) {
 
 	case 0: // 0 : adding a new article and new review/themes/tags
 	case 1: // 1 : db data and $POST data are identical
+	case 2: // 2 : freestanding image / no associated article
 			edit_tables($form_data, $form, $confirm);
 			echo return_alert($form);
 			unset($_SESSION['confirm']);
 			break;
 
-	case 2: // 2 : changes need to be confirmed
-	case 3: // 3 : being associated with a new article
+	case 3: // 3 : changes need to be confirmed
+	case 4: // 4 : being associated with a new article
 			echo render_confirm_form($confirm);
 			include "../html/footer.html";
 			exit();
 
-	case 4:	// 4 : error because id from the db and from $POST data don't match -- this could cause all kinds of trouble otherwise
+	case 5:	// 5 : error because id from the db and from $POST data don't match -- this could cause all kinds of trouble otherwise
 			$html = "<div class = 'row'><h4 class='alert-danger'><em>ERROR !</em><br /><br />I'm sorry Dave, I'm afraid I can't do that.
 			<br />Please check your bibliographic data.</h4><br />
 			<input type='button' class='btn btn-danger' onclick='window.history.back()' value='return to editing' /></div>";
 			echo $html;
 			unset($_SESSION['confirm']);
 			break;
-	case 5: // 5 : update based on $POST data from confirm form
+	case 6: // 6 : update based on $POST data from confirm form
 			foreach($_POST as $key=>$value) $form_data[$key] = $_POST[$key];
 			edit_tables($form_data, $form, $confirm);
 			echo return_alert($form);
@@ -55,11 +65,9 @@ function return_alert($str) {
 
 // checks to see if either the article id is provided or, if not, whether 
 // the page start + end, volume, issue correspond to an existing article in the db
-function compare_fields() {
+function compare_articles() {
 	// get rid of the reconciled field from the array	
 	$articles = $GLOBALS['articles'];
-	$images = $GLOBALS['images'];
-
 	unset($articles[9]);
 
 	// save the $POST data to insert it after the confirmation form
@@ -74,7 +82,7 @@ function compare_fields() {
 		// if no article id in the db, add an article + add review / themes / tags
 		if(!$db_id && $_POST['form'] == 'add') { $_SESSION['confirm'] = 0; }
 		// if there should be an article id in the db, throw an error
-		elseif(!$db_id) { $_SESSION['confirm'] = 4;}
+		elseif(!$db_id) { $_SESSION['confirm'] = 5;}
 		
 		else {
 			// gets an array of db data for the article to compare with the $POST data (plus some normalizing)
@@ -95,13 +103,13 @@ function compare_fields() {
 			if($post_id == $db_id || $_POST['form'] == 'add') {
 
 				// if there are no differences between the two arrays, skip the confirmation form
-				$_SESSION['confirm'] = ($if_same) ? 1 : 2;
+				$_SESSION['confirm'] = ($if_same) ? 1 : 3;
 
 			// in the hopefully rare case that the id from the db and the $POST form don't match, throw
 			// an error -- except if trying to add an existing review to
 			// to a different, existing article 
 			} else { 
-				$_SESSION['confirm'] = ($_POST['form'] == 'edit') ? 3 : 4; 
+				$_SESSION['confirm'] = ($_POST['form'] == 'edit') ? 4 : 5; 
 			}
 		}
 	} catch(PDOException $e) { echo $e->getMessage(); }
@@ -126,7 +134,7 @@ function render_confirm_form($int) {
 
 	$html = "<form action='submit-form.php' method='post'>";	
 	$html .= "<div class='row'><h4>";
-	$html .= ($int == 3) ? "Please confirm that you intend to associate this review with a different article."
+	$html .= ($int == 4) ? "Please confirm that you intend to associate this review with a different article."
 						: "Please confirm that you intend to edit an article's bibliographic information.";
 	$html .= "<br /><br />Values that appear in bold will be overwritten.</h4></div>";
 	
@@ -135,11 +143,11 @@ function render_confirm_form($int) {
 		$old_value = $_SESSION['db_data'][$column];
 		$new_value = $_POST[$column];
 
-		if($int == 3) $html .= render_compare_form($old_value,$new_value,$column);
+		if($int == 4) $html .= render_compare_form($old_value,$new_value,$column);
 		else $html .= ($old_value != $new_value) ? render_compare_form($old_value,$new_value,$column) : '';
 	}
 
-	$html .= "<input type='hidden' name='confirm' value='5'>";
+	$html .= "<input type='hidden' name='confirm' value='6'>";
 	if($int == 3) $html .=  "<input type='hidden' name='reassociate_id' value='" . $_SESSION['db_data']['id'] . "'>";
 	$html .= "<div class = 'row'><input type='submit' class='btn btn-warning' value='confirm'>";
 	$html .= "<input class='btn btn-primary col-md-offset-1' onclick='window.history.back()' value='return to editing'></div></div></form>";
