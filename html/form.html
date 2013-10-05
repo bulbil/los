@@ -7,6 +7,7 @@
     <form action="../views/submit-form.php" method="post">
     <input type="hidden" name="form" value = <?= "'" . $_GET['form'] . "'" ?> >
     <input type="hidden" name="id" value = <? echo "'" . ((isset($_GET['id'])) ? $_GET['id'] : 0) . "'"; ?> >
+    <input type="hidden" name="img_id" value = <? echo "'" . ((isset($_GET['id'])) ? $_GET['id'] : 0) . "'"; ?> >
     <input type="hidden" name="timestamp">
   
     <div class='row'>

@@ -41,8 +41,6 @@ function execute_image($array, $obj) {
 	// $array['img_placement'] = string_format($array['img_type'],'type');
 	if(!isset($array['article_id'])) { unset($columns[0]); }
 
-	var_dump($columns);
-
 	foreach($columns as $column) {
 		bind_value($array[$column], $obj, $column);
 	}
@@ -183,6 +181,13 @@ $article_check = array(
 	'page_end', 
 	'volume', 
 	'issue'
+	);
+
+$image_check = array(
+	'img_page', 
+	'img_volume', 
+	'img_issue',
+	'img_placement'
 	);
 
 $reviews = array(
@@ -373,14 +378,17 @@ function return_reviewer_id($str, $pdo) {
 }
 
 
-function return_article_id($row, $pdo) {
+function return_element_id($row, $pdo, $if_image = false) {
 
-	global $article_check;
-	foreach ($article_check as $check) $filterArray[] = $row[$check];
+	$table = (!$if_image) ? 'Articles' : 'Images';
+	$id = (!$if_image) ? 'article_id' : 'img_id';
+	$checks = (!$if_image) ? $GLOBALS['article_check'] : $GLOBALS['image_check'];
 
-	if(if_exists($filterArray, $article_check, 'Articles', $pdo)) {
-		$article_id = return_id('article_id', $filterArray, $article_check, 'Articles', $pdo);
-		return $article_id;
+	foreach ($checks as $check) $filterArray[] = $row[$check];
+
+	if(if_exists($filterArray, $checks, $table, $pdo)) {
+		$id = return_id($id, $filterArray, $checks, $table, $pdo);
+		return $id;
 	} else { return false;}
 }
 
@@ -545,27 +553,28 @@ function getFormTitle(){
 function table_start($array, $id, $padding ='') {
 
 	$html = "<div class='row'>";
-	$html .= "<div class='col-md-10 col-md-offset-1'>";
 	$html .= "<table class='table table-striped'";
 	$html .= "id='$id'><tr>";
 	foreach($array as $column) { $html .= '<th>' . $column . '</th>'; }
 	for($i = 0; $i < $padding; $i++) $html .= "<th>&nbsp;</th>";
 	$html .= '</tr>';
-	echo $html;
+	return $html;
 }
 
-function table_row($array, $table_columns, $id_column = '', $p = 'reviewer') {
+function table_row($array, $table_columns, $id_column = '', $p = 'article') {
 
 	$html = '<tr>';
 	foreach($table_columns as $column) { $html .= '<td>' . $array[$column] . '</td>'; }
 	
-	if($p == 'reviewer'){
-		if($array['reconciled'] == 0) $html .= "<td><a href='review-form.php?form=edit&id=" . $id_column . "'>edit </a>";
-		$html .= table_reconcile_cell($id_column, $array['reconciled']);
-		$html .= '</tr>';
+	switch($p) {
+		case ('article'): 
+			if($array['reconciled'] == 0) $html .= "<td><a href='review-form.php?form=edit&id=" . $id_column . "'>edit </a>";
+			$html .= table_reconcile_cell($id_column, $array['reconciled']); break;
+		case 'image':
+			$html .= "<td><a href='review-form.php?form=edit&id=" . $id_column . "&img=1'>edit </a>"; break;
 	}
-	
-	echo $html;
+	$html .= '</tr>';
+	return $html;
 }
 
 function table_reconcile_cell($id, $bool) {
@@ -606,13 +615,20 @@ function table_reconcile_cell($id, $bool) {
 
 function table_end(){
 
-	$html = '</div></div></table>';
-	echo $html;
+	$html = '</div></table></div></div>';
+	return $html;
+}
+
+function unset_session_vars() {
+	unset($_SESSION['confirm']);
+	unset($_SESSION['form_data']);
+	unset($_SESSION['db_article']);
+	unset($_SESSION['db_image']);
 }
 
 // for outputting json things
 
-function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id = '') {
+function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $if_image = false) {
 
 	function query($sql) {
 		$dbh = db_connect();
@@ -648,36 +664,52 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 					ORDER BY UNIX_TIMESTAMP(timestamp) DESC LIMIT 1";
 			return query($sql);
 
-		// 	all the data for a record from the Articles table for a particular article id
-		case('article'):
+		case('img_article'):
 
-			$sql = "SELECT * FROM Articles 
-					WHERE article_id = $article_id";
+			$sql = "SELECT article_id FROM Images WHERE img_id = $id";
+			return query($sql);
+
+		// 	all the data for a record from the Articles or Images table for a particular id
+		case('element'):
+
+			$table = (!$if_image) ? 'Articles' : 'Images';
+			$table_id = (!$if_image) ? 'article_id' : 'img_id';
+			$sql = "SELECT * FROM $table 
+					WHERE $table_id = $id";
 			return query($sql);
 
 		// 	all the data for a record from the Reviews table for a particular article id and reviewer id
 		case('review'):
 
-			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
-			$sql = "SELECT * FROM Reviews WHERE (article_id, reviewer_id) = ($article_id, $id)";
+			$table = (!$if_image) ? 'Reviews' : 'Image_Reviews';
+			$table_id = (!$if_image) ? 'article_id' : 'img_id';
+
+			$reviewer_id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
+			$sql = "SELECT * FROM $table WHERE ($table_id, reviewer_id) = ($id, $reviewer_id)";
 			return query($sql);
 
 		// 	all the themes for a review from the Articles_Themes table for a particular article id / reviewer_id
 		case('themes'):
 
-			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
+			$table = (!$if_image) ? 'Articles_Themes' : 'Images_Themes';
+			$table_id = (!$if_image) ? 'article_id' : 'img_id';
+
+			$reviewer_id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
 			$sql = 	"SELECT theme, if_main FROM Themes 
-					JOIN Articles_Themes ON Articles_Themes.theme_id = Themes.theme_id 
-					WHERE (Articles_Themes.article_id, Articles_Themes.reviewer_id) = ($article_id, $id) ORDER BY theme";
+					JOIN $table ON $table.theme_id = Themes.theme_id
+					WHERE ($table.$table_id, $table.reviewer_id) = ($id, $reviewer_id) ORDER BY theme";
 			return query($sql);
 
 		// 	all the tags for a review from the Articles_Tags table for a particular article id / reviewer_id
 		case('tags'):
 
-			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
+			$table = (!$if_image) ? 'Articles_Tags' : 'Images_Tags';
+			$table_id = (!$if_image) ? 'article_id' : 'img_id';
+
+			$reviewer_id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
 			$sql = "SELECT category, tag, if_main FROM Tags 
-					JOIN Articles_Tags ON Tags.tag_id = Articles_Tags.tag_id 
-					WHERE (Articles_Tags.article_id, Articles_Tags.reviewer_id) = ($article_id, $id) ORDER BY tag";
+					JOIN $table ON Tags.tag_id = $table.tag_id
+					WHERE ($table.$table_id, $table.reviewer_id) = ($id, $reviewer_id) ORDER BY tag";
 			return query($sql);
 
 		// 	all the themes
@@ -732,6 +764,8 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 function js_form_functions() {
 
 		$view = (isset($_GET['form'])) ? $_GET['form'] : '';
+		$if_image = (isset($_GET['img'])) ? 1 : 0; 
+
 		$js = '<script>';
 		// $js .= 'losForm.prepare;';
 
@@ -748,7 +782,7 @@ function js_form_functions() {
 
 				case('edit'):
 					$a_id = $_GET['id'];
-					$js .= "losForm.editReview($a_id);";
+					$js .= "losForm.editReview($a_id, $if_image);";
 					$js .= '</script>';
 					return $js;
 

@@ -1,21 +1,30 @@
 <?php
 //attempts to connect to the los database
 
-function edit_tables($array, $str, $int){
+function edit_tables($array, $str, $int, $if_image = false){
 
-	if(isset($array['id'])) $article_id = (isset($_SESSION['db_data']) && $_SESSION['db_data']['id'] != $array['id']) ? $_SESSION['db_data']['id'] : $array['id'];
-	if(isset($array['img_id'])) $img_id = (isset($_SESSION['db_data']) && $_SESSION['db_data']['img_id'] != $array['img_id']) ? $_SESSION['db_data']['id'] : $array['img_id'];
+	if(isset($array['id'])) $article_id = (isset($_SESSION['db_article']) && $_SESSION['db_article']['id'] != $array['id']) ? $_SESSION['db_article']['id'] : $array['id'];
+	else $article_id = $_SESSION['db_image']['article_id'];
 
+	if($if_image) $img_id = (isset($_SESSION['db_image']) && $_SESSION['db_image']['img_id'] != $array['img_id']) ? $_SESSION['db_image']['img_id'] : $array['img_id'];
+	echo_line($img_id);
 	try {
 
 		$dbh = db_connect();
 
-		if($int == 2) { echo_line('fire'); edit_images_table($array, $img_id, $str, $dbh); }		
-		elseif($str == 'reconcile' || $int != 2 || $int != 1) { edit_articles_table($array, $article_id, $str, $dbh); }
+		if($int == 2) edit_images_table($array, $img_id, $str, $dbh);
+		elseif($if_image) {
+			edit_articles_table($array, $article_id, $str, $dbh);
+			$article_id = ($article_id > 0) ? $article_id : $dbh->lastInsertId();
+			edit_images_table($array, $img_id, $str, $dbh, $article_id);
+		}
+		elseif($str == 'reconcile' || $int != 1) edit_articles_table($array, $article_id, $str, $dbh);
 
 		$reviewer_id = ($str == 'reconcile' || $str == 'recedit') ? '9' : $_SESSION['reviewer_id'];		
 
-		if(isset($array['img_id'])) {
+		echo_line($if_image);
+
+		if($if_image) {
 			$id = ($img_id != 0) ? $img_id : $dbh->lastInsertId();
 			edit_image_reviews_table($array, $id, $reviewer_id, $str, $dbh);
 		}
@@ -44,16 +53,18 @@ function edit_articles_table($array, $article_id, $str, $pdo) {
 	execute_article($array, $stmt_articles, $rec);
 }
 
-function edit_images_table($array, $img_id, $article_id, $str, $pdo) {
+function edit_images_table($array, $img_id, $str, $pdo, $article_id = 0) {
 
 	$columns = $GLOBALS['images'];
 
-	if(!isset($array['article_id'])) unset($columns[0]);
+	if($article_id == 0) unset($columns[0]);
+	else $array['article_id'] = $article_id;
 
 	if($img_id) $sql = sql_implode($columns, 'Images', 'update', array('img_id'), array($img_id));
 	$stmt_images = (isset($sql)) ? $pdo->prepare($sql) : prepare_pdo_statement($columns, 'Images', $pdo);
 
 	$array['img_date'] = string_format($array['img_date'], 'date_submit');
+	$array['img_rotated'] = (isset($array['img_rotated'])) ? $array['img_rotated'] : 0;
 
 	execute_image($array, $stmt_images);
 }
@@ -64,7 +75,6 @@ function edit_reviews_table($array, $article_id, $reviewer_id, $str, $pdo){
 	global $reviews;
 
 	if(($str == 'edit' && $array['id'] == $article_id) || $str == 'recedit') { 
-
 		$sql = sql_implode($reviews, 'Reviews', 'update', array('article_id', 'reviewer_id'), array($article_id, $reviewer_id));
 	}
 
@@ -84,7 +94,6 @@ function edit_image_reviews_table($array, $img_id, $reviewer_id, $str, $pdo){
 	global $image_reviews;
 
 	if($str == 'edit' && $array['img_id'] == $img_id) { 
-
 		$sql = sql_implode($image_reviews, 'Image_Reviews', 'update', array('img_id', 'reviewer_id'), array($img_id, $reviewer_id));
 	}
 
@@ -92,7 +101,6 @@ function edit_image_reviews_table($array, $img_id, $reviewer_id, $str, $pdo){
 	
 	// normalizing a few fields
 	$array['timestamp'] = date('Y-m-d H:i:s');
-	$array['img_rotated'] = (isset($array['img_rotated'])) ? $array['img_rotated'] : 0;
 
 	//logic for executing statements
 	execute_image_review($img_id, $reviewer_id, $array, $stmt_image_reviews);
@@ -102,7 +110,7 @@ function edit_image_reviews_table($array, $img_id, $reviewer_id, $str, $pdo){
 function edit_themes_table($array, $id, $reviewer_id, $str, $pdo) {
 
 	$if_image = ($array['type'] == 'Image') ? true : false;
-	$table = (!$if_image) ? 'Article_Themes' : 'Images_Themes';
+	$table = (!$if_image) ? 'Articles_Themes' : 'Images_Themes';
 	$columns = (!$if_image) ? $GLOBALS['articles_themes'] : $GLOBALS['images_themes'];
 
 	$stmt_themes = prepare_pdo_statement($columns, $table, $pdo);
