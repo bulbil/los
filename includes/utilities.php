@@ -33,7 +33,7 @@ function execute_article($array, $obj, $rec = 0) {
 }
 
 // for getting stuff into the images table
-function execute_image($array, $obj) {
+function execute_image($array, $obj, $article_id = null) {
 
 	$columns = $GLOBALS['images'];
 
@@ -41,7 +41,9 @@ function execute_image($array, $obj) {
 	// $array['img_placement'] = string_format($array['img_type'],'type');
 	if(!isset($array['article_id'])) { unset($columns[0]); }
 
+	var_dump($obj);
 	foreach($columns as $column) {
+		echo_line($column . ': ' . $array[$column]);
 		bind_value($array[$column], $obj, $column);
 	}
 	$obj->execute();
@@ -56,7 +58,6 @@ function execute_review($article_id, $reviewer_id, $array, $obj) {
 	$array['timestamp'] = ($array['timestamp']) ? $array['timestamp'] : date('Y-m-d H:i:s');		
 
 	foreach($reviews as $column) {
-
 		bind_value($array[$column], $obj, $column);
 	}
 	$obj->execute();
@@ -177,8 +178,9 @@ $images = array(
 	);
 
 $article_check = array(
-	'page_start', 
-	'page_end', 
+	// 'page_start', 
+	// 'page_end',
+	'article_title',
 	'volume', 
 	'issue'
 	);
@@ -500,6 +502,12 @@ function string_format($str, $param = 'default') {
 
 			$d = explode('-',$str);
 			return JDMonthName($d[1], 1) . ' ' . $d[0];
+
+		case('img_rotated'):
+			
+			$str = strtolower($str);	
+			$bool = (preg_match('/no/', $str)) ? 0 : 1;
+			return $bool;
 
 		case('timestamp'): 	
 

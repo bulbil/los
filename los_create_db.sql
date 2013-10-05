@@ -43,6 +43,9 @@ CREATE TABLE Images (
 	img_engraver VARCHAR(128) NOT NULL,
 	img_date DATE NOT NULL,
 	img_type VARCHAR(64) NOT NULL,
+	img_rotated BOOLEAN NOT NULL,
+	img_placement VARCHAR(16) NOT NULL,
+
 
 	PRIMARY KEY(img_id),
 	FOREIGN KEY(article_id) REFERENCES Articles(article_id)
@@ -188,8 +191,6 @@ CREATE TABLE Image_Reviews (
 	img_description MEDIUMTEXT NOT NULL,
 	img_notes MEDIUMTEXT NOT NULL,
 	img_research_notes MEDIUMTEXT NOT NULL,
-	img_rotated BOOLEAN NOT NULL,
-	img_placement VARCHAR(16) NOT NULL,
 
 	PRIMARY KEY(img_review_id),
 	FOREIGN KEY(reviewer_id) REFERENCES Reviewers(reviewer_id)
