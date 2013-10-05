@@ -7,16 +7,18 @@
     <form action="../views/submit-form.php" method="post">
     <input type="hidden" name="form" value = <?= "'" . $_GET['form'] . "'" ?> >
     <input type="hidden" name="id" value = <? echo "'" . ((isset($_GET['id'])) ? $_GET['id'] : 0) . "'"; ?> >
+    <input type="hidden" name="img_id" value = <? echo "'" . ((isset($_GET['id'])) ? $_GET['id'] : 0) . "'"; ?> >
     <input type="hidden" name="timestamp">
   
     <div class='row'>
       <ul id="form-tabs" class="nav nav-tabs">
-        <li class="active"><a href="#bib" data-toggle="tab">BIBLIOGRAPHIC</a></li>
+        <li class="active"><a href="#article" data-toggle="tab">ARTICLE</a></li>
         <li><a href="#tags" data-toggle="tab">TAGS</a></li>
-        <li><a href="#narration" data-toggle="tab">NARRATION</a></li>
+        <li id='narr'><a href="#narration" data-toggle="tab">NARRATION</a></li>
         <li><a href="#summary-and-themes" data-toggle="tab">SUMMARY &amp; THEMES</a></li>
+        <li class='disabled' id='img'><a href="#image-pane" data-toggle="tab">IMAGE</a></li>
       </ul>
-    <input type='submit' class="btn btn-warning pull-right" id="form-submit"  value='submit'>
+    <input type='submit' class="btn btn-warning pull-right" id="form-submit" disabled='disabled' value='submit'>
     </div>
     <div id="form-tabs-content" class="tab-content">
 

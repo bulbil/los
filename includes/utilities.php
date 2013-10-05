@@ -32,6 +32,21 @@ function execute_article($array, $obj, $rec = 0) {
 	$obj->execute();
 }
 
+// for getting stuff into the images table
+function execute_image($array, $obj, $article_id = null) {
+
+	$columns = $GLOBALS['images'];
+
+	$array['img_type'] = string_format($array['img_type'],'type');
+
+	if(!$array['article_id']) unset($columns[0]);
+
+	foreach($columns as $column) {
+		bind_value($array[$column], $obj, $column);
+	}
+	$obj->execute();
+}
+
 function execute_review($article_id, $reviewer_id, $array, $obj) {
 
 	global $reviews;
@@ -41,17 +56,32 @@ function execute_review($article_id, $reviewer_id, $array, $obj) {
 	$array['timestamp'] = ($array['timestamp']) ? $array['timestamp'] : date('Y-m-d H:i:s');		
 
 	foreach($reviews as $column) {
+		bind_value($array[$column], $obj, $column);
+	}
+	$obj->execute();
+}
+
+function execute_image_review($img_id, $reviewer_id, $array, $obj) {
+
+	global $image_reviews;
+
+	$array['img_id'] = $img_id;
+	$array['reviewer_id'] = $reviewer_id;
+	$array['timestamp'] = ($array['timestamp']) ? $array['timestamp'] : date('Y-m-d H:i:s');		
+
+	foreach($image_reviews as $column) {
 
 		bind_value($array[$column], $obj, $column);
 	}
 	$obj->execute();
 }
 
-function execute_article_themes($article_id, $reviewer_id, $str, $obj, $pdo) {
+function execute_themes($id, $reviewer_id, $str, $obj, $pdo, $if_image = false) {
 
-	global $articles_themes;
+	$table = (!$if_image) ? 'Articles_Themes' : 'Images_Themes';
+	$columns = (!$if_image) ? $GLOBALS['articles_themes'] : $GLOBALS['images_themes'];
 
-	$sql = "DELETE FROM Articles_Themes WHERE (`article_id`, `reviewer_id`) = ('$article_id', '$reviewer_id')";
+	$sql = "DELETE FROM $table WHERE ($columns[0], `reviewer_id`) = ('$id', '$reviewer_id')";
 	$pdo->query($sql);
 
 	foreach(string_format($str, 'array') as $theme) {
@@ -63,11 +93,11 @@ function execute_article_themes($article_id, $reviewer_id, $str, $obj, $pdo) {
 				
 				if($theme_id) {
 					
-					if (!if_exists(array($article_id, $theme_id, $reviewer_id), $articles_themes, 'Articles_Themes', $pdo)){			
-		
-						bind_value($theme_id, $obj, 'theme_id');
-						bind_value($article_id, $obj, 'article_id');
-						bind_value($reviewer_id, $obj, 'reviewer_id');			
+					if (!if_exists(array($id, $theme_id, $reviewer_id), $columns, $table, $pdo)){
+
+						bind_value($id, $obj, $columns[0]);						
+						bind_value($theme_id, $obj, $columns[1]);
+						bind_value($reviewer_id, $obj, $columns[2]);			
 						$obj->execute();
 		
 					} else echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> already attached to this review');
@@ -79,16 +109,18 @@ function execute_article_themes($article_id, $reviewer_id, $str, $obj, $pdo) {
 
 
 // takes a string of tags delimited by semicolons, inserts the tag into Tags table if new and associates tags with articles and reviewers
-function execute_article_tags($array, $category, $article_id, $reviewer_id, $obj, $pdo){
+function execute_tags($array, $category, $id, $reviewer_id, $obj, $pdo, $if_image = false){
 
-	global $articles_tags;
+	$table = (!$if_image) ? 'Articles_Tags' : 'Images_Tags';
+	$columns = (!$if_image) ? $GLOBALS['articles_tags'] : $GLOBALS['images_tags'];
 
 	foreach (string_format($array, 'array') as $tag){
 
 		$tag = string_format($tag);
-		if (strlen($tag) > 1 &&	$tag != 'n/a'){	
+		if (strlen($tag) > 1 &&	$tag != 'n/a' && $tag != 'na'){	
 
 			$tag_id = return_id('tag_id', array($tag, $category), array('tag', 'category'), 'Tags', $pdo);
+			
 			if($tag_id == 0) {
 
 				$tag = $pdo->quote($tag);
@@ -96,44 +128,16 @@ function execute_article_tags($array, $category, $article_id, $reviewer_id, $obj
 				$tag_id = $pdo->lastInsertId();
 			}
 
-			if (!if_exists(array($article_id, $tag_id, $reviewer_id), $articles_tags, 'Articles_Tags', $pdo)){
-				bind_value($tag_id, $obj, 'tag_id');
-				bind_value($article_id, $obj, 'article_id');
-				bind_value($reviewer_id, $obj, 'reviewer_id');
+			if (!if_exists(array($id, $tag_id, $reviewer_id), $columns, $table, $pdo)){
+
+				bind_value($id, $obj, $columns[0]);				
+				bind_value($tag_id, $obj, $columns[1]);
+				bind_value($reviewer_id, $obj, $columns[2]);
 				$obj->execute();
 				}
 		} 
 	}
 }	
-
-// function edit_article_tags($array, $category, $article_id, $reviewer_id, $obj, $pdo){
-
-// 	foreach (string_format($array, 'array') as $tag){
-// 		$tag = string_format($tag);
-
-// 		if (strlen($tag) > 1 &&	$tag != 'n/a'){	
-
-// 			$tag_id = return_id('tag_id', array($tag, $category), array('tag_id', 'category'), 'Tags', $pdo);
-
-// 			if(!$tag_id) {
-
-// 				$tag = $pdo->quote($tag);
-// 				insert_value($tag, 'Tags', 'tag', $pdo, $category, 'category'); 
-// 				$tag_id = $pdo->lastInsertId();
-// 			} 
-
-// 			// just in case the tag appears twice in the same category with reference to the same article
-// 			if (!if_exists(array($tag_id, $article_id), array('tag_id', 'article_id'), 'Articles_Tags', $pdo)){
-				
-// 				bind_value($tag_id, $obj, 'tag_id');
-// 				bind_value($article_id, $obj, 'article_id');
-// 				bind_value($reviewer_id, $obj, 'reviewer_id');
-// 				$obj->execute();
-// 			}		
-// 		} 
-// 	}
-// }	
-
 
 /////////////////////////////////////////////////////////
 //
@@ -156,11 +160,33 @@ $articles = array(
 	'reconciled'
 	);
 
+$images = array(
+	'article_id',
+	'img_caption',
+	'img_type',
+	'img_volume',
+	'img_issue',
+	'img_page',
+	'img_creator',
+	'img_engraver',
+	'img_date',
+	'img_rotated',
+	'img_placement' 
+	);
+
 $article_check = array(
-	'page_start', 
-	'page_end', 
+	// 'page_start', 
+	// 'page_end',
+	'title',
 	'volume', 
 	'issue'
+	);
+
+$image_check = array(
+	'img_page', 
+	'img_volume', 
+	'img_issue',
+	'img_placement'
 	);
 
 $reviews = array(
@@ -176,14 +202,35 @@ $reviews = array(
 	'narration_tenseshift'
 	);
 
+$image_reviews = array(
+	'img_id',
+	'reviewer_id',
+	'timestamp',
+	'img_description',
+	'img_notes',
+	'img_research_notes'
+	);
+
 $articles_themes = array(
 	'article_id',
 	'theme_id',
 	'reviewer_id'
 	);
 
+$images_themes = array(
+	'img_id',
+	'theme_id',
+	'reviewer_id'
+	);
+
 $articles_tags = array(
 	'article_id',
+	'tag_id',
+	'reviewer_id'
+	);
+
+$images_tags = array(
+	'img_id',
 	'tag_id',
 	'reviewer_id'
 	);
@@ -330,14 +377,17 @@ function return_reviewer_id($str, $pdo) {
 }
 
 
-function return_article_id($row, $pdo) {
+function return_element_id($row, $pdo, $if_image = false) {
 
-	global $article_check;
-	foreach ($article_check as $check) $filterArray[] = $row[$check];
+	$table = (!$if_image) ? 'Articles' : 'Images';
+	$id = (!$if_image) ? 'article_id' : 'img_id';
+	$checks = (!$if_image) ? $GLOBALS['article_check'] : $GLOBALS['image_check'];
 
-	if(if_exists($filterArray, $article_check, 'Articles', $pdo)) {
-		$article_id = return_id('article_id', $filterArray, $article_check, 'Articles', $pdo);
-		return $article_id;
+	foreach ($checks as $check) $filterArray[] = $row[$check];
+
+	if(if_exists($filterArray, $checks, $table, $pdo)) {
+		$id = return_id($id, $filterArray, $checks, $table, $pdo);
+		return $id;
 	} else { return false;}
 }
 
@@ -361,39 +411,19 @@ function insert_theme_id($str, $obj) {
 	$obj->execute();
 }
 
-
-// updates boolean column for Articles table
-// function update_reconciled($str, $pdo) {
-
-// 	$sql = "UPDATE Articles SET reconciled = 1 WHERE article_id = ?";
-// 	$stmt = $pdo->prepare($sql);
-// 	$stmt->execute(array($str));
-// }
-
-$articles_themes = array(
-	'article_id',
-	'theme_id',
-	'reviewer_id'
-	);
-
-$articles_tags = array(
-	'article_id',
-	'tag_id',
-	'reviewer_id'
-	);
-
 // updates boolean column for Themes and Tags tables
-function update_main($str, $article_id, $reviewer_id, $pdo) {
+function update_main($str, $article_id, $reviewer_id, $pdo, $if_image = false) {
 
-	global $articles_themes;
-	global $articles_tags;
+	$theme_table = (!$if_image) ? 'Articles_Themes' : 'Images_Themes';
+	$tag_table = (!$if_image) ? 'Articles_Tags' : 'Images_Tags';
+	$themes_columns = (!$if_image) ? $GLOBALS['articles_themes'] : $GLOBALS['images_themes'];
+	$tags_columns = (!$if_image) ? $GLOBALS['articles_tags'] : $GLOBALS['images_tags'];
 
-	echo_line($str);
 	$id = return_id('theme_id', array($str), array('theme'), 'Themes', $pdo);
 	if($id) { 
-		echo_line('theme id ' . $id);
-		$themes_array = implode(' = ? AND ', $articles_themes);
-		$sql = "UPDATE Articles_Themes SET `if_main` = '1' 
+
+		$themes_array = implode(' = ? AND ', $themes_columns);
+		$sql = "UPDATE $theme_table SET `if_main` = '1' 
 				WHERE $themes_array = ?";
 
 		$stmt = $pdo->prepare($sql);
@@ -401,15 +431,13 @@ function update_main($str, $article_id, $reviewer_id, $pdo) {
 	}else{
 
 		$id = return_id('tag_id', array($str), array('tag'), 'Tags', $pdo);
-		echo_line('tag id ' . $id);
 		if($id) {
-			$tags_array = implode(' = ? AND ', $articles_tags);
-			$sql = "UPDATE Articles_Tags SET `if_main` = '1' 
+			$tags_array = implode(' = ? AND ', $tags_columns);
+			$sql = "UPDATE $tag_table SET `if_main` = '1' 
 					WHERE $tags_array = ?";
 			$stmt = $pdo->prepare($sql);
 		} else { echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $str . '</strong> main not found ... check data'); return;}
 	}
-	echo_line($id);
 	$stmt->execute(array($article_id, $id, $reviewer_id)); 
 }
 
@@ -469,6 +497,12 @@ function string_format($str, $param = 'default') {
 			$d = explode('-',$str);
 			return JDMonthName($d[1], 1) . ' ' . $d[0];
 
+		case('img_rotated'):
+			
+			$str = strtolower($str);	
+			$bool = (preg_match('/no/', $str)) ? 0 : 1;
+			return $bool;
+
 		case('timestamp'): 	
 
 				$d = DateTime::createFromFormat('n/j/Y G:i:s', $str);
@@ -521,27 +555,28 @@ function getFormTitle(){
 function table_start($array, $id, $padding ='') {
 
 	$html = "<div class='row'>";
-	$html .= "<div class='col-md-10 col-md-offset-1'>";
 	$html .= "<table class='table table-striped'";
 	$html .= "id='$id'><tr>";
 	foreach($array as $column) { $html .= '<th>' . $column . '</th>'; }
 	for($i = 0; $i < $padding; $i++) $html .= "<th>&nbsp;</th>";
 	$html .= '</tr>';
-	echo $html;
+	return $html;
 }
 
-function table_row($array, $table_columns, $id_column = '', $p = 'reviewer') {
+function table_row($array, $table_columns, $id_column = '', $p = 'article') {
 
 	$html = '<tr>';
 	foreach($table_columns as $column) { $html .= '<td>' . $array[$column] . '</td>'; }
 	
-	if($p == 'reviewer'){
-		if($array['reconciled'] == 0) $html .= "<td><a href='review-form.php?form=edit&id=" . $id_column . "'>edit </a>";
-		$html .= table_reconcile_cell($id_column, $array['reconciled']);
-		$html .= '</tr>';
+	switch($p) {
+		case ('article'): 
+			if($array['reconciled'] == 0) $html .= "<td><a href='review-form.php?form=edit&id=" . $id_column . "'>edit </a>";
+			$html .= table_reconcile_cell($id_column, $array['reconciled']); break;
+		case 'image':
+			$html .= "<td><a href='review-form.php?form=edit&id=" . $id_column . "&img=1'>edit </a>"; break;
 	}
-	
-	echo $html;
+	$html .= '</tr>';
+	return $html;
 }
 
 function table_reconcile_cell($id, $bool) {
@@ -582,13 +617,20 @@ function table_reconcile_cell($id, $bool) {
 
 function table_end(){
 
-	$html = '</div></div></table>';
-	echo $html;
+	$html = '</div></table></div></div>';
+	return $html;
+}
+
+function unset_session_vars() {
+	unset($_SESSION['confirm']);
+	unset($_SESSION['form_data']);
+	unset($_SESSION['db_article']);
+	unset($_SESSION['db_image']);
 }
 
 // for outputting json things
 
-function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id = '') {
+function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $if_image = false) {
 
 	function query($sql) {
 		$dbh = db_connect();
@@ -624,36 +666,52 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 					ORDER BY UNIX_TIMESTAMP(timestamp) DESC LIMIT 1";
 			return query($sql);
 
-		// 	all the data for a record from the Articles table for a particular article id
-		case('article'):
+		case('img_article'):
 
-			$sql = "SELECT * FROM Articles 
-					WHERE article_id = $article_id";
+			$sql = "SELECT article_id FROM Images WHERE img_id = $id";
+			return query($sql);
+
+		// 	all the data for a record from the Articles or Images table for a particular id
+		case('element'):
+
+			$table = (!$if_image) ? 'Articles' : 'Images';
+			$table_id = (!$if_image) ? 'article_id' : 'img_id';
+			$sql = "SELECT * FROM $table 
+					WHERE $table_id = $id";
 			return query($sql);
 
 		// 	all the data for a record from the Reviews table for a particular article id and reviewer id
 		case('review'):
 
-			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
-			$sql = "SELECT * FROM Reviews WHERE (article_id, reviewer_id) = ($article_id, $id)";
+			$table = (!$if_image) ? 'Reviews' : 'Image_Reviews';
+			$table_id = (!$if_image) ? 'article_id' : 'img_id';
+
+			$reviewer_id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
+			$sql = "SELECT * FROM $table WHERE ($table_id, reviewer_id) = ($id, $reviewer_id)";
 			return query($sql);
 
 		// 	all the themes for a review from the Articles_Themes table for a particular article id / reviewer_id
 		case('themes'):
 
-			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
+			$table = (!$if_image) ? 'Articles_Themes' : 'Images_Themes';
+			$table_id = (!$if_image) ? 'article_id' : 'img_id';
+
+			$reviewer_id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
 			$sql = 	"SELECT theme, if_main FROM Themes 
-					JOIN Articles_Themes ON Articles_Themes.theme_id = Themes.theme_id 
-					WHERE (Articles_Themes.article_id, Articles_Themes.reviewer_id) = ($article_id, $id) ORDER BY theme";
+					JOIN $table ON $table.theme_id = Themes.theme_id
+					WHERE ($table.$table_id, $table.reviewer_id) = ($id, $reviewer_id) ORDER BY theme";
 			return query($sql);
 
 		// 	all the tags for a review from the Articles_Tags table for a particular article id / reviewer_id
 		case('tags'):
 
-			$id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
+			$table = (!$if_image) ? 'Articles_Tags' : 'Images_Tags';
+			$table_id = (!$if_image) ? 'article_id' : 'img_id';
+
+			$reviewer_id = (!$reviewer2_id) ? $reviewer1_id : $reviewer2_id;
 			$sql = "SELECT category, tag, if_main FROM Tags 
-					JOIN Articles_Tags ON Tags.tag_id = Articles_Tags.tag_id 
-					WHERE (Articles_Tags.article_id, Articles_Tags.reviewer_id) = ($article_id, $id) ORDER BY tag";
+					JOIN $table ON Tags.tag_id = $table.tag_id
+					WHERE ($table.$table_id, $table.reviewer_id) = ($id, $reviewer_id) ORDER BY tag";
 			return query($sql);
 
 		// 	all the themes
@@ -731,6 +789,8 @@ function return_json($param, $article_id = '', $reviewer1_id = '', $reviewer2_id
 function js_form_functions() {
 
 		$view = (isset($_GET['form'])) ? $_GET['form'] : '';
+		$if_image = (isset($_GET['img'])) ? 1 : 0; 
+
 		$js = '<script>';
 		// $js .= 'losForm.prepare;';
 
@@ -747,7 +807,7 @@ function js_form_functions() {
 
 				case('edit'):
 					$a_id = $_GET['id'];
-					$js .= "losForm.editReview($a_id);";
+					$js .= "losForm.editReview($a_id, $if_image);";
 					$js .= '</script>';
 					return $js;
 
