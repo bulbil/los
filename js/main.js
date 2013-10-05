@@ -11,7 +11,6 @@
 
 // functions for modifying form values
 var losForm = {
-
 	// categories for the tags
 	categories: ['activities','commodities','entities','environments','events',
 				'florafauna','groups','persons','places','technologies','works'],
@@ -130,9 +129,11 @@ var losForm = {
 
 // helper function for appending info to a particular form input type, whether input or textarea
 	appendInput: function(key, value) {
+
 		domID = key.replace('_','-');
-		if($('form input#' + domID)[0]) $('input#' + domID).val(value);
-		if($('form textarea#' + domID)[0]) $('textarea#' + domID).append(value);
+		if($('input#' + domID)[0]) $('input#' + domID).val(value);
+		if($('textarea#' + domID)[0]) $('textarea#' + domID).append(value);
+		if($("textarea[name='" + key + "']")[0]) $("textarea[name='" + key + "']").append(value);
 		if($("input[name='" + key + "']")[0]) $("input[name='" + key + "']").attr('checked', value);
 		if($('select#' + domID)[0]) $('select#' + domID).val(value);
 	 },
@@ -176,7 +177,7 @@ var losForm = {
 			$("input[name='id']").val(getID);
 			$("input[name='img_id']").val(0);
 
-			losForm.imageArticleFields(1);
+			losForm.imageArticleFields();
 		}
 	},
 
@@ -274,14 +275,14 @@ var losForm = {
 
 				if(id){
 					$.getJSON('../includes/json.php?p=element&id=' + id, function(data) {
-						fillFields(data);
 						$('select#image').val('attached');
+						losForm.imageArticleCheck();
+						fillFields(data);
 					});
 				} else {
 					$('select#image').val('freestanding');
-					losForm.imageArticleCheck(1);
+					losForm.imageArticleCheck();
 				}
-				losForm.toggleImageFields();
 				$('select#image').attr('disabled','disabled');
 			});
 		} else { 
@@ -303,18 +304,23 @@ var losForm = {
 	},
 
 // on ajax success appends Review table json to form fields	
-	appendReview: function(id, id2, img = 0) {
+	appendReview: function(id, id2 = 0, img = 0) {
 
 		imgParam = (img == 1) ? '&img=1' : '';
 
-		id2 = (typeof id2 !== 'undefined') ? id2 : '';
+		id2 = (id2 != 0) ? id2 : '';
 		idParam = '&rid=' + id2;
 
 		$.getJSON('../includes/json.php?p=review&id=' + id + idParam + imgParam, function(data) {
 			review = data[0];
+			if(img == 1) {
+				$('textarea#summary').attr('name', 'img_description');
+				$('textarea#notes').attr('name', 'img_notes');
+				$('textarea#research-notes').attr('name', 'img_research_notes');				
+			}
 			_.each(_.keys(review), function(key) {
 				losForm.appendInput(key, review[key]);
-			})
+			});
 			$("input[name='timestamp']").val(review['timestamp']);
 		});
 	},
@@ -568,13 +574,13 @@ var losForm = {
 
 	recListsAddOnClick: function(obj,domID) {
 
-			$(obj).css('cursor','pointer')			
-				.click(function(e) {				
-					tagList = $('input#' + domID).select2('val');
-					tagList.push(e.target.innerHTML);
-					$(this).css('background', '#ddd');
-					$('input#' + domID).select2('val', tagList);				
-				});
+		$(obj).css('cursor','pointer')			
+			.click(function(e) {				
+				tagList = $('input#' + domID).select2('val');
+				tagList.push(e.target.innerHTML);
+				$(this).css('background', '#ddd');
+				$('input#' + domID).select2('val', tagList);				
+			});
 	},
 
 	prepare: function(id, img) {
@@ -587,7 +593,7 @@ var losForm = {
 		losForm.themesList(id,img);
 		losForm.mainList();
 		losForm.appendMain();
-		$('input#type').change(function() {	losForm.toggleImageFields(this); })
+		$('select#image').change(function() { losForm.toggleImageFields(); })
 		losForm.imageArticleCheck();
 	},
 
@@ -595,10 +601,9 @@ var losForm = {
 	editReview: function(id, img = 0) {
 
 		losForm.prepare(id,img);
-
 		losForm.appendArticle(id,img);
-		losForm.appendReview(id,img);
 		if(img == 1) losForm.appendImage(id);
+		losForm.appendReview(id,0,img);
 	},
 
 // add review view : appends data to the form from the last review by the current reviewer
@@ -617,7 +622,7 @@ var losForm = {
 			losForm.submitCheck(losForm.inputIDs);
 		})
 
-		losForm.appendImage;
+		losForm.appendImage();
 	},
 	// reconcile view : a kind of heinous number of lines to append data to the form from two existing reviews (Articles, Review, Articles_Tags, Articles_Themes)
 	reconcileReview: function(id1, id2) {
@@ -647,15 +652,3 @@ var losForm = {
  		losForm.appendRecThemes(id1,id2,id3);
 	}
 }
-
-// var losTable = {
-
-// 	draw: function(){
-
-// 		$.getJSON('../includes/json.php?p=test_table', function(data){
-
-// 			$('table#data-table').add('tr');
-// 		})
-// 	}
-
-// }
