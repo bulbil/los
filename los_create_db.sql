@@ -5,6 +5,12 @@ TRUNCATE Reviews;
 TRUNCATE Articles_Tags;
 TRUNCATE Articles_Themes;
 
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE Images;
+TRUNCATE TABLE Images_Tags;
+TRUNCATE TABLE Images_Themes;
+TRUNCATE TABLE Image_Reviews;
+
 -- indicating the engine here means you don't have to do so after each table
 -- but dreamhost sets db's up automatically so you have to indicate the engine after
 -- each table

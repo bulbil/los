@@ -38,12 +38,10 @@ function execute_image($array, $obj, $article_id = null) {
 	$columns = $GLOBALS['images'];
 
 	$array['img_type'] = string_format($array['img_type'],'type');
-	// $array['img_placement'] = string_format($array['img_type'],'type');
-	if(!isset($array['article_id'])) { unset($columns[0]); }
 
-	var_dump($obj);
+	if(!$array['article_id']) unset($columns[0]);
+
 	foreach($columns as $column) {
-		echo_line($column . ': ' . $array[$column]);
 		bind_value($array[$column], $obj, $column);
 	}
 	$obj->execute();
@@ -119,10 +117,10 @@ function execute_tags($array, $category, $id, $reviewer_id, $obj, $pdo, $if_imag
 	foreach (string_format($array, 'array') as $tag){
 
 		$tag = string_format($tag);
-		if (strlen($tag) > 1 &&	$tag != 'n/a'){	
+		if (strlen($tag) > 1 &&	$tag != 'n/a' && $tag != 'na'){	
 
 			$tag_id = return_id('tag_id', array($tag, $category), array('tag', 'category'), 'Tags', $pdo);
-			echo_line('yeah tag: ' . $tag_id . ' ' . $tag);
+			
 			if($tag_id == 0) {
 
 				$tag = $pdo->quote($tag);
@@ -132,7 +130,6 @@ function execute_tags($array, $category, $id, $reviewer_id, $obj, $pdo, $if_imag
 
 			if (!if_exists(array($id, $tag_id, $reviewer_id), $columns, $table, $pdo)){
 
-				echo_line('yeah bind tag: ' . $id . ' ' . $tag_id . ' ' . $reviewer_id);
 				bind_value($id, $obj, $columns[0]);				
 				bind_value($tag_id, $obj, $columns[1]);
 				bind_value($reviewer_id, $obj, $columns[2]);
@@ -180,7 +177,7 @@ $images = array(
 $article_check = array(
 	// 'page_start', 
 	// 'page_end',
-	'article_title',
+	'title',
 	'volume', 
 	'issue'
 	);
@@ -422,10 +419,9 @@ function update_main($str, $article_id, $reviewer_id, $pdo, $if_image = false) {
 	$themes_columns = (!$if_image) ? $GLOBALS['articles_themes'] : $GLOBALS['images_themes'];
 	$tags_columns = (!$if_image) ? $GLOBALS['articles_tags'] : $GLOBALS['images_tags'];
 
-	echo_line($str);
 	$id = return_id('theme_id', array($str), array('theme'), 'Themes', $pdo);
 	if($id) { 
-		echo_line('theme id ' . $id);
+
 		$themes_array = implode(' = ? AND ', $themes_columns);
 		$sql = "UPDATE $theme_table SET `if_main` = '1' 
 				WHERE $themes_array = ?";
@@ -435,7 +431,6 @@ function update_main($str, $article_id, $reviewer_id, $pdo, $if_image = false) {
 	}else{
 
 		$id = return_id('tag_id', array($str), array('tag'), 'Tags', $pdo);
-		echo_line('tag id ' . $id);
 		if($id) {
 			$tags_array = implode(' = ? AND ', $tags_columns);
 			$sql = "UPDATE $tag_table SET `if_main` = '1' 
@@ -443,7 +438,6 @@ function update_main($str, $article_id, $reviewer_id, $pdo, $if_image = false) {
 			$stmt = $pdo->prepare($sql);
 		} else { echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $str . '</strong> main not found ... check data'); return;}
 	}
-	echo_line($id);
 	$stmt->execute(array($article_id, $id, $reviewer_id)); 
 }
 

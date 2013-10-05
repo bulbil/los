@@ -112,7 +112,7 @@ var losForm = {
 	typeList: function() {
 		$('input#type').select2({
 			width: '100%',
-			tags: ['Advertisement', 'Editorial', 'Fiction', 'Image', 'Nonfiction', 'Poetry'],
+			tags: ['Advertisement', 'Editorial', 'Fiction', 'Nonfiction', 'Poetry'],
 			createSearchChoice: function(term){return '';},
 		});
 	},
@@ -131,9 +131,10 @@ var losForm = {
 // helper function for appending info to a particular form input type, whether input or textarea
 	appendInput: function(key, value) {
 		domID = key.replace('_','-');
-		if($('form input#' + domID)[0]) $('input#' + domID).attr('value', value);
+		if($('form input#' + domID)[0]) $('input#' + domID).val(value);
 		if($('form textarea#' + domID)[0]) $('textarea#' + domID).append(value);
 		if($("input[name='" + key + "']")[0]) $("input[name='" + key + "']").attr('checked', value);
+		if($('select#' + domID)[0]) $('select#' + domID).val(value);
 	 },
 
 // helper function for disabling form fields
@@ -147,18 +148,16 @@ var losForm = {
 
 // when image is selected as type makes the image tab available, disables the narration tab, changes the form
 // field names for summary fields so that $POST data has the right names for the database
-	toggleImageFields: function(str) {
+	toggleImageFields: function() {
 
-		getID = Number($("input[name='id']").val());
+		getID = $("input[name='id']").val();
 
-		disableArray = ['#img-freestanding >', '#img-freestanding > >'];
-		if($(str).val() === 'Image') {
+		if($('select#image').val() !== 'none') {
 
 			$('textarea#summary').attr('name', 'img_description');
 			$('textarea#notes').attr('name', 'img_notes');
 			$('textarea#research-notes').attr('name', 'img_research_notes');
 
-			losForm.toggleDisable(disableArray, 1);
 			$('ul#form-tabs li#img').removeClass('disabled');
 			$('ul#form-tabs li#narr').addClass('disabled');
 			$("input[name='id']").val(0);
@@ -172,8 +171,6 @@ var losForm = {
 			$('textarea#notes').attr('name', 'notes');
 			$('textarea#research-notes').attr('name', 'research_notes');
 
-			losForm.toggleDisable(disableArray);
-			$("input[name='img_freestanding']").attr('checked', false);
 			$('ul#form-tabs li#img').addClass('disabled');
 			$('ul#form-tabs li#narr').removeClass('disabled');
 			$("input[name='id']").val(getID);
@@ -204,18 +201,28 @@ var losForm = {
 // and repopulates them if the fields change
 	imageArticleCheck: function() {
 
-	 	toggle = 0;
+		disableArray = ['input#title', 'input#author', 'input#location', 'input#page-start', 
+						'input#page-end', 'input#volume', 'input#issue', 'input#date-published'];
 
-	 	$("input[name='img_freestanding']").change(function() {
-	
-			disableArray = ['input#title', 'input#author', 'input#location', 'input#page-start', 
-							'input#page-end', 'input#volume', 'input#issue', 'input#date-published'];
+		function imageSelectCheck() {
+			if($('select#image').val() !== 'none') {
 
- 			losForm.toggleDisable(disableArray, toggle);
- 			losForm.toggleDisable(['input#form-submit'], !toggle);
- 			losForm.imageArticleFields(!toggle);
+				losForm.toggleImageFields();
+				losForm.imageArticleFields(0);
+				losForm.toggleDisable(disableArray, 1);
+		 		
+		 		if ($('select#image').val() === 'freestanding') {
+		 			losForm.toggleDisable(disableArray, 0);
+		 		}
+	 		} else {
+	 			losForm.toggleImageFields();
+ 				losForm.imageArticleFields(1);
+			}
+		}
 
- 			toggle = !toggle;
+		imageSelectCheck();	
+	 	$('select#image').change(function() {
+			imageSelectCheck();
 	 	});
 	 },
 
@@ -264,10 +271,18 @@ var losForm = {
 
 			$.getJSON('../includes/json.php?p=img_article&id=' + id + '&img=1', function(data) {
 				id = data[0]['article_id'];
-				$.getJSON('../includes/json.php?p=element&id=' + id, function(data) {
-					fillFields(data);
-					losForm.toggleImageFields('input#type');
-				});
+
+				if(id){
+					$.getJSON('../includes/json.php?p=element&id=' + id, function(data) {
+						fillFields(data);
+						$('select#image').val('attached');
+					});
+				} else {
+					$('select#image').val('freestanding');
+					losForm.imageArticleCheck(1);
+				}
+				losForm.toggleImageFields();
+				$('select#image').attr('disabled','disabled');
 			});
 		} else { 
 			$.getJSON('../includes/json.php?p=element&id=' + id, function(data) {
@@ -430,10 +445,7 @@ var losForm = {
 		imgParam = (img == 1) ? '&img=1' : '';
 		idParam = (id2 != 0) ? '&rid=' + id2 : '';
 		
-		$.getJSON('../includes/json.php?p=tags&id=' + id + idParam + imgParam, function(data) {
-						
-			console.log(data);
-			
+		$.getJSON('../includes/json.php?p=tags&id=' + id + idParam + imgParam, function(data) {					
 			tags = data;
 			_.each(losForm.categories, function(category) {
 				tagsCategory = losForm.makeArray(tags, category, 'category', 'tag');
