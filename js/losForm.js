@@ -131,7 +131,7 @@ var losForm = {
 	appendInput: function(key, value) {
 
 		domID = key.replace('_','-');
-		if($('input#' + domID)[0]) $('input#' + domID).val(value);
+		if($('input#' + domID)[0]) { console.log('append ' + domID + ': ' + value); $('input#' + domID).attr('value', value);}
 		if($('textarea#' + domID)[0]) $('textarea#' + domID).append(value);
 		if($("textarea[name='" + key + "']")[0]) $("textarea[name='" + key + "']").append(value);
 		if($("input[name='" + key + "']")[0]) $("input[name='" + key + "']").attr('checked', value);
@@ -298,7 +298,7 @@ var losForm = {
 		$.getJSON('../includes/json.php?p=element&id=' + id + '&img=1', function(data) {
 			image = data[0];
 			_.each(_.keys(image), function(key) {
-			losForm.appendInput(key, image[key]);
+				losForm.appendInput(key, image[key]);
 			});
 		});
 	},

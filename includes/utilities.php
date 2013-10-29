@@ -632,10 +632,13 @@ function unset_session_vars() {
 
 function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $if_image = false) {
 
-	function query($sql) {
+	function query($sql, $num = false) {
 		$dbh = db_connect();
 		$results = $dbh->query($sql);
-		while($row = $results->fetch(PDO::FETCH_ASSOC)) $results_array[] = $row;
+
+		if($num) while($row = $results->fetch(PDO::FETCH_NUM)) $results_array[] = $row;
+		else while($row = $results->fetch(PDO::FETCH_ASSOC)) $results_array[] = $row;
+		
 		$json = (isset($results_array)) ? json_encode($results_array) : "<em>sorry bro, no results ...</em>";
 		$dbh = null;
 		return $json;
@@ -781,53 +784,72 @@ function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $
 					JOIN Tags ON Articles_Tags.tag_id = Tags.tag_id
 					JOIN Themes ON Articles_Themes.theme_id = Themes.theme_id
 					WHERE Articles_Tags.if_main = 1 AND Articles_Themes.if_main = 1";
-			return query($sql);
+			$json = query($sql, true);
+			$json = '{ "aaData" : ' . $json . ' }';
+			return $json;
 	}
 }
 
 // for writes js functions into the footer based on get 'form' value, adding the appropriate article/reviewer id values
 function js_form_functions() {
 
-		$view = (isset($_GET['form'])) ? $_GET['form'] : '';
-		$if_image = (isset($_GET['img'])) ? 1 : 0; 
+	$view = (isset($_GET['form'])) ? $_GET['form'] : '';
+	
+	$url_array = preg_split('/\//', $_SERVER['PHP_SELF']);
+	preg_match('/\w+/', end($url_array), $php_view);
+	
+	$if_image = (isset($_GET['img'])) ? 1 : 0; 
 
-		$js = '<script>';
-		// $js .= 'losForm.prepare;';
+	$js = '<script>';
+	// $js .= 'losForm.prepare;';
 
-		if(isset($view)){
-			switch($view) {
 
-				// case('reviewer.php'): break;
-
-				case('add'): 
-
-					$js .= 'losForm.lastReview();';
-					$js .= '</script>'; 
-					return $js;
-
-				case('edit'):
-					$a_id = $_GET['id'];
-					$js .= "losForm.editReview($a_id, $if_image);";
-					$js .= '</script>';
-					return $js;
-
-				case('recedit'):
-					$a_id = $_GET['id'];
-					$r1_id = $_SESSION['reviewer_id'];
-					$r2_id = $_GET['rid'];
-					$js .= "losForm.editReconciled($a_id, $r1_id, $r2_id);";
-					$js .= '</script>';
-					return $js;
-
-				case('reconcile'):
-					$a_id = $_GET['id'];
-					$r_id = $_GET['rid'];
-					$js .= "losForm.reconcileReview($a_id, $r_id);";
-					$js .= '</script>';
-					return $js;
-
-				case('data-table.php'):
-				case('visualization.php'):
+	if(isset($php_view)) {
+		switch($php_view) {
+			
+			case('data'): {
+				$js .= 'losData()';
+				$js .= '</script>';
+				return $js;
 			}
+		}		
+	}
+
+
+	if(isset($view)){
+		switch($view) {
+
+			// case('reviewer.php'): break;
+
+			case('add'): 
+
+				$js .= 'losForm.lastReview();';
+				$js .= '</script>'; 
+				return $js;
+
+			case('edit'):
+				$a_id = $_GET['id'];
+				$js .= "losForm.editReview($a_id, $if_image);";
+				$js .= '</script>';
+				return $js;
+
+			case('recedit'):
+				$a_id = $_GET['id'];
+				$r1_id = $_SESSION['reviewer_id'];
+				$r2_id = $_GET['rid'];
+				$js .= "losForm.editReconciled($a_id, $r1_id, $r2_id);";
+				$js .= '</script>';
+				return $js;
+
+			case('reconcile'):
+				$a_id = $_GET['id'];
+				$r_id = $_GET['rid'];
+				$js .= "losForm.reconcileReview($a_id, $r_id);";
+				$js .= '</script>';
+				return $js;
+
+			case('data-table.php'):
+			case('visualization.php'):
 		}
+	}
 }

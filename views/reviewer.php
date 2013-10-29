@@ -12,7 +12,7 @@ unset_session_vars();
 $reviewer_id = $_SESSION['reviewer_id'];
 $dbh = db_connect();
 
-include '../html/table.html';
+include '../html/reviewer-table.html';
 
 $sql = "SELECT timestamp, Articles.article_id, title, issue, volume, date_published, reconciled 
 		FROM Articles JOIN Reviews ON Articles.article_id = Reviews.article_id 
@@ -23,7 +23,7 @@ $results = $dbh->query($sql);
 
 $table_columns = array('title','volume','issue', 'date_published');
 
-$html = table_start($table_columns, 'articles', 2);
+$html = table_start($table_columns, 'articles', 1);
 
 while ($row = $results->fetch(PDO::FETCH_ASSOC)) {
 	$html .= table_row($row, $table_columns, $row['article_id']);
@@ -42,7 +42,7 @@ $sql = "SELECT timestamp, Images.img_id, img_caption, img_issue, img_volume, img
 
 $results = $dbh->query($sql);
 
-$html .= table_start($table_columns, 'images', 2);
+$html .= table_start($table_columns, 'images', 1);
 
 while ($row = $results->fetch(PDO::FETCH_ASSOC)) {
 	$html .= table_row($row, $table_columns, $row['img_id'], 'image');
