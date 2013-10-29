@@ -14,6 +14,7 @@ $('#data-table').dataTable({
 
 	"bProcessing": true,
 	"bAutoWidth": false,
+	"aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
 	"sAjaxSource": '/los/includes/json.php?p=test_table',
 	"aoColumns": [
 		{"mData": "article.0", "sTitle": "id", "sWidth": "2%", "sType": "date"},
@@ -31,37 +32,52 @@ $('#data-table').dataTable({
 	]
 });
 
+var losData = {
+	
+	initColumns: function(){
 
-var columns = [];
+		var columns = [];
+		_.each($('#data-table th'), function(e) { columns.push($(e).html()); });
 
-_.each($('#data-table th'), function(e) { columns.push($(e).html()); });
+		$('#columns-chooser ul').append(
+			"<li class='list-group-item'><button class='btn' id='reset'>select all/none</button></li>"
+		);
 
-console.log(columns);
+		_.each(columns, function(e){
 
+			$('#columns-chooser ul').append(
+				"<li class='list-group-item'><input type='checkbox' name='" + e + "'>" 
+				+ "<label class='pull-right'>" + e + "</label></input></li>"
+			);
+		});
 
-$('#data-table th.sorting').css('text-decoration', 'underline');
+		$('#columns-chooser li input').attr('checked',true);
 
-function setVis() {
-	_.each($('ul#columns-chooser li input'), function(e, index) {
-		$('#data-table').dataTable().fnSetColumnVis(index, e.checked);
-	});
+		$('#columns-chooser').change(function(){ losData.setVisibility(); });
+
+		$('.dropdown-menu li').click(function(e) { e.stopPropagation(); });
+		
+		var resetBool = true;
+		$('#columns-chooser button#reset').click(function(e) { 
+
+			console.log('fire ' + resetBool);
+			resetBool = (resetBool === true) ? false : true;
+			_.each($('#columns-chooser :checkbox'), function(e, index) {
+				$(e).prop('checked',resetBool);
+				$('#data-table').dataTable().fnSetColumnVis(index, resetBool);
+			});
+			
+		});
+	},
+
+	setVisibility: function() {
+
+		_.each($('#columns-chooser :checkbox'), function(e, index) {
+			$('#data-table').dataTable().fnSetColumnVis(index, e.checked);
+		});
+	}
 }
 
-_.each(columns, function(e){
-
-	$('#columns-chooser ul').append(
-		"<li class='list-group-item'><input type='checkbox' value='1' name='" + e + "'>" 
-		+ "<label class='pull-right'>" + e + "</label></input></li>"
-	);
-});
-
-$('.dropdown-menu li').click(function(e) {
-    e.stopPropagation();
-});
-
-$('.dataTables_filter input').addClass('form-control input-sm');
 $('.dataTables_filter input').attr('placeholder', 'Search Columns');
 
-$('#columns-chooser input').attr('checked',true);
-
-$('#columns-chooser').change(function(){ setVis(); });
+losData.initColumns();
