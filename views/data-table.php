@@ -7,7 +7,12 @@ include '../includes/utilities.php';
 
 $html = "<div class='row'>";
 
-$html .= "<div class='form-group' id='columns-chooser'></div>";
+$html .= "<div class='dropdown' id='columns-chooser'>
+		  <a data-toggle='dropdown' class='btn btn-warning' href='#'>Select Columns <span class='caret'></span></a>";
+
+$html .= "<ul class='dropdown-menu' id='columns-chooser' role='menu' aria-labelledby='dLabel'>
+		  </ul>
+		  </div>";
 
 $html .= "<table class='table table-striped' id='data-table'>
 		  <tbody></tbody>

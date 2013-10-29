@@ -776,16 +776,49 @@ function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $
 			return query($sql);
 
 		case('test_table'):
-			$columnsArray = array('date_published', 'title', 'author', 'tag', 'theme');
+			$columnsArray = array('Articles.article_id', 'date_published', 'title', 'author', 'GROUP_CONCAT(DISTINCT theme)', 'GROUP_CONCAT(tag)');
 			$sql_columns = implode(',', $columnsArray);
-			$sql = "SELECT $sql_columns FROM Articles 
-					JOIN Articles_Tags ON Articles.article_id = Articles_Tags.article_id
-					JOIN Articles_Themes ON Articles.article_id = Articles_Themes.article_id
-					JOIN Tags ON Articles_Tags.tag_id = Tags.tag_id
-					JOIN Themes ON Articles_Themes.theme_id = Themes.theme_id
-					WHERE Articles_Tags.if_main = 1 AND Articles_Themes.if_main = 1";
-			$json = query($sql, true);
-			$json = '{ "aaData" : ' . $json . ' }';
+
+			$sql_articles = "SELECT * FROM Articles";			
+			
+			$dbh = db_connect();
+			$results = $dbh->query($sql_articles);
+
+			$i = 0;
+			while($row = $results->fetch(PDO::FETCH_NUM)) {
+
+				$results_array[$i]['article'] = $row;
+				$article_id = $row[0];
+
+				$sql_tags = "SELECT GROUP_CONCAT(tag ORDER BY tag SEPARATOR '; ') as tags FROM Articles_Tags 
+							JOIN Tags ON Articles_Tags.tag_id = Tags.tag_id 
+							WHERE article_id = $article_id
+							AND Articles_Tags.if_main = 1";
+
+				$sql_themes = "SELECT GROUP_CONCAT(theme ORDER BY theme SEPARATOR '; ') as themes FROM Articles_Themes 
+							JOIN Themes ON Articles_Themes.theme_id = Themes.theme_id
+							WHERE article_id = $article_id
+							AND Articles_Themes.if_main = 1";
+
+				$sql_reviews = "SELECT narration_pov, narration_embedded, narration_tense, narration_tense
+								FROM Reviews JOIN Articles ON Articles.article_id = Reviews.article_id
+								WHERE Articles.article_id = $article_id";
+
+				$results_reviews = $dbh->query($sql_reviews);
+				$results_array[$i]['review'] = $results_reviews ->fetch(PDO::FETCH_NUM);
+
+				$results_tags = $dbh->query($sql_tags);
+				$results_array[$i]['tags'] = $results_tags ->fetch(PDO::FETCH_NUM);
+
+				$results_themes = $dbh->query($sql_themes);
+				$results_array[$i]['themes'] = $results_themes ->fetch(PDO::FETCH_NUM);
+
+				$i++;
+			}
+			
+			$json = (isset($results_array)) ? json_encode($results_array) : "<em>sorry bro, no results ...</em>";
+			$dbh = null;
+			$json = '{ "aaData" : ' . $json . '}';
 			return $json;
 	}
 }
