@@ -51,7 +51,7 @@ var losData = {
 			);
 		});
 
-		$('#columns-chooser li input').attr('checked',true);
+		$('#columns-chooser li input').prop('checked',true);
 
 		$('#columns-chooser').change(function(){ losData.setVisibility(); });
 
@@ -60,24 +60,25 @@ var losData = {
 		var resetBool = true;
 		$('#columns-chooser button#reset').click(function(e) { 
 
-			console.log('fire ' + resetBool);
 			resetBool = (resetBool === true) ? false : true;
 			_.each($('#columns-chooser :checkbox'), function(e, index) {
 				$(e).prop('checked',resetBool);
-				$('#data-table').dataTable().fnSetColumnVis(index, resetBool);
+				losData.setVisibility();
 			});
-			
 		});
 	},
 
 	setVisibility: function() {
 
 		_.each($('#columns-chooser :checkbox'), function(e, index) {
-			$('#data-table').dataTable().fnSetColumnVis(index, e.checked);
+			var oTable = $('#data-table').dataTable();
+			oTable.fnSetColumnVis(index, e.checked);
+			oTable.fnSettings().aoColumns[index].bSearchable = e.checked;
 		});
 	}
 }
 
-$('.dataTables_filter input').attr('placeholder', 'Search Columns');
+$('.dataTables_filter input').addClass('form-control')
+	.attr('placeholder', 'Search Columns');
 
 losData.initColumns();

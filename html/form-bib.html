@@ -33,7 +33,7 @@
 				<input class="form-control" id="location" name="location" type="text">
 		</div>
 		<!-- PAGE START -->
-		<div class="form-group col-md-2">
+		<div class="form-group col-md-2" id='page-start-group'>
 			<label  for="page-start">Pages</label>
 				<div class="input-group">
 					<span class="input-group-addon">start</span>
@@ -51,13 +51,14 @@
 		</div>
 
 		<!-- WHETHER AN IMAGE IS PART OF AN ARTICLE -->
-		<div class="form-group col-md-4" id='img-freestanding'>
+		<div class="form-group col-md-4" id='img-association'>
 			<label for='image'>Image</label>
-			<select class='form-control' id='image'>
+			<select class='form-control' id='image' name='img_association'>
 				<option value='none'>None</option>
 				<option value='attached'>Attached</option>
 				<option value='freestanding'>Freestanding</option>
 			</select>
+		    <input disabled='disabled' type="hidden" name="img_association">
 		</div>
 
 		</div>

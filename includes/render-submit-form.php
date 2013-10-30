@@ -5,13 +5,15 @@
 
 $form = (isset($_POST['form'])) ? $_POST['form'] : $_SESSION['form_data']['form'];
 $form_data = (isset($_SESSION['form_data'])) ? $_SESSION['form_data'] : $_POST;
-$if_image = ($form_data['type'] == 'Image') ? true : false;
+var_dump($form_data);
+var_dump($_SESSION);
+$if_image = ($form_data['img_association'] == 'none') ? false : true;
 
 // the main thing is comparing article ids and fields from $POST data and the db
 if(!isset($_SESSION['confirm'])) {
 
 	if(!$if_image) compare_fields();
-	elseif (isset($_POST['img_freestanding'])) compare_fields($if_image);
+	elseif ($form_data['img_association'] == 'freestanding') compare_fields('',$if_image);
 	else { compare_fields(); compare_fields($_SESSION['confirm'], $if_image);}
 }
 
@@ -21,13 +23,12 @@ if(isset($_POST['confirm'])) $_SESSION['confirm'] = $_POST['confirm'];
 // sets some variables depending on the state
 $confirm = $_SESSION['confirm'];
 
-if($form_data['type'] == 'Image' && isset($form_data['img_freestanding'])) $confirm = 2;
-
 switch ($confirm) {
 
 	case 0: // 0 : adding a new article and new review/themes/tags
 	case 1: // 1 : db data and $POST data are identical
 	case 2: // 2 : freestanding image / no associated article
+			echo_line($form. ' ' . $confirm. ' ' . $if_image); 
 			edit_tables($form_data, $form, $confirm, $if_image);
 			echo return_alert($form);
 			unset_session_vars();
@@ -35,7 +36,7 @@ switch ($confirm) {
 
 	case 3: // 3 : changes need to be confirmed
 	case 4: // 4 : being associated with a new article or image
-			echo render_confirm_form($confirm);
+			if($form_data['img_association'] != 'freestanding') echo render_confirm_form($confirm);
 			echo render_confirm_form($confirm, $if_image, 'submit');
 			include "../html/footer.html";
 			exit();
@@ -67,8 +68,9 @@ function return_alert($str) {
 
 // checks to see if either the article id is provided or, if not, whether 
 // the page start + end, volume, issue correspond to an existing article in the db
-function compare_fields($confirm = '', $if_image=false) {
+function compare_fields($confirm = '', $if_image = false) {
 	
+	echo_line('compare fields ' . $if_image);
 	$table = (!$if_image) ? 'Articles' : 'Images';
 	$id = (!$if_image) ? 'article_id' : 'img_id';	
 	$columns = (!$if_image) ? $GLOBALS['articles'] : $GLOBALS['images'];
@@ -86,8 +88,14 @@ function compare_fields($confirm = '', $if_image=false) {
 
 		// returns an article id base on the page_start / page_end / volume / issue		
 		$db_id = return_element_id($_POST, $dbh, $if_image);
+		echo_line('db_id ' . $db_id);
 		// if no article id in the db, add an article + add review / themes / tags
-		if(!$db_id && $_POST['form'] == 'add') $_SESSION['confirm'] = (isset($form_data['img_freestanding'])) ? 2 : 0;
+		if(!$db_id && $_POST['form'] == 'add') {
+
+			if($_POST['img_association'] == 'freestanding') $_SESSION['confirm'] = 2;
+			if($_POST['img_association'] == 'attached') $_SESSION['confirm'] = 3;
+			else $_SESSION['confirm'] = 0;
+		}
 
 		// if there should be an article id in the db, throw an error
 		elseif(!$db_id) { $_SESSION['confirm'] = 5;}
@@ -104,6 +112,7 @@ function compare_fields($confirm = '', $if_image=false) {
 			}else{
 				$db_data['img_type'] = ucwords($db_data['img_type']);
 				$db_data['img_date'] = string_format($db_data['img_date'], 'date_check');
+				if(isset($db_data['date_published'])) $db_data['date_published'] = string_format($db_data['date_published'], 'date_check');
 			}
 			// compares the db array to the post array
 			$diff = array_diff_assoc($db_data, $_POST);
@@ -147,6 +156,8 @@ function form_html($str1, $str2, $str3) {
 
 function render_confirm_form($int, $if_image = false, $p = '') {
 	
+	echo_line('confirm form go !');
+
 	$element = (!$if_image) ? 'article' : 'image';	
 	$columns = (!$if_image) ? $GLOBALS['articles'] : $GLOBALS['images'];
 	

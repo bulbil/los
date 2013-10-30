@@ -15,20 +15,29 @@ var losForm = {
 	categories: ['activities','commodities','entities','environments','events',
 				'florafauna','groups','persons','places','technologies','works'],
 
-	inputIDs: ['page-start', 'page-end', 'issue', 'volume', 'date-published'],
+	inputIDs: [ 
 
+		[ 'page-start', 'page-end', 'issue', 'volume', 'date-published'],
+		[ 'img-date', 'img-page', 'img-placement', 'img-issue', 'img-volume']
+	],
+
+	imageArticleFields: ['volume', 'issue', 'date-published'],
+ 
 	// functions for validating entries ... add more id's to the array to validate additional fields
 	submitCheck: function(array) {
-
 		fieldVals = [];
+		_.each(array, function(e){ 
+			var val = $('input#' + e).val();
+			fieldVals.push($('input#' + e).val()); 
+		}); 
 
-		_.each(array, function(e){ fieldVals.push($('input#' + e).val()); });
-		toggle = ($('.has-error').length != 0 || !_.every(fieldVals)) ? false : true; 
+		toggle = ($('.has-error').length != 0 || !_.every(fieldVals)) ? false : true;
 		losForm.toggleDisable(['input#form-submit'],toggle);
 	},
 
-	formValidation: function(){
+	formValidation: function(img){
 
+		validateArray = (img == 0) ? losForm.inputIDs[0] : losForm.inputIDs[1];
 		function validateNum(array) {
 
 			_.each(array, function(e) {
@@ -41,22 +50,38 @@ var losForm = {
 						reg = new RegExp(/\d{2}-\d{4}/);
 						if($(this).val().match(reg)) $('#date-published-group').removeClass('has-error');
 						if(!$(this).val().match(reg)) $('#date-published-group').addClass('has-error');
+
+					} else if (e == 'img-date') { 
+
+						val = $(this).val();
+						reg = new RegExp(/\d{2}-\d{4}/);
+						if($(this).val().match(reg)) $('#img-date-group').removeClass('has-error');
+						if(!$(this).val().match(reg)) $('#img-date-group').addClass('has-error');
+
+					} else if (e == 'img-placement') { 
+
+						if($(this).val()) $('#' + e + '-group').removeClass('error');
+						else $('#' + e + '-group').addClass('error');
+
 					}else{
 
 						val = Number($(this).val());
 						if(val > 0) $('#' + e + '-group').removeClass('has-error');
 						if(!val) $('#' + e + '-group').addClass('has-error');
 					}
+
 					losForm.submitCheck(array);
 				});
 			});
 		}
 	
-	validateNum(losForm.inputIDs);
+		validateNum(validateArray);
 	},
 
 // adds the themes to the themes list
-	themesList: function(id, img = 0) { 
+	themesList: function(id, img) { 
+
+		img = (typeof img === 'undefined') ? '' : img;
 
 		$.getJSON('../includes/json.php?p=themes_list', function(data){
 			themes = _.pluck(data, 'theme');
@@ -73,7 +98,9 @@ var losForm = {
 	},
 
 // adds the tags lists to the different tag category inputs
-	tagsLists: function(id, img = 0){
+	tagsLists: function(id, img){
+
+		img = (typeof img === 'undefined') ? '' : img;
 
 		$.getJSON('../includes/json.php?p=dump_tags', function(data){
 			
@@ -119,7 +146,7 @@ var losForm = {
 // initializes inputs for image fields
 	imageLists: function() {
 
-		$('input#img-type').select2({tags: ['drawing', 'engraving', 'photograph']});
+		$('input#img-type').select2({tags: ['Document', 'Drawing', 'Engraving', 'Illustration', 'Map', 'Montage', 'Painting', 'Photograph', 'Series', 'Signature']});
 		$('input#img-placement').select2({
 
 			tags: ['1', '2', '3', '4', '5', '6'], 
@@ -131,15 +158,17 @@ var losForm = {
 	appendInput: function(key, value) {
 
 		domID = key.replace('_','-');
-		if($('input#' + domID)[0]) { console.log('append ' + domID + ': ' + value); $('input#' + domID).attr('value', value);}
+		if($('input#' + domID)[0]) $('input#' + domID).val(value);
 		if($('textarea#' + domID)[0]) $('textarea#' + domID).append(value);
 		if($("textarea[name='" + key + "']")[0]) $("textarea[name='" + key + "']").append(value);
-		if($("input[name='" + key + "']")[0]) $("input[name='" + key + "']").attr('checked', value);
+		if($("input:checkbox[name='" + key + "']")[0]) {value = (value == 0) ? false : true; $("input[name='" + key + "']").prop('checked', value);}
 		if($('select#' + domID)[0]) $('select#' + domID).val(value);
 	 },
 
 // helper function for disabling form fields
-	toggleDisable: function (array, p = 0) {
+	toggleDisable: function (array, p) {
+
+		p = (typeof p === 'undefined') ? '' : p;
 
 	 	_.each(array, function(e) {
 	 		if(p == 1) $(e).removeAttr('disabled', 'disabled');
@@ -160,11 +189,17 @@ var losForm = {
 			$('textarea#research-notes').attr('name', 'img_research_notes');
 
 			$('ul#form-tabs li#img').removeClass('disabled');
+			$('ul#form-tabs li#img a').attr('href','#image-pane')
+				.attr('data-toggle','tab');
+			
 			$('ul#form-tabs li#narr').addClass('disabled');
+			$('ul#form-tabs li#narr a').attr('href','javascripte:void(0)')
+				.removeAttr('data-toggle');
+			
 			$("input[name='id']").val(0);
 			$("input[name='img_id']").val(getID);
 
-			losForm.imageArticleFields();
+			losForm.imageArticleFieldsSync();
 
 		} else {
 
@@ -173,28 +208,35 @@ var losForm = {
 			$('textarea#research-notes').attr('name', 'research_notes');
 
 			$('ul#form-tabs li#img').addClass('disabled');
+			$('ul#form-tabs li#img a').attr('href','javascripte:void(0)')
+				.removeAttr('data-toggle');			
+			
 			$('ul#form-tabs li#narr').removeClass('disabled');
+			$('ul#form-tabs li#narr a').attr('href','#narration')
+				.attr('data-toggle','tab');			
+			
 			$("input[name='id']").val(getID);
 			$("input[name='img_id']").val(0);
 
-			losForm.imageArticleFields();
+			losForm.imageArticleFieldsSync();
 		}
 	},
 
 // helper function appends or clears input for the article-synced image fields
-	 imageArticleFields: function(p = 0) {
+	 imageArticleFieldsSync: function(param) {
 
-		fields = ['volume', 'issue', 'date-published'];
+	 	param = (typeof param === 'undefined') ? 0 : param;
 
-		function fillImageFields(e){
-			value = (p == 0) ? $('input#' + e).val() : '';
+		function fillImageFields(e, p){
+			value = (p === 0) ? $('input#' + e).val() : null;
+
 			e = (e === 'date-published') ? 'date' : e;
 			$('input#img-' + e).val(value);
 		}
 
-		_.each(fields, function(e) {
-			fillImageFields(e);
-			$('input#' + e).change(function(){ fillImageFields(e); })
+		_.each(losForm.imageArticleFields, function(e) {
+			fillImageFields(e, param);
+			$('input#' + e).change(function() { fillImageFields(e, param); })
 		});
 	 },
 
@@ -209,28 +251,39 @@ var losForm = {
 			if($('select#image').val() !== 'none') {
 
 				losForm.toggleImageFields();
-				losForm.imageArticleFields(0);
+				losForm.imageArticleFieldsSync();
 				losForm.toggleDisable(disableArray, 1);
+		 		$('input#type').select2('enable',true);				
 		 		
 		 		if ($('select#image').val() === 'freestanding') {
+
+		 			_.each(losForm.imageArticleFields, function(e) { $('input#' + e).val('') ; });
 		 			losForm.toggleDisable(disableArray, 0);
+			 		$('input#type').select2('enable',false);
 		 		}
+
 	 		} else {
+
 	 			losForm.toggleImageFields();
- 				losForm.imageArticleFields(1);
+ 				losForm.imageArticleFieldsSync(1);
+				losForm.toggleDisable(disableArray, 1);
+		 		$('input#type').select2('enable',true);	 			
 			}
 		}
 
+		var check = ($('select#image').val() === 'none') ? 0 : 1;
 		imageSelectCheck();	
+		losForm.formValidation(check);
+
 	 	$('select#image').change(function() {
+			var check = ($('select#image').val() === 'none') ? 0 : 1;
 			imageSelectCheck();
+			losForm.formValidation(check);
 	 	});
 	 },
 
 // helper function for returning a nicely formatted array for different purposes from data
 	makeArray: function(object, filter, column, p) {
-
-		p = (typeof p !== 'undefined') ? p : '';
 
 		array = _.chain(object)
 			.filter(function(e) { return e[column] == filter;})
@@ -248,7 +301,9 @@ var losForm = {
 	},
 
 // on ajax success appends Articles table json to form fields
-	appendArticle: function(id, img = 0) {
+	appendArticle: function(id, img) {
+
+		img = (typeof img === 'undefined') ? '' : img;
 
 		function fillFields(e){  
 
@@ -265,7 +320,7 @@ var losForm = {
 			_.each(_.keys(article), function(key){
 				losForm.appendInput(key, article[key]);
 			});
-			losForm.submitCheck(losForm.inputIDs);
+			losForm.submitCheck(losForm.inputIDs[img]);
 		}
 
 		if(img == 1) {
@@ -273,17 +328,21 @@ var losForm = {
 			$.getJSON('../includes/json.php?p=img_article&id=' + id + '&img=1', function(data) {
 				id = data[0]['article_id'];
 
-				if(id){
+				var imgStatus = (id) ? 'attached' : 'freestanding';
+				$('select#image').val(imgStatus);
+
+				if(imgStatus == 'attached'){
 					$.getJSON('../includes/json.php?p=element&id=' + id, function(data) {
-						$('select#image').val('attached');
 						losForm.imageArticleCheck();
 						fillFields(data);
 					});
-				} else {
-					$('select#image').val('freestanding');
-					losForm.imageArticleCheck();
-				}
+				} else losForm.imageArticleCheck();
+
 				$('select#image').attr('disabled','disabled');
+				$("input[name='img_association']")
+					.removeAttr('disabled')
+					.val(imgStatus);
+
 			});
 		} else { 
 			$.getJSON('../includes/json.php?p=element&id=' + id, function(data) {
@@ -299,16 +358,30 @@ var losForm = {
 			image = data[0];
 			_.each(_.keys(image), function(key) {
 				losForm.appendInput(key, image[key]);
+				$('input#img-placement').select2('val',[image['img_placement']]);
+				
+				image.img_type = image.img_type.charAt(0).toUpperCase() + image.img_type.substr(1); 
+				$('input#img-type').select2('val',[image.img_type]);
+
+				d = image.img_date.split('-');
+				d = d[1] + '-' + d[0];
+				losForm.appendInput('img_date', d);
+
+				var imgStatus = (image['article_id']) ? 'attached' : 'freestanding';
+				$('select#image').val(imgStatus);
 			});
+
+			losForm.submitCheck(losForm.inputIDs[1]);
 		});
 	},
 
 // on ajax success appends Review table json to form fields	
-	appendReview: function(id, id2 = 0, img = 0) {
+	appendReview: function(id, id2, img) {
+
+		id2 = (typeof id2 === 'undefined') ? '' : id2;
+		img = (typeof img === 'undefined') ? '' : img;
 
 		imgParam = (img == 1) ? '&img=1' : '';
-
-		id2 = (id2 != 0) ? id2 : '';
 		idParam = '&rid=' + id2;
 
 		$.getJSON('../includes/json.php?p=review&id=' + id + idParam + imgParam, function(data) {
@@ -326,9 +399,9 @@ var losForm = {
 	},
 
 // same as above but for reconciled reviews
-	appendRecReviews: function(id1, id2, id3 = 0) {
+	appendRecReviews: function(id1, id2, id3) {
 
-		id3 = (typeof id3 !== 'undefined') ? id3 : '';
+		id3 = (typeof id3 === 'undefined') ? '' : id3;
 		idParam = (id3) ? '&rid=' + id3 : '';
 
 	// on ajax success gets Reviews data for two reviews and appends them to DOM elements and the values for input fields
@@ -368,10 +441,10 @@ var losForm = {
 	},
 
 // on ajax success appends Articles_Themes table json to form fields
-	appendThemes: function(id, id2 = 0, img = 0) {
+	appendThemes: function(id, id2, img) {
 
-		imgParam = (img == 1) ? '&img=1' : '';
-		idParam = (id2 != 0) ? '&rid=' + id2 : '';
+		imgParam = (img == 0) ?  '' : '&img=1';
+		idParam = (typeof id2 === 'undefined') ? '' : '&rid=' + id2;
 
 		$.getJSON('../includes/json.php?p=themes&id=' + id + idParam + imgParam, function(data) {
 			articleThemes = _.pluck(data, 'theme');
@@ -387,9 +460,9 @@ var losForm = {
 	},
 
 // same as above but for reconciled reviews
-	appendRecThemes: function(id1, id2, id3 = 0) {
+	appendRecThemes: function(id1, id2, id3) {
 
-		id3 = (id3 != 0) ? id3 : '';
+		id3 = (typeof id3 === 'undefined') ? '' : id3;
 		// on ajax success gets Articles_Themes data for two reviews and appends them to DOM elements and updates values for input fields 
 
 		$.getJSON('../includes/json.php?p=themes&id=' + id1 + '&rid=' + id3, function(data){
@@ -419,9 +492,6 @@ var losForm = {
 				$('#main-review-1 ul').append("<li>" + review1themesMain.join("</li><li>"));
 				$('#main-review-2 ul').append("<li>" + review2themesMain.join("</li><li>"));
 
-				// losForm.recListsAddOnClick($('#main-review-1 ul li'), 'main');
-				// losForm.recListsAddOnClick($('#main-review-2 ul li'), 'main');
-
 				review1themes = _.pluck(review1themes, 'theme');
 				review2themes = _.pluck(review2themes, 'theme');
 
@@ -446,10 +516,10 @@ var losForm = {
 	},
 
 // on ajax success appends Article_Tags table json to form fields
-	appendTags: function(id, id2 = 0, img = 0) {
+	appendTags: function(id, id2, img) {
 
-		imgParam = (img == 1) ? '&img=1' : '';
-		idParam = (id2 != 0) ? '&rid=' + id2 : '';
+		imgParam = (img == 0) ? '' : '&img=1';
+		idParam = (id2 ==  0) ?  '' : '&rid=' + id2;
 		
 		$.getJSON('../includes/json.php?p=tags&id=' + id + idParam + imgParam, function(data) {					
 			tags = data;
@@ -468,9 +538,9 @@ var losForm = {
 	},
 
 // same as above but for reconciled reviews
-	appendRecTags: function(id1, id2, id3 = 0) {
+	appendRecTags: function(id1, id2, id3) {
 	
-		id3 = (id3 != 0) ? id3 : '';
+		id3 = (typeof id3 === 'undefined') ? '' : id3;
 
 		// on ajax success gets Articles_Tags data for two reviews and appends them to DOM elements and the values for input fields
 		$.getJSON('../includes/json.php?p=tags&id=' + id1 + '&rid=' + id3, function(data){
@@ -555,7 +625,6 @@ var losForm = {
 		idParam = (id2) ? '&rid=' + id1 : '';
 		id = (id2) ? id2 : id1;
 		
-		
 		// gets reviewer initials and adds them to DOM elements
 		$.getJSON('../includes/json.php?p=reviewer' + idParam, function(data) {
 			reviewer1 = data[0].initials;
@@ -584,8 +653,7 @@ var losForm = {
 	},
 
 	prepare: function(id, img) {
-
-		losForm.formValidation();
+		losForm.formValidation(img);
 		losForm.typeList();
 		losForm.imageLists();
 
@@ -593,62 +661,64 @@ var losForm = {
 		losForm.themesList(id,img);
 		losForm.mainList();
 		losForm.appendMain();
-		$('select#image').change(function() { losForm.toggleImageFields(); })
+		$('select#image').change(function() {
+			losForm.toggleImageFields();
+		});
 		losForm.imageArticleCheck();
 	},
 
 // edit view : appends all data from an existing review (Articles, Review, Articles_Tags, Articles_Themes)
-	editReview: function(id, img = 0) {
+	editReview: function(artID, img) {
 
-		losForm.prepare(id,img);
-		losForm.appendArticle(id,img);
-		if(img == 1) losForm.appendImage(id);
-		losForm.appendReview(id,0,img);
+		losForm.prepare(artID,img);
+		losForm.appendArticle(artID,img);
+		if(img === 1) losForm.appendImage(artID)
+		losForm.appendReview(artID,0,img);
 	},
 
 // add review view : appends data to the form from the last review by the current reviewer
-	lastReview: function() {
-
-		losForm.prepare();
+	lastReview: function(img) {
+		losForm.prepare(0,img);
 
 		$.getJSON('../includes/json.php?p=last', function(data) {
 
 			lastReview = data[0];
+
 			losForm.appendInput('issue', lastReview.issue);
 			losForm.appendInput('volume', lastReview.volume);
 			d = lastReview.date_published.split('-');
 			d = d[1] + '-' + d[0];
 			losForm.appendInput('date_published', d);
-			losForm.submitCheck(losForm.inputIDs);
 		})
 
+		losForm.formValidation(img);
 		losForm.appendImage();
 	},
 	// reconcile view : a kind of heinous number of lines to append data to the form from two existing reviews (Articles, Review, Articles_Tags, Articles_Themes)
-	reconcileReview: function(id1, id2) {
+	reconcileReview: function(artID, revID1) {
 
 		losForm.prepare();
 
-		losForm.appendArticle(id1);
- 		losForm.appendInitials(id2);
+		losForm.appendArticle(artID);
+ 		losForm.appendInitials(artID);
  
- 		losForm.appendRecReviews(id1,id2);
- 		losForm.appendRecTags(id1,id2);
- 		losForm.appendRecThemes(id1,id2);
+ 		losForm.appendRecReviews(artID, revID1);
+ 		losForm.appendRecTags(artID, revID1);
+ 		losForm.appendRecThemes(artID, revID1);
 	},
 
-	editReconciled: function(id1,id2,id3) {
+	editReconciled: function(artID,revID1,revID2) {
 
 		losForm.prepare();
 		
-		losForm.appendArticle(id1);
-		losForm.appendReview(id1,9);
-		losForm.appendThemes(id1,9);
-		losForm.appendTags(id1,9);
+		losForm.appendArticle(artID);
+		losForm.appendReview(artID,9,0);
+		losForm.appendThemes(artID,9,0);
+		losForm.appendTags(artID,9,0);
 
- 		losForm.appendInitials(id2,id3);
- 		losForm.appendRecReviews(id1,id2,id3);
- 		losForm.appendRecTags(id1,id2,id3);
- 		losForm.appendRecThemes(id1,id2,id3);
+ 		losForm.appendInitials(revID1,revID2);
+ 		losForm.appendRecReviews(artID,revID1,revID2);
+ 		losForm.appendRecTags(artID,revID1,revID2);
+ 		losForm.appendRecThemes(artID,revID1,revID2);
 	}
 }

@@ -33,9 +33,9 @@ $html .= table_end();
 
 $html .= "<div class='tab-pane fade' id='images'>";
 
-$table_columns = array('img_caption','img_volume','img_issue', 'img_date');
+$table_columns = array('img_caption', 'freestanding', 'img_volume','img_issue', 'img_date');
 
-$sql = "SELECT timestamp, Images.img_id, img_caption, img_issue, img_volume, img_date 
+$sql = "SELECT timestamp, Images.img_id, img_caption, Images.article_id, img_issue, img_volume, img_date 
 		FROM Images JOIN Image_Reviews ON Images.img_id = Image_Reviews.img_id 
 		WHERE reviewer_id = $reviewer_id 
 		ORDER BY UNIX_TIMESTAMP(timestamp) DESC";

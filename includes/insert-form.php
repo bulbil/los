@@ -3,16 +3,20 @@
 
 function edit_tables($array, $str, $int, $if_image = false){
 
+	echo_line('edit tables ' . $if_image . 'confirm ' . $int);
+
 	if(isset($array['id'])) $article_id = (isset($_SESSION['db_article']) && $_SESSION['db_article']['id'] != $array['id']) ? $_SESSION['db_article']['id'] : $array['id'];
 	else $article_id = $_SESSION['db_image']['article_id'];
 
 	if($if_image) $img_id = (isset($_SESSION['db_image']) && $_SESSION['db_image']['img_id'] != $array['img_id']) ? $_SESSION['db_image']['img_id'] : $array['img_id'];
-	echo_line($img_id);
+	if(isset($img_id)) echo_line($img_id);
+
 	try {
 
 		$dbh = db_connect();
 
-		if($int == 2) edit_images_table($array, $img_id, $str, $dbh);
+		if( $int == 2 || $array['img_association'] == 'freestanding') edit_images_table($array, $img_id, $str, $dbh);
+		
 		elseif($if_image) {
 			edit_articles_table($array, $article_id, $str, $dbh);
 			$article_id = ($article_id > 0) ? $article_id : $dbh->lastInsertId();
@@ -109,7 +113,7 @@ function edit_image_reviews_table($array, $img_id, $reviewer_id, $str, $pdo){
 // binds values and executes Articles_Themes table statement
 function edit_themes_table($array, $id, $reviewer_id, $str, $pdo) {
 
-	$if_image = ($array['type'] == 'Image') ? true : false;
+	$if_image = ($array['img_association'] == 'none') ? false : true;
 	$table = (!$if_image) ? 'Articles_Themes' : 'Images_Themes';
 	$columns = (!$if_image) ? $GLOBALS['articles_themes'] : $GLOBALS['images_themes'];
 
@@ -122,7 +126,7 @@ function edit_tags_table($array, $id, $reviewer_id, $str, $pdo) {
 	
 	global $categories;
 	
-	$if_image = ($array['type'] == 'Image') ? true : false;
+	$if_image = ($array['img_association'] == 'none') ? false : true;
 	$table = (!$if_image) ? 'Articles_Tags' : 'Images_Tags';
 	$columns = (!$if_image) ? $GLOBALS['articles_tags'] : $GLOBALS['images_tags'];
 
@@ -136,7 +140,7 @@ function edit_tags_table($array, $id, $reviewer_id, $str, $pdo) {
 function edit_main($array, $id, $reviewer_id, $str, $pdo) {
 	// updates Articles_Tags and Articles_Themes tables if marked as a Main Element	if($form_data['main']){
 	
-	$if_image = ($array['type'] == 'Image') ? true : false;
+	$if_image = ($array['img_association'] == 'none') ? false : true;
 	$table = (!$if_image) ? 'Articles_Themes' : 'Images_Themes';
 	$columns = (!$if_image) ? $GLOBALS['articles_themes'] : $GLOBALS['images_themes'];
 
