@@ -101,7 +101,7 @@ try {
 // if there's no existing article, binds values and executes the Articles table statement
 // or article_id is false
 
-		$article_id = return_article_id($row, $dbh);
+		$article_id = return_element_id($row, $dbh);
 		$reviewer_id = return_reviewer_id($row['initials'], $dbh);
 		$row['timestamp'] = string_format($row['timestamp'], 'timestamp');
 		$row['narration_embedded'] = (isset($row['narration_embedded'])) ? string_format($row['narration_embedded'], 'bool') : 0;

@@ -13,7 +13,7 @@
 /////////////////////////////////////////////////////////
 
 // see insert-csv.php for a better explanation of this variable
-$gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdDFMWTBiaGpBWDEwekxma2RCTXBKd2c&output=csv';
+$gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AtVEb6YM9oi8dEVIdzZoUjBWME1WTC1BM05YbE1qb3c&output=csv';
 
 $columns = array(
 	'timestamp',
