@@ -345,6 +345,7 @@ function if_exists($filterArray, $columnArray, $table, $pdo) {
 
 	$columns = implode(' = ? AND ', $columnArray);
 	$sql = "SELECT EXISTS(SELECT * FROM $table WHERE $columns = ?)";
+
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute($filterArray);
 	$exists = $stmt->fetch(PDO::FETCH_NUM);
@@ -359,7 +360,7 @@ function if_article_exists($row, $dbh){
 }
 
 // give it a string and it should return an id -- can take an optional parameter to further specify select query
-function return_id($column, $filterArray, $columnArray, $table, $pdo) {
+function return_id($column, $filterArray, $columnArray, $table, $pdo, $p = '') {
 
 	$filters = array_map('string_format', $filterArray);
 	$columns = implode(' = ? AND ', $columnArray);
@@ -369,7 +370,6 @@ function return_id($column, $filterArray, $columnArray, $table, $pdo) {
 	$stmt->execute($filters);
 	
 	$result = $stmt->fetch(PDO::FETCH_NUM);
-	// $stmt->pdoParam
 	$result = ($result[0]) ? $result[0] : 0;
 	return $result;
 }
@@ -386,17 +386,34 @@ function return_reviewer_id($str, $pdo) {
 // by changing the article_check or image_constant arrays
 function return_element_id($row, $pdo, $if_image = false) {
 
-	$table = (!$if_image) ? 'Articles' : 'Images';
-	$id = (!$if_image) ? 'article_id' : 'img_id';
-	$checks = (!$if_image) ? $GLOBALS['article_check'] : $GLOBALS['image_check'];
-	echo_line($table);
-	var_dump($checks);
+	$table = ($if_image === true) ? 'Images' : 'Articles';
+	$id = ($if_image === true) ?  'img_id' : 'article_id';
+
+	if($if_image === 2) $checks = array('title', 'volume', 'issue');
+	else $checks = (!$if_image) ? $GLOBALS['article_check'] : $GLOBALS['image_check'];
+
 	foreach ($checks as $check) $filterArray[] = $row[$check];
 
-	if(if_exists($filterArray, $checks, $table, $pdo)) {
-		$id = return_id($id, $filterArray, $checks, $table, $pdo);
-		return $id;
-	} else { return false;}
+	if($if_image !== 2) {
+		if(if_exists($filterArray, $checks, $table, $pdo)) {
+			$id = return_id($id, $filterArray, $checks, $table, $pdo);
+			return $id;
+		} else { return false;}
+	}else{
+
+		$title = str_replace(array("'",'"'), '%', $filterArray[0]);
+		// $title = addslashes($filterArray[0]);
+
+		$sql = "SELECT `article_id` FROM `Articles` 
+				WHERE `volume` = $filterArray[1] AND `issue` = $filterArray[2]
+				AND `title` like '$title%'";
+
+		$stmt = $pdo->quote($sql);
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute();
+		$results = $stmt->fetch(PDO::FETCH_COLUMN);
+		return $results[0];
+	}
 }
 
 // just returns a single row base on an array of filters -- used for constructing tables

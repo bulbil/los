@@ -29,7 +29,6 @@ switch ($confirm) {
 	case 0: // 0 : adding a new article/image and new review/themes/tags
 	case 1: // 1 : db data and $POST data are identical
 	case 2: // 2 : freestanding image / no associated article
-			echo_line($form. ' ' . $confirm. ' ' . $if_image); 
 			edit_tables($form_data, $form, $confirm, $if_image);
 			echo return_alert($form);
 			unset_session_vars();
@@ -71,7 +70,6 @@ function return_alert($str) {
 // the page start + end, volume, issue correspond to an existing article in the db
 function compare_fields($confirm = '', $if_image = false) {
 	
-	echo_line('compare fields ' . $if_image);
 	$table = (!$if_image) ? 'Articles' : 'Images';
 	$id = (!$if_image) ? 'article_id' : 'img_id';	
 	$columns = (!$if_image) ? $GLOBALS['articles'] : $GLOBALS['images'];

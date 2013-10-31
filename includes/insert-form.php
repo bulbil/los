@@ -25,7 +25,6 @@ function edit_tables($array, $str, $int, $if_image = false){
 
 	// same thing for image id, if relevant
 	if($if_image) $img_id = (isset($_SESSION['db_image']) && $_SESSION['db_image']['img_id'] != $array['img_id']) ? $_SESSION['db_image']['img_id'] : $array['img_id'];
-	if(isset($img_id)) echo_line($img_id);
 
 	try {
 

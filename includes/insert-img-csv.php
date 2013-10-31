@@ -13,7 +13,8 @@
 /////////////////////////////////////////////////////////
 
 // see insert-csv.php for a better explanation of this variable
-$gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AtVEb6YM9oi8dEVIdzZoUjBWME1WTC1BM05YbE1qb3c&output=csv';
+$gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AtVEb6YM9oi8dE0wb2x3ZndoUXRUWkxBYjhrY1dub1E&usp&output=csv';
+$gcsv_collaborated = 'https://docs.google.com/spreadsheet/pub?key=0AtVEb6YM9oi8dEVIdzZoUjBWME1WTC1BM05YbE1qb3c&output=csv';
 
 $columns = array(
 	'timestamp',
@@ -88,12 +89,13 @@ try {
 
 		$article_check_array = array('title' => $row['article_title'], 'volume' => $row['img_volume'], 'issue' => $row['img_issue']);
 
-		$article_id = (strtolower($row['article_title']) !== 'freestanding') ? return_element_id($article_check_array, $dbh) : null;
+		$article_id = (strtolower($row['article_title']) !== 'freestanding') ? return_element_id($article_check_array, $dbh, 2) : null;
 		$row['article_id'] = $article_id;
 
 		$image_columns = $GLOBALS['images'];
 		
 		if(!$article_id) unset($image_columns[0]);
+
 		$stmt_images = prepare_pdo_statement($image_columns, 'Images', $dbh);
 
 		if($row['article_id']) {
