@@ -428,7 +428,9 @@ function update_main($str, $article_id, $reviewer_id, $pdo, $if_image = false) {
 	$themes_columns = (!$if_image) ? $GLOBALS['articles_themes'] : $GLOBALS['images_themes'];
 	$tags_columns = (!$if_image) ? $GLOBALS['articles_tags'] : $GLOBALS['images_tags'];
 
-	$id = return_id('theme_id', array($str), array('theme'), 'Themes', $pdo);
+	$theme = string_format($str,'theme');
+	$id = return_id('theme_id', array($theme), array('theme'), 'Themes', $pdo);
+	
 	if($id) { 
 
 		$themes_array = implode(' = ? AND ', $themes_columns);
