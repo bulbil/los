@@ -162,6 +162,7 @@ try {
 // updates Articles_Tags and Articles_Themes tables if marked as a Main Element
 		foreach (string_format($row['main'], 'array') as $value) {
 
+			$value = string_format($value, 'theme'); 
 			update_main($value, $article_id, $reviewer_id, $dbh);
 		}
 
