@@ -6,12 +6,12 @@ include 'db.php';
 include 'utilities.php';
 
 $p = (isset($_GET['p'])) ? $_GET['p'] : '';
-$article_id = (isset($_GET['id'])) ? $_GET['id'] : '';
+$id = (isset($_GET['id'])) ? $_GET['id'] : '';
 $reviewer2_id = (isset($_GET['rid'])) ? $_GET['rid'] : '';
 $if_image = (isset($_GET['img'])) ? $_GET['img'] : 0;
 
-if($_GET['p'] == 'test_table') echo return_json($p);
-else echo return_json($p, $article_id, $_SESSION['reviewer_id'], $reviewer2_id, $if_image);
+if($_GET['p'] == 'data_table') echo return_json($p, $id);
+else echo return_json($p, $id, $_SESSION['reviewer_id'], $reviewer2_id, $if_image);
 
 // for outputting json things
 
@@ -139,10 +139,10 @@ function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $
 
 		case('places'):
 
-			if (!$article_id) "SELECT tag FROM Tags WHERE category = 'places' ORDER BY tag";
+			if (!$id) "SELECT tag FROM Tags WHERE category = 'places' ORDER BY tag";
 			else { 
 
-				$sql = ($article_id == '2') ? 
+				$sql = ($id == '2') ? 
 						"SELECT tag, COUNT(*) as count FROM Tags 
 						JOIN Articles_Tags ON Articles_Tags.tag_id = Tags.tag_id 
 						WHERE category = 'places' GROUP BY tag"
@@ -154,56 +154,71 @@ function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $
 
 		case('locations'):
 
-				$sql = ($article_id == '1') ? 
+				$sql = ($id == '1') ? 
 						"SELECT location, COUNT(*) as count FROM Articles GROUP BY location"
 					: 	"SELECT location FROM Articles GROUP BY location";
 
 			return query($sql);
 
-		case('test_table'):
-			$columnsArray = array('Articles.article_id', 'date_published', 'title', 'author', 'GROUP_CONCAT(DISTINCT theme)', 'GROUP_CONCAT(tag)');
-			$sql_columns = implode(',', $columnsArray);
+		case('data_table'):
 
-			$sql_articles = "SELECT * FROM Articles";			
-			
+			$table = ($id == '') ? 'Articles' : 'Images';
+			$sql = "SELECT * FROM $table";			
+
 			$dbh = db_connect();
-			$results = $dbh->query($sql_articles);
+			$results = $dbh->query($sql);
 
-			$i = 0;
 			while($row = $results->fetch(PDO::FETCH_NUM)) {
 
-				$results_array[$i]['article'] = $row;
-				$article_id = $row[0];
-
-				$sql_tags = "SELECT GROUP_CONCAT(tag ORDER BY tag SEPARATOR '; ') as tags FROM Articles_Tags 
-							JOIN Tags ON Articles_Tags.tag_id = Tags.tag_id 
-							WHERE article_id = $article_id
-							AND Articles_Tags.if_main = 1";
-
-				$sql_themes = "SELECT GROUP_CONCAT(theme ORDER BY theme SEPARATOR '; ') as themes FROM Articles_Themes 
-							JOIN Themes ON Articles_Themes.theme_id = Themes.theme_id
-							WHERE article_id = $article_id
-							AND Articles_Themes.if_main = 1";
-
-				$sql_reviews = "SELECT narration_pov, narration_embedded, narration_tense, narration_tense
-								FROM Reviews JOIN Articles ON Articles.article_id = Reviews.article_id
-								WHERE Articles.article_id = $article_id";
-
-				$results_reviews = $dbh->query($sql_reviews);
-				$results_array[$i]['review'] = $results_reviews ->fetch(PDO::FETCH_NUM);
-
-				$results_tags = $dbh->query($sql_tags);
-				$results_array[$i]['tags'] = $results_tags ->fetch(PDO::FETCH_NUM);
-
-				$results_themes = $dbh->query($sql_themes);
-				$results_array[$i]['themes'] = $results_themes ->fetch(PDO::FETCH_NUM);
-
-				$i++;
+				$results_array[] = get_all_rows($row, $dbh, $id);
 			}
-			
+
 			$json = (isset($results_array)) ? json_encode($results_array) : "<em>sorry bro, no results ...</em>";
 			$dbh = null;
 			$json = '{ "aaData" : ' . $json . '}';
 			return $json;
 	}
 }
+
+
+function get_all_rows($row, $dbh, $id) {
+
+	$element = ($id == '') ? 'article' : 'image';
+	$id_column = ($id == '') ? 'article_id' : 'img_id';
+	$tags_table = ($id == '') ? 'Articles_Tags' : 'Images_Tags';
+	$themes_table = ($id == '') ? 'Articles_Themes' : 'Images_Themes';
+	$tags_table = ($id == '') ? 'Articles_Tags' : 'Images_Tags';
+
+	$results_array[$element] = $row;
+	$element_id = $row[0];
+
+	$sql_tags = "SELECT GROUP_CONCAT(tag ORDER BY tag SEPARATOR '; ') as tags FROM $tags_table 
+				JOIN Tags ON $tags_table.tag_id = Tags.tag_id 
+				WHERE $id_column = $element_id
+				AND $tags_table.if_main = 1";
+
+	$sql_themes = "SELECT GROUP_CONCAT(theme ORDER BY theme SEPARATOR '; ') as themes FROM $themes_table
+				JOIN Themes ON $themes_table.theme_id = Themes.theme_id
+				WHERE $id_column = $element_id
+				AND $themes_table.if_main = 1";
+
+	$sql_reviews = ($id == '') ? "SELECT narration_pov, narration_embedded, narration_tense, narration_tense
+					FROM Reviews JOIN Articles ON Articles.article_id = Reviews.article_id
+					WHERE Articles.article_id = $element_id"
+				: 0;
+
+	if($sql_reviews != 0) { 
+
+		$results_reviews = $dbh->query($sql_reviews);
+		$results_array['review'] = $results_reviews ->fetch(PDO::FETCH_NUM);
+	}
+
+	$results_tags = $dbh->query($sql_tags);
+
+	$results_array['tags'] = $results_tags ->fetch(PDO::FETCH_NUM);
+
+	$results_themes = $dbh->query($sql_themes);
+	$results_array['themes'] = $results_themes ->fetch(PDO::FETCH_NUM);
+
+	return $results_array;
+}			
