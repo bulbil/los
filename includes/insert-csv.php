@@ -139,7 +139,7 @@ try {
 		// echo_line($row['narration_tenseshift']);
 
 // binds values and executes Articles_Themes table statement
-		execute_article_themes($article_id, $reviewer_id, $row['themes'], $stmt_articles_themes, $dbh);
+		execute_themes($article_id, $reviewer_id, $row['themes'], $stmt_articles_themes, $dbh);
 
 // binds values and executes Articles_Tags table statement, adds tags to Tags table if new
 
@@ -155,7 +155,7 @@ try {
 				case ('events') :
 				case ('works') :
 				case ('technologies') :
-				case ('environments') : execute_article_tags($value, $key, $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
+				case ('environments') : execute_tags($value, $key, $article_id, $reviewer_id, $stmt_articles_tags, $dbh);
 			}
 		}
 
