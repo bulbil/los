@@ -21,7 +21,7 @@ var losData = {
 			"aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
 			"sAjaxSource": '/los/includes/json.php?p=data_table',
 			"aoColumns": [
-			// play with these to customize the columns
+			// play with these to customize the articles columns
 				{"mData": "article.0", "sTitle": "id", "sWidth": "2%", "sType": "date"},
 				{"mData": "article.1", "sTitle": "title", "sWidth": "30%"},
 				{"mData": "article.2", "sTitle": "author", "sWidth": "10%"},
@@ -44,8 +44,11 @@ var losData = {
 			"aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
 			"sAjaxSource": '/los/includes/json.php?p=data_table&id=1',
 			"aoColumns": [
-			// play with these to customize the columns
+			// play with these to customize the tables columns
 				{"mData": "image.0", "sTitle": "id", "sWidth": "2%", "sType": "date"},
+				{"mData": "image.1", "sTitle": "attached", "sWidth": "2%", "sType": "date",
+					"mRender": function(data,type,row){ var holder = (data) ? 'x' : ''; return holder; }
+				},
 				{"mData": "image.2", "sTitle": "caption", "sWidth": "30%"},
 				{"mData": "image.6", "sTitle": "author", "sWidth": "10%"},
 				{"mData": "image.3", "sTitle": "volume", "sWidth": "10%", "sType": "date"},
@@ -53,8 +56,8 @@ var losData = {
 				{"mData": "image.5", "sTitle": "page", "sWidth": "10%", "sType": "date"},
 				{"mData": "image.7", "sTitle": "engraver", "sWidth": "10%", "sType": "date"},
 				{"mData": "image.8", "sTitle": "date", "sWidth": "10%", "sType": "date"},
-				{"mData": "image.9", "sTitle": "rotated", "sWidth": "10%", "sType": "date"},
-				{"mData": "image.10", "sTitle": "placement", "sWidth": "10%", "sType": "date"},
+				{"mData": "image.10", "sTitle": "rotated", "sWidth": "10%", "sType": "date"},
+				{"mData": "image.11", "sTitle": "placement", "sWidth": "10%", "sType": "date"},
 				{"mData": "tags", "sTitle": "main tags", "sWidth": "5%"},
 				{"mData": "themes", "sTitle": "main themes", "sWidth": "5%"},
 			]

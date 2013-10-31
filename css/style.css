@@ -73,6 +73,6 @@ div#main-review-2.review-list ul li {border: none;}
 #narration-pov-review-2 h5 {color: #2a6496;}
 
 /* data table */
-div#data-table_wrapper {margin-top: 2em;}
+div.dropdown.columns-chooser{margin: 2em 0;}
 
-#data-table th.sorting {text-decoration: underline;}
+div#table-tabs-content th.sorting {text-decoration: underline;}
