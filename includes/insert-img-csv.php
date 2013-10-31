@@ -1,16 +1,19 @@
 <?php
 /////////////////////////////////////////////////////////
 //
-//
 //									<コ:彡
 //
 //						LAND OF SUNSHINE 
 //						university of michigan digital humanities project
 // 						nabil kashyap (nabilk.com)
 //
+//					 	License: MIT (c) 2013
+//						https://github.com/misoproject/dataset/blob/master/LICENSE-MIT 
+//						
 /////////////////////////////////////////////////////////
 
-$gcsv_copy_full = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdDFMWTBiaGpBWDEwekxma2RCTXBKd2c&output=csv';
+// see insert-csv.php for a better explanation of this variable
+$gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdDFMWTBiaGpBWDEwekxma2RCTXBKd2c&output=csv';
 
 $columns = array(
 	'timestamp',
@@ -61,7 +64,7 @@ function csvToArray($url) {
 	return $csv;
 }
 
-$csv = csvToArray($gcsv_copy_full);
+$csv = csvToArray($gcsv);
 
 try {
 
@@ -71,7 +74,7 @@ try {
 	$stmt_images_themes = prepare_pdo_statement($images_themes, 'Images_Themes', $dbh);
 	$stmt_images_tags = prepare_pdo_statement($images_tags, 'Images_Tags', $dbh);
 
-	// helper counter / no purpose other than debugging
+	// helper counter for debugging
 	$i = 1;
 	
 	// starts looping through each row of the csv
@@ -102,6 +105,7 @@ try {
 			if($results) $img_date = $results[0];
 		}
 
+		// normalize a few fields 
 		$row['img_date'] = (isset($img_date)) ? $img_date : 0;
 		$reviewer_id = (isset($row['initials'])) ? return_reviewer_id($row['initials'], $dbh) : '';
 		$row['timestamp'] = string_format($row['timestamp'], 'timestamp');
@@ -110,6 +114,7 @@ try {
 		$row['img_placement'] = preg_replace('/;/',',', $row['img_placement']);
 		$row['img_placement'] = preg_replace('/ /','', $row['img_placement']);
 
+		// if no existing image, make a new one 
 		if(!$img_id) {
 			execute_image($row, $stmt_images);
 			$img_id = $dbh->lastInsertId();
@@ -119,6 +124,7 @@ try {
 
 		execute_themes($img_id, $reviewer_id, $row['themes'], $stmt_images_themes, $dbh, true);
 
+		// these tag categories for some reason don't apply to images
 		$image_categories = $GLOBALS['categories'];
 		unset($image_categories[4]);
 		unset($image_categories[10]);

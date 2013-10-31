@@ -1,14 +1,17 @@
 /////////////////////////////////////////////////////////
 //
-//
 //									<コ:彡
 //
 //						LAND OF SUNSHINE 
 //						university of michigan digital humanities project
 // 						nabil kashyap (nabilk.com)
 //
+//					 	License: MIT (c) 2013
+//						https://github.com/misoproject/dataset/blob/master/LICENSE-MIT 
+//						
 /////////////////////////////////////////////////////////
 
+// sets up tables using dataTables, a great jQuery plugin (http://datatables.net/)
 var losData = {
 
 	articlesTable: table =  $('#articles-table').dataTable({
@@ -18,6 +21,7 @@ var losData = {
 			"aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
 			"sAjaxSource": '/los/includes/json.php?p=data_table',
 			"aoColumns": [
+			// play with these to customize the columns
 				{"mData": "article.0", "sTitle": "id", "sWidth": "2%", "sType": "date"},
 				{"mData": "article.1", "sTitle": "title", "sWidth": "30%"},
 				{"mData": "article.2", "sTitle": "author", "sWidth": "10%"},
@@ -40,6 +44,7 @@ var losData = {
 			"aLengthMenu": [[10, 25, 100, -1], [10, 25, 100, "All"]],
 			"sAjaxSource": '/los/includes/json.php?p=data_table&id=1',
 			"aoColumns": [
+			// play with these to customize the columns
 				{"mData": "image.0", "sTitle": "id", "sWidth": "2%", "sType": "date"},
 				{"mData": "image.2", "sTitle": "caption", "sWidth": "30%"},
 				{"mData": "image.6", "sTitle": "author", "sWidth": "10%"},
@@ -55,6 +60,7 @@ var losData = {
 			]
 		}),
 
+	// creates a dropdown menu with checkboxes that toggle a column's visibility
 	initColChooser: function(table){
 
 		var columns = [];
@@ -78,17 +84,19 @@ var losData = {
 		$(container + ' .columns-chooser li input').prop('checked',true);
 	},
 
+	// activates dropdown's checkboxes
 	activateColChooser: function(table) {
 
 		var container = table.selector.split('-')[0];
 
 		$(container + ' .columns-chooser').change(function(){ losData.setVisibility(table); });
 
+		// keeps the menu from collapsing everytime it's clicked
 		$(container + ' .dropdown-menu li').click(function(e) { e.stopPropagation(); });
 		
 		var resetBool = true;
 		$(container + ' .columns-chooser button#reset').click(function(e) { 
-
+			// deals with all/none button
 			resetBool = (resetBool === true) ? false : true;
 			_.each($(container + ' .columns-chooser :checkbox'), function(e, index) {
 				$(e).prop('checked',resetBool);
@@ -109,11 +117,14 @@ var losData = {
 	}
 }
 
+// a little styling on top of the datatables default
 $('.dataTables_filter input').addClass('form-control')
 	.attr('placeholder', 'Search Columns');
 
+// sets up articles
 losData.initColChooser(losData.articlesTable);
 losData.activateColChooser(losData.articlesTable);
 
+// images
 losData.initColChooser(losData.imagesTable);
 losData.activateColChooser(losData.imagesTable);

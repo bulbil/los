@@ -2,14 +2,16 @@
 <div class='row'>
 <div class="col-md-6 col-md-offset-3">
 <?php
+// a beastly thing -- this is all the logic for whether to render a confirm form or not before
+// database changes
 
 $form = (isset($_POST['form'])) ? $_POST['form'] : $_SESSION['form_data']['form'];
+// moves the $_POST stuff to $_SESSION so we can use it after the confirm form
 $form_data = (isset($_SESSION['form_data'])) ? $_SESSION['form_data'] : $_POST;
-var_dump($form_data);
-var_dump($_SESSION);
 $if_image = ($form_data['img_association'] == 'none') ? false : true;
 
 // the main thing is comparing article ids and fields from $POST data and the db
+// runs the comparison twice if an image and article form data are present
 if(!isset($_SESSION['confirm'])) {
 
 	if(!$if_image) compare_fields();
@@ -20,12 +22,11 @@ if(!isset($_SESSION['confirm'])) {
 // sets the session confirm status based on successful submission of the confirm edit form
 if(isset($_POST['confirm'])) $_SESSION['confirm'] = $_POST['confirm'];
 
-// sets some variables depending on the state
 $confirm = $_SESSION['confirm'];
 
 switch ($confirm) {
 
-	case 0: // 0 : adding a new article and new review/themes/tags
+	case 0: // 0 : adding a new article/image and new review/themes/tags
 	case 1: // 1 : db data and $POST data are identical
 	case 2: // 2 : freestanding image / no associated article
 			echo_line($form. ' ' . $confirm. ' ' . $if_image); 
@@ -77,6 +78,7 @@ function compare_fields($confirm = '', $if_image = false) {
 	
 	// get rid of the reconciled field from the array
 	unset($columns[9]);
+	// the article id column just makes things unnecessarily complicated
 	if($if_image) unset($columns[0]);
 
 	// save the $POST data to insert it after the confirmation form
@@ -86,18 +88,21 @@ function compare_fields($confirm = '', $if_image = false) {
 
 		$dbh = db_connect();
 
-		// returns an article id base on the page_start / page_end / volume / issue		
+		// returns an article/image id base on the page_start / page_end / volume / issue or img_volume / img_issue / img_page / img_placement
+		// what is used for comparison is easily changed in utilities by modifying to the
+		// article_check or image_check arrays ...		
 		$db_id = return_element_id($_POST, $dbh, $if_image);
-		echo_line('db_id ' . $db_id);
+
 		// if no article id in the db, add an article + add review / themes / tags
 		if(!$db_id && $_POST['form'] == 'add') {
 
 			if($_POST['img_association'] == 'freestanding') $_SESSION['confirm'] = 2;
+			// even if adding a new attached image, you want to confirm any changes to the associated article
 			if($_POST['img_association'] == 'attached') $_SESSION['confirm'] = 3;
 			else $_SESSION['confirm'] = 0;
 		}
 
-		// if there should be an article id in the db, throw an error
+		// if there should be an article id in the db, throw an error ... otherwise big trouble
 		elseif(!$db_id) { $_SESSION['confirm'] = 5;}
 		
 		else {
@@ -143,6 +148,8 @@ function compare_fields($confirm = '', $if_image = false) {
 }
 
 // renders a form to confirm edits to the article level bibliographic data
+
+// helper function for the rendering
 function form_html($str1, $str2, $str3) {
 
 		$html = "<div class='row'>";
@@ -155,8 +162,6 @@ function form_html($str1, $str2, $str3) {
 }
 
 function render_confirm_form($int, $if_image = false, $p = '') {
-	
-	echo_line('confirm form go !');
 
 	$element = (!$if_image) ? 'article' : 'image';	
 	$columns = (!$if_image) ? $GLOBALS['articles'] : $GLOBALS['images'];
@@ -186,6 +191,7 @@ function render_confirm_form($int, $if_image = false, $p = '') {
 
 	$html .= (strlen($form) > 0) ? $form : '';
 
+	// only renders submit button if submit parameter is given
 	if($p == 'submit') {
 		$html .= "<input type='hidden' name='confirm' value='6'>";
 		$html .= "<div class = 'row'><input type='submit' class='btn btn-warning' value='confirm'>";

@@ -1,16 +1,19 @@
 <?php
 /////////////////////////////////////////////////////////
 //
-//
 //									<コ:彡
 //
 //						LAND OF SUNSHINE 
 //						university of michigan digital humanities project
 // 						nabil kashyap (nabilk.com)
 //
+//					 	License: MIT (c) 2013
+//						https://github.com/misoproject/dataset/blob/master/LICENSE-MIT 
+//						
 /////////////////////////////////////////////////////////
 
 // utility functions to format, insert and update data in corresponding tables
+// kind of heinously long, I know ...
 
 /////////////////////////////////////////////////////////
 //
@@ -18,11 +21,14 @@
 //
 /////////////////////////////////////////////////////////
 
+// these mostly follow a similar pattern and could be refactored to use parameters ...
 // for getting stuff into the articles table
 function execute_article($array, $obj, $rec = 0) {
 
+	// constant columns array
 	global $articles;
 
+	// normalizing 
 	$array['type'] = string_format($array['type'],'type');
 	$array['reconciled'] = $rec;
 
@@ -81,6 +87,7 @@ function execute_themes($id, $reviewer_id, $str, $obj, $pdo, $if_image = false) 
 	$table = (!$if_image) ? 'Articles_Themes' : 'Images_Themes';
 	$columns = (!$if_image) ? $GLOBALS['articles_themes'] : $GLOBALS['images_themes'];
 
+	// gets rid of existing themes so we can add them afresh 
 	$sql = "DELETE FROM $table WHERE ($columns[0], `reviewer_id`) = ('$id', '$reviewer_id')";
 	$pdo->query($sql);
 
@@ -92,14 +99,14 @@ function execute_themes($id, $reviewer_id, $str, $obj, $pdo, $if_image = false) 
 			$theme_id = return_id('theme_id', array($theme), array('theme'), 'Themes', $pdo);
 				
 				if($theme_id) {
-					
+					// because there was some duplicates we want to check whether already associated with this article or image
 					if (!if_exists(array($id, $theme_id, $reviewer_id), $columns, $table, $pdo)){
 
 						bind_value($id, $obj, $columns[0]);						
 						bind_value($theme_id, $obj, $columns[1]);
 						bind_value($reviewer_id, $obj, $columns[2]);			
 						$obj->execute();
-		
+			// for debugging, a statements
 					} else echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> already attached to this review');
 		
 			} else echo_line('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>' . $theme . '</strong> not a theme ... check data');
@@ -117,17 +124,18 @@ function execute_tags($array, $category, $id, $reviewer_id, $obj, $pdo, $if_imag
 	foreach (string_format($array, 'array') as $tag){
 
 		$tag = string_format($tag);
+		// to make super duper sure we don't get junk
 		if (strlen($tag) > 1 &&	$tag != 'n/a' && $tag != 'na'){	
 
 			$tag_id = return_id('tag_id', array($tag, $category), array('tag', 'category'), 'Tags', $pdo);
-			
+			// if there is no tag, let's add it to the main tags list
 			if($tag_id == 0) {
 
 				$tag = $pdo->quote($tag);
 				insert_value($tag, 'Tags', 'tag', $pdo, $category, 'category');
 				$tag_id = $pdo->lastInsertId();
 			}
-
+			// makes sure no duplicates for this article or image
 			if (!if_exists(array($id, $tag_id, $reviewer_id), $columns, $table, $pdo)){
 
 				bind_value($id, $obj, $columns[0]);				
@@ -141,7 +149,7 @@ function execute_tags($array, $category, $id, $reviewer_id, $obj, $pdo, $if_imag
 
 /////////////////////////////////////////////////////////
 //
-// HELPER FUNCTIONS FOR GETTING STUFF INTO THE DB
+// CONSTANTS FOR GETTING STUFF INTO DB
 //
 /////////////////////////////////////////////////////////
 
@@ -274,6 +282,11 @@ $dump = array(
 	'narration_tenseshift'
 	);
 
+/////////////////////////////////////////////////////////
+//
+// HELPER FUNCTIONS FOR GETTING STUFF INTO THE DB
+//
+/////////////////////////////////////////////////////////
 
 // creates the SQL queries for PDO prepared statements from an array
 function pdo_update($n) { return $n . " = :" . $n; }
@@ -299,7 +312,6 @@ function sql_implode($array, $table, $param = '', $columnArray = '', $filterArra
 	}
 }
 
-
 // returns an object with the prepared PDO statement
 function prepare_pdo_statement($array, $table, $pdo) {
 
@@ -308,14 +320,12 @@ function prepare_pdo_statement($array, $table, $pdo) {
 	return $stmt;
 }
 
-
 // binds value to PDO prepared statement
 function bind_value($str, $obj, $column) {
 	$str = string_format($str);
 	$obj->bindValue($column, $str);
 	return $obj;
 }
-
 
 //inserts a value into a table -- just like that, no executing a statement, just get 'er done
 function insert_value($str, $table, $column, $pdo, $str2 = '', $column2 = '') {
@@ -329,8 +339,8 @@ function insert_value($str, $table, $column, $pdo, $str2 = '', $column2 = '') {
 	$stmt->execute();
 }
 
-
-// returns bool if exists in a table -- faster than return_id as far as I know
+// returns bool if exists in a table -- faster than return_id as far as I
+// researched is why I made these two functions
 function if_exists($filterArray, $columnArray, $table, $pdo) {
 
 	$columns = implode(' = ? AND ', $columnArray);
@@ -348,7 +358,6 @@ function if_article_exists($row, $dbh){
 		return if_exists($current_article, $article_check, 'Articles', $dbh); 
 }
 
-
 // give it a string and it should return an id -- can take an optional parameter to further specify select query
 function return_id($column, $filterArray, $columnArray, $table, $pdo) {
 
@@ -365,18 +374,16 @@ function return_id($column, $filterArray, $columnArray, $table, $pdo) {
 	return $result;
 }
 
-
 function return_reviewer_id($str, $pdo) {
 	$str = string_format($str);
 	// grabs the reviewer_id or, if two sets of initials appear as in a reconciled article, sets the initials to 'rec'
 	$id = (strlen($str) < 4) ? return_id('reviewer_id', array($str), array('initials'), 'Reviewers', $pdo)
 		: '9';
-	// if reconciled, updates the corresponding article in the Articles table to 'reconciled'
-	// if($id == 'rec') {update_reconciled($article_id, $pdo);}
 	return $id;
 }
 
-
+// super useful thing just to quickly grab the id of something, can be updated
+// by changing the article_check or image_constant arrays
 function return_element_id($row, $pdo, $if_image = false) {
 
 	$table = (!$if_image) ? 'Articles' : 'Images';
@@ -392,6 +399,7 @@ function return_element_id($row, $pdo, $if_image = false) {
 	} else { return false;}
 }
 
+// just returns a single row base on an array of filters -- used for constructing tables
 function return_row($returnArray, $filterArray, $columnArray, $table, $pdo) {
 
 	$returns = implode(',', $returnArray);
@@ -445,7 +453,7 @@ function update_main($str, $article_id, $reviewer_id, $pdo, $if_image = false) {
 
 /////////////////////////////////////////////////////////
 //
-// FUNCTIONS FOR FORMATTING & OUTPUT
+// FUNCTION FOR FORMATTING & OUTPUT
 //
 /////////////////////////////////////////////////////////
 
@@ -471,7 +479,7 @@ function string_format($str, $param = 'default') {
 			return ($str == 'Yes') ? true : false;
 
 		case('date_check'):
-
+		// useful for comparing the database date and the one submitted by a form
 			$date = preg_split('/-/', $str);
 			$date = $date[1] . '-' . $date[0];
 			return $date;
@@ -527,19 +535,24 @@ function string_format($str, $param = 'default') {
 
 }
 
-function echo_line($str1, $str2 = '') {
+/////////////////////////////////////////////////////////
+//
+// FUNCTION FOR OUTPUT
+//
+/////////////////////////////////////////////////////////
 
+
+// for debugging, easier to read ...
+function echo_line($str1, $str2 = '') {
 	$line = ($str2) ? $str2 . ' ' . $str1 . '<br/>' : $str1 . '<br/>';
 	echo $line;
 }
 
 function echo_array($array){
-
 	foreach(string_format($array, 'array') as $key=>$value) echo_line($value, $key);
 }
 
 // for getting the title for the forms page
-
 function get_form_title(){
 
 	$form_title = $_GET['form'];
@@ -552,7 +565,6 @@ function get_form_title(){
 }
 
 // for outputting tables, php to html
-
 function table_start($array, $id, $padding ='') {
 
 	$html = "<div class='row'>";
@@ -570,6 +582,7 @@ function table_row($array, $table_columns, $id_column = '', $p = 'article') {
 	
 	foreach($table_columns as $column) { 
 		$html .= '<td>';
+		// kind of a hack, could have abstracted this more ...
 		if($column == 'freestanding') $html .= ($array['article_id']) ? '' : 'X';
 		else $html .=  $array[$column]; 
 		$html .= '</td>';
@@ -586,6 +599,7 @@ function table_row($array, $table_columns, $id_column = '', $p = 'article') {
 	return $html;
 }
 
+// all this for just the tiny, last cell on each row that has been or could be reconciled
 function table_reconcile_cell($id, $bool) {
 
 	$reviewer_id = $_SESSION['reviewer_id'];
@@ -622,12 +636,14 @@ function table_reconcile_cell($id, $bool) {
 	}
 }
 
+// close the table
 function table_end(){
 
 	$html = '</div></table></div></div>';
 	return $html;
 }
 
+// super important! caused an embarrassingly lot grief before I got this going!
 function unset_session_vars() {
 	unset($_SESSION['confirm']);
 	unset($_SESSION['form_data']);
@@ -635,8 +651,8 @@ function unset_session_vars() {
 	unset($_SESSION['db_image']);
 }
 
-// for writes js functions into the footer based on get 'form' value, adding the appropriate article/reviewer id values
-function js_form_functions() {
+// returns js functions in the footer based on get 'form' value, adding the appropriate article/reviewer id values
+function js_functions() {
 
 	$view = (isset($_GET['form'])) ? $_GET['form'] : '';
 	

@@ -1,13 +1,29 @@
 <?php
-//attempts to connect to the los database
+/////////////////////////////////////////////////////////
+//
+//									<コ:彡
+//
+//						LAND OF SUNSHINE 
+//						university of michigan digital humanities project
+// 						nabil kashyap (nabilk.com)
+//
+//					 	License: MIT (c) 2013
+//						https://github.com/misoproject/dataset/blob/master/LICENSE-MIT 
+//						
+/////////////////////////////////////////////////////////
 
+// functions for making db changes based on form info
+
+// master function that controls the flow of the others
 function edit_tables($array, $str, $int, $if_image = false){
 
-	echo_line('edit tables ' . $if_image . 'confirm ' . $int);
-
+	// sets the article id
+	// in case the article id passed to the function is different from the one in SESSION, sets it to the SESSION
+	// allows you to reassociate the info with a new article
 	if(isset($array['id'])) $article_id = (isset($_SESSION['db_article']) && $_SESSION['db_article']['id'] != $array['id']) ? $_SESSION['db_article']['id'] : $array['id'];
 	else $article_id = $_SESSION['db_image']['article_id'];
 
+	// same thing for image id, if relevant
 	if($if_image) $img_id = (isset($_SESSION['db_image']) && $_SESSION['db_image']['img_id'] != $array['img_id']) ? $_SESSION['db_image']['img_id'] : $array['img_id'];
 	if(isset($img_id)) echo_line($img_id);
 
@@ -15,19 +31,23 @@ function edit_tables($array, $str, $int, $if_image = false){
 
 		$dbh = db_connect();
 
+		// if a freestanding or no difference in the db -- go straight to the table
 		if( $int == 2 || $array['img_association'] == 'freestanding') edit_images_table($array, $img_id, $str, $dbh);
 		
+		// what to do for images otherwise
 		elseif($if_image) {
 			edit_articles_table($array, $article_id, $str, $dbh);
 			$article_id = ($article_id > 0) ? $article_id : $dbh->lastInsertId();
 			edit_images_table($array, $img_id, $str, $dbh, $article_id);
 		}
+		// everything else
 		elseif($str == 'reconcile' || $int != 1) edit_articles_table($array, $article_id, $str, $dbh);
 
+		// sets the reviewer id to 9 if reconciling
 		$reviewer_id = ($str == 'reconcile' || $str == 'recedit') ? '9' : $_SESSION['reviewer_id'];		
 
-		echo_line($if_image);
-
+		// logic for editing reviews tables
+		// if a new article or image (none in the db) makes a new article
 		if($if_image) {
 			$id = ($img_id != 0) ? $img_id : $dbh->lastInsertId();
 			edit_image_reviews_table($array, $id, $reviewer_id, $str, $dbh);
@@ -45,8 +65,10 @@ function edit_tables($array, $str, $int, $if_image = false){
 
 function edit_articles_table($array, $article_id, $str, $pdo) {
 
+	// refers to constants in utilities
 	global $articles;
 
+	// logic for whether to add or update
 	if($article_id) $sql = sql_implode($articles, 'Articles', 'update', array('article_id'), array($article_id));
 	$stmt_articles = (isset($sql)) ? $pdo->prepare($sql) : prepare_pdo_statement($articles, 'Articles', $pdo);
 
@@ -61,12 +83,15 @@ function edit_images_table($array, $img_id, $str, $pdo, $article_id = 0) {
 
 	$columns = $GLOBALS['images'];
 
+	// don't want to update article id if there isn't one
 	if($article_id == 0) unset($columns[0]);
 	else $array['article_id'] = $article_id;
 
+	// logic for whether to add or update
 	if($img_id) $sql = sql_implode($columns, 'Images', 'update', array('img_id'), array($img_id));
 	$stmt_images = (isset($sql)) ? $pdo->prepare($sql) : prepare_pdo_statement($columns, 'Images', $pdo);
 
+	// some last minute data formatting
 	$array['img_date'] = string_format($array['img_date'], 'date_submit');
 	$array['img_rotated'] = (isset($array['img_rotated'])) ? $array['img_rotated'] : 0;
 
@@ -78,10 +103,10 @@ function edit_reviews_table($array, $article_id, $reviewer_id, $str, $pdo){
 
 	global $reviews;
 
+	// logic for whether to add or update
 	if(($str == 'edit' && $array['id'] == $article_id) || $str == 'recedit') { 
 		$sql = sql_implode($reviews, 'Reviews', 'update', array('article_id', 'reviewer_id'), array($article_id, $reviewer_id));
 	}
-
 	$stmt_reviews =  (isset($sql)) ? $pdo->prepare($sql) : prepare_pdo_statement($reviews, 'Reviews', $pdo);
 	
 	// normalizing a few fields
@@ -97,6 +122,7 @@ function edit_image_reviews_table($array, $img_id, $reviewer_id, $str, $pdo){
 
 	global $image_reviews;
 
+	// logic for whether to add or update
 	if($str == 'edit' && $array['img_id'] == $img_id) { 
 		$sql = sql_implode($image_reviews, 'Image_Reviews', 'update', array('img_id', 'reviewer_id'), array($img_id, $reviewer_id));
 	}
@@ -113,6 +139,7 @@ function edit_image_reviews_table($array, $img_id, $reviewer_id, $str, $pdo){
 // binds values and executes Articles_Themes table statement
 function edit_themes_table($array, $id, $reviewer_id, $str, $pdo) {
 
+	// choose whether updating articles themes or images themes
 	$if_image = ($array['img_association'] == 'none') ? false : true;
 	$table = (!$if_image) ? 'Articles_Themes' : 'Images_Themes';
 	$columns = (!$if_image) ? $GLOBALS['articles_themes'] : $GLOBALS['images_themes'];
@@ -126,6 +153,7 @@ function edit_tags_table($array, $id, $reviewer_id, $str, $pdo) {
 	
 	global $categories;
 	
+	// choose whether updating articles tags or images tags
 	$if_image = ($array['img_association'] == 'none') ? false : true;
 	$table = (!$if_image) ? 'Articles_Tags' : 'Images_Tags';
 	$columns = (!$if_image) ? $GLOBALS['articles_tags'] : $GLOBALS['images_tags'];
@@ -138,17 +166,20 @@ function edit_tags_table($array, $id, $reviewer_id, $str, $pdo) {
 }
 
 function edit_main($array, $id, $reviewer_id, $str, $pdo) {
-	// updates Articles_Tags and Articles_Themes tables if marked as a Main Element	if($form_data['main']){
+	// updates Articles_Tags and Articles_Themes tables if appears as a Main Element
 	
+	// choose whether to update images or articles
 	$if_image = ($array['img_association'] == 'none') ? false : true;
 	$table = (!$if_image) ? 'Articles_Themes' : 'Images_Themes';
 	$columns = (!$if_image) ? $GLOBALS['articles_themes'] : $GLOBALS['images_themes'];
 
+	// no more main elements, resets them ...
 	$sql = "UPDATE $table SET `if_main` = 0 WHERE ($columns[0],`reviewer_id`) = ($id, $reviewer_id)";
 	$pdo->query($sql);
 	$table = (!$if_image) ? 'Articles_Tags' : 'Images_Tags';
 	$pdo->query($sql);
 
+	// then adds them back (avoids accumulating them)
 	foreach (string_format($array['main'], 'array') as $element) {
 
 		if($element){	

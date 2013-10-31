@@ -1,4 +1,5 @@
 <?php
+//render the data table
 session_start();
 include '../html/header.html';
 include '../html/masthead.html';

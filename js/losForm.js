@@ -1,17 +1,21 @@
 /////////////////////////////////////////////////////////
 //
-//
 //									<コ:彡
 //
 //						LAND OF SUNSHINE 
 //						university of michigan digital humanities project
 // 						nabil kashyap (nabilk.com)
 //
+//					 	License: MIT (c) 2013
+//						https://github.com/misoproject/dataset/blob/master/LICENSE-MIT 
+//						
 /////////////////////////////////////////////////////////
 
-// functions for modifying form values
+// serious ridiculousness for appending values, form validation, enabling/disabling fields as appropriate
+// heavy use of select2 (http://ivaynberg.github.io/select2/)
 var losForm = {
-	// categories for the tags
+
+	//some constant arrays
 	categories: ['activities','commodities','entities','environments','events',
 				'florafauna','groups','persons','places','technologies','works'],
 
@@ -23,8 +27,9 @@ var losForm = {
 
 	imageArticleFields: ['volume', 'issue', 'date-published'],
  
-	// functions for validating entries ... add more id's to the array to validate additional fields
+////// functions for validating entries
 	submitCheck: function(array) {
+		// toggles the submit button based on whether any required fields have the .has-error class or are blank
 		fieldVals = [];
 		_.each(array, function(e){ 
 			var val = $('input#' + e).val();
@@ -36,7 +41,8 @@ var losForm = {
 	},
 
 	formValidation: function(img){
-
+		// adds the has-error class as appropriate -- this could certainly get
+		// more fancy with the validation
 		validateArray = (img == 0) ? losForm.inputIDs[0] : losForm.inputIDs[1];
 		function validateNum(array) {
 
@@ -44,7 +50,7 @@ var losForm = {
 
 				$('input#' + e).change(function() {
 
-					if(e == 'date-published') { 
+					if(e == 'date-published') {
 
 						val = $(this).val();
 						reg = new RegExp(/\d{2}-\d{4}/);
@@ -64,7 +70,7 @@ var losForm = {
 						else $('#' + e + '-group').addClass('error');
 
 					}else{
-
+						// blanket, just to test if full of numbers
 						val = Number($(this).val());
 						if(val > 0) $('#' + e + '-group').removeClass('has-error');
 						if(!val) $('#' + e + '-group').addClass('has-error');
@@ -78,7 +84,7 @@ var losForm = {
 		validateNum(validateArray);
 	},
 
-// adds the themes to the themes list
+// initializes select2 on the themesList and adds the themes to the themes list
 	themesList: function(id, img) { 
 
 		img = (typeof img === 'undefined') ? '' : img;
@@ -97,7 +103,7 @@ var losForm = {
 		});
 	},
 
-// adds the tags lists to the different tag category inputs
+// initializes select2 on the tagsList and adds the tags lists to the different tag category inputs
 	tagsLists: function(id, img){
 
 		img = (typeof img === 'undefined') ? '' : img;
@@ -107,6 +113,7 @@ var losForm = {
 			tags = data;
 
 			_.each(losForm.categories, function(category) {
+				// an array of tags for each category
 				tagsCategory = _.filter(tags, function(e) { return e.category == category; });
 				tagsCategory = _.pluck(tagsCategory, 'tag');
 				// initializes each tag input as a select2 thing so the library can do its magic
@@ -154,7 +161,7 @@ var losForm = {
 		});
 	},
 
-// helper function for appending info to a particular form input type, whether input or textarea
+// helper function for appending info to a particular form input type
 	appendInput: function(key, value) {
 
 		domID = key.replace('_','-');
@@ -165,7 +172,7 @@ var losForm = {
 		if($('select#' + domID)[0]) $('select#' + domID).val(value);
 	 },
 
-// helper function for disabling form fields
+// helper function for disabling form fields (but doesn't work for fields with select2 magic on them)
 	toggleDisable: function (array, p) {
 
 		p = (typeof p === 'undefined') ? '' : p;
@@ -184,18 +191,22 @@ var losForm = {
 
 		if($('select#image').val() !== 'none') {
 
+			// change field names
 			$('textarea#summary').attr('name', 'img_description');
 			$('textarea#notes').attr('name', 'img_notes');
 			$('textarea#research-notes').attr('name', 'img_research_notes');
 
+			// enable img pane
 			$('ul#form-tabs li#img').removeClass('disabled');
 			$('ul#form-tabs li#img a').attr('href','#image-pane')
 				.attr('data-toggle','tab');
 			
+			// disable narration pane
 			$('ul#form-tabs li#narr').addClass('disabled');
 			$('ul#form-tabs li#narr a').attr('href','javascripte:void(0)')
 				.removeAttr('data-toggle');
 			
+			// for the hidden form fields
 			$("input[name='id']").val(0);
 			$("input[name='img_id']").val(getID);
 
@@ -240,8 +251,7 @@ var losForm = {
 		});
 	 },
 
-// for an image, if article-related is selected, populates the image data fields with the appropriate article level values
-// and repopulates them if the fields change
+// enables/disables, validates fields, and syncs image data fields when select#image changes
 	imageArticleCheck: function() {
 
 		disableArray = ['input#title', 'input#author', 'input#location', 'input#page-start', 
@@ -256,7 +266,7 @@ var losForm = {
 		 		$('input#type').select2('enable',true);				
 		 		
 		 		if ($('select#image').val() === 'freestanding') {
-
+		 			// clears article info as appropriate if freestanding is selected
 		 			_.each(losForm.imageArticleFields, function(e) { $('input#' + e).val('') ; });
 		 			losForm.toggleDisable(disableArray, 0);
 			 		$('input#type').select2('enable',false);
@@ -324,7 +334,7 @@ var losForm = {
 		}
 
 		if(img == 1) {
-
+			// if an image, populates more fields
 			$.getJSON('../includes/json.php?p=img_article&id=' + id + '&img=1', function(data) {
 				id = data[0]['article_id'];
 
@@ -338,13 +348,15 @@ var losForm = {
 					});
 				} else losForm.imageArticleCheck();
 
+				// important ... disables select#imag but sends that data through
+				// a hidden form field -- otherwise big trouble
 				$('select#image').attr('disabled','disabled');
 				$("input[name='img_association']")
 					.removeAttr('disabled')
 					.val(imgStatus);
-
 			});
 		} else { 
+			// if not an image, just regular old appending
 			$.getJSON('../includes/json.php?p=element&id=' + id, function(data) {
 			fillFields(data);
 		});
@@ -355,8 +367,12 @@ var losForm = {
 	appendImage: function(id){
 
 		$.getJSON('../includes/json.php?p=element&id=' + id + '&img=1', function(data) {
+			
 			image = data[0];
+			
 			_.each(_.keys(image), function(key) {
+				
+				// normalizing a few fields 
 				losForm.appendInput(key, image[key]);
 				$('input#img-placement').select2('val',[image['img_placement']]);
 				
@@ -381,12 +397,17 @@ var losForm = {
 		id2 = (typeof id2 === 'undefined') ? '' : id2;
 		img = (typeof img === 'undefined') ? '' : img;
 
+		// whether to return an image review
 		imgParam = (img == 1) ? '&img=1' : '';
+		// whether to use the current reviewer id in session or to use one supplied in the GET
+		// like with reconciled reviews
+		// (id = article or image id ...)
 		idParam = '&rid=' + id2;
 
 		$.getJSON('../includes/json.php?p=review&id=' + id + idParam + imgParam, function(data) {
 			review = data[0];
 			if(img == 1) {
+				// if img, changes names of review fields so will work with image db tables
 				$('textarea#summary').attr('name', 'img_description');
 				$('textarea#notes').attr('name', 'img_notes');
 				$('textarea#research-notes').attr('name', 'img_research_notes');				
@@ -394,6 +415,7 @@ var losForm = {
 			_.each(_.keys(review), function(key) {
 				losForm.appendInput(key, review[key]);
 			});
+			// adds timestamp to hidden timestamp form field
 			$("input[name='timestamp']").val(review['timestamp']);
 		});
 	},
@@ -407,12 +429,15 @@ var losForm = {
 	// on ajax success gets Reviews data for two reviews and appends them to DOM elements and the values for input fields
 		$.getJSON('../includes/json.php?p=review&id=' + id1 + idParam, function(data){
 
+			// review made by current user
 			review1 = data[0];
 			
 			$.getJSON('../includes/json.php?p=review&id=' + id1 + '&rid=' + id2, function(data){
 				
+				// review of same article by another user
 				review2 = data[0];
 
+				// helpers for appending values
 				function reviewText(key) {
 
 					domID = key.replace('_', '-');
@@ -428,7 +453,7 @@ var losForm = {
 					boolResponse2 = (review2[key] == 1) ? "<span style='color: #5cb85c'><em>yes</em></span>" : "<span style='color: #428bca;'><em>nope</em></span>";  
 					$('#' + domID + '-review-2 p').append(boolResponse2);
 				}
-
+				// append away
 				reviewText('narration_pov');
 				reviewText('narration_tense');
 				reviewText('notes');
@@ -440,15 +465,19 @@ var losForm = {
 		});
 	},
 
-// on ajax success appends Articles_Themes table json to form fields
+// on ajax success appends Articles_Themes and main themes table json to form fields
 	appendThemes: function(id, id2, img) {
 
 		imgParam = (img == 0) ?  '' : '&img=1';
 		idParam = (typeof id2 === 'undefined') ? '' : '&rid=' + id2;
 
 		$.getJSON('../includes/json.php?p=themes&id=' + id + idParam + imgParam, function(data) {
+
+			//array of themes
 			articleThemes = _.pluck(data, 'theme');
 			$('input#themes').select2('val', [articleThemes]);
+
+			// array of main themes
 			mainThemes = _.filter(data, function(e) { return e.if_main == 1; })
 			mainThemes = _.pluck(mainThemes, 'theme');
 			// for the main input, adds the prefix Theme
@@ -466,11 +495,11 @@ var losForm = {
 		// on ajax success gets Articles_Themes data for two reviews and appends them to DOM elements and updates values for input fields 
 
 		$.getJSON('../includes/json.php?p=themes&id=' + id1 + '&rid=' + id3, function(data){
-
+			// themes from current reviewer
 			review1themes = data;
 									
 			$.getJSON('../includes/json.php?p=themes&id=' + id1 + '&rid=' + id2, function(data){
-				
+				// themes from other reviewer who has reviewed same article
 				review2themes = data;
 
 				review1themesMain = losForm.makeArray(review1themes, '1', 'if_main', 'maintheme');
@@ -496,7 +525,8 @@ var losForm = {
 				review2themes = _.pluck(review2themes, 'theme');
 
 				if(id3.length == 0){
-
+					// if reconciling a new review ... appends the intersection of the
+					// two themes lists
 					sharedThemes = _.intersection(review1themes, review2themes);
 	
 					review1themes = _.difference(review1themes, sharedThemes);
@@ -505,7 +535,7 @@ var losForm = {
 					$('input#themes').select2('val', [sharedThemes]);
 				}
 
-				// append reviewer theme values to unordered lists								
+				// append reviewer theme values to unordered lists and make them clickable								
 				$('#themes-review-1 ul').append("<li>" + review1themes.join("</li><li>"));
 				$('#themes-review-2 ul').append("<li>" + review2themes.join("</li><li>"));
 
@@ -524,12 +554,13 @@ var losForm = {
 		$.getJSON('../includes/json.php?p=tags&id=' + id + idParam + imgParam, function(data) {					
 			tags = data;
 			_.each(losForm.categories, function(category) {
+				// arrays of tags by category
 				tagsCategory = losForm.makeArray(tags, category, 'category', 'tag');
 				$('input#' + category).select2('val', [tagsCategory]);
 			});
 
+			// append main tags
 			mainTags = losForm.makeArray(tags, '1', 'if_main', 'maintag');
-
 			mainList = $('input#main').select2('val');
 			mainList = mainList.concat(mainTags);
 
@@ -544,11 +575,11 @@ var losForm = {
 
 		// on ajax success gets Articles_Tags data for two reviews and appends them to DOM elements and the values for input fields
 		$.getJSON('../includes/json.php?p=tags&id=' + id1 + '&rid=' + id3, function(data){
-
+			// current user tags
 			review1tags = data;
 				
 			$.getJSON('../includes/json.php?p=tags&id=' + id1 + '&rid=' + id2, function(data){
-
+				// other reviewer's tags
 				review2tags = data;
 
 				_.each(losForm.categories, function(category){
@@ -559,6 +590,7 @@ var losForm = {
 					review2tagsByCategory = losForm.makeArray(review2tags, category, 'category', 'tag');
 
 					if(id3.length == 0){
+						// if reconciling a review, append the intersection of tags by category
 						sharedTagsByCategory = _.intersection(review1tagsByCategory, review2tagsByCategory);
 						review1tagsByCategory = _.difference(review1tagsByCategory, sharedTagsByCategory);
 						review2tagsByCategory = _.difference(review2tagsByCategory, sharedTagsByCategory);
@@ -567,7 +599,7 @@ var losForm = {
 						$('input#' + domID).select2('val', [sharedTagsByCategory]);
 					}
 
-				// append reviewer tags to unordered lists
+					// append reviewer tags to unordered lists
 					$('#' + domID + '-review-1 ul').append("<li>" + review1tagsByCategory.join("</li><li>"));
 					$('#' + domID + '-review-2 ul').append("<li>" + review2tagsByCategory.join("</li><li>"));										
 
@@ -580,6 +612,7 @@ var losForm = {
 				review2tagsMain = losForm.makeArray(review2tags, '1', 'if_main', 'maintag');
 
 				if(id3.length == 0){
+					// if reconciling append the intersection of tags lists to the main
 					sharedTagsMain = _.intersection(review1tagsMain, review2tagsMain);
 					review1tagsMain = _.difference(review1tagsMain, sharedTagsMain);
 					review2tagsMain = _.difference(review2tagsMain, sharedTagsMain);
@@ -598,28 +631,30 @@ var losForm = {
 	appendMain: function() {
 
 		$('#s2id_main ul.select2-choices').click(function() {
-				$('input#main').select2({
-					tags: function(){ 
 
-						mainTags = [];
+			$('input#main').select2({
+				tags: function(){ 
 
-						_.each(losForm.categories, function(category) {
+					mainTags = [];
 
-							domID = category.replace('_', '-');
-							categoryTags = $('input#' + domID).select2('val');
-							categoryTags = _.chain(categoryTags)
-								.map(function(e) { return category.charAt(0).toUpperCase() + category.substr(1) + ': ' + e; })
-								.value();
-							mainTags = mainTags.concat(categoryTags);
-						});
+					_.each(losForm.categories, function(category) {
 
-						mainTags = mainTags.concat(_.map($('input#themes').select2('val'), function(e) { return 'Theme: ' + e;}));
-						return mainTags;	
-					}
-				});
-			;})
+						domID = category.replace('_', '-');
+						categoryTags = $('input#' + domID).select2('val');
+						categoryTags = _.chain(categoryTags)
+							.map(function(e) { return category.charAt(0).toUpperCase() + category.substr(1) + ': ' + e; })
+							.value();
+						mainTags = mainTags.concat(categoryTags);
+					});
+
+					mainTags = mainTags.concat(_.map($('input#themes').select2('val'), function(e) { return 'Theme: ' + e;}));
+					return mainTags;	
+				}
+			});
+		;})
 	},
 
+	// append initials of the two reconciling reviewers
 	appendInitials: function(id1, id2) {
 	
 		idParam = (id2) ? '&rid=' + id1 : '';
@@ -641,6 +676,7 @@ var losForm = {
 		});
 	},
 
+	// helper function, make the unordered lists clickable
 	recListsAddOnClick: function(obj,domID) {
 
 		$(obj).css('cursor','pointer')			
@@ -652,6 +688,7 @@ var losForm = {
 			});
 	},
 
+	// collection of functions to prepare the form for all cases
 	prepare: function(id, img) {
 		losForm.formValidation(img);
 		losForm.typeList();
@@ -694,7 +731,7 @@ var losForm = {
 		losForm.formValidation(img);
 		losForm.appendImage();
 	},
-	// reconcile view : a kind of heinous number of lines to append data to the form from two existing reviews (Articles, Review, Articles_Tags, Articles_Themes)
+	// reconcile view : append data to the form from two existing reviews (Articles, Review, Articles_Tags, Articles_Themes)
 	reconcileReview: function(artID, revID1) {
 
 		losForm.prepare();
@@ -707,6 +744,8 @@ var losForm = {
  		losForm.appendRecThemes(artID, revID1);
 	},
 
+	// edit reconcile view : append data to the form from two existing reviews, plus the reconciled one 
+	// (Articles, Review, Articles_Tags, Articles_Themes)
 	editReconciled: function(artID,revID1,revID2) {
 
 		losForm.prepare();

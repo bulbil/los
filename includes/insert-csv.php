@@ -1,13 +1,15 @@
 <?php
 /////////////////////////////////////////////////////////
 //
-//
 //									<コ:彡
 //
 //						LAND OF SUNSHINE 
 //						university of michigan digital humanities project
 // 						nabil kashyap (nabilk.com)
 //
+//					 	License: MIT (c) 2013
+//						https://github.com/misoproject/dataset/blob/master/LICENSE-MIT 
+//						
 /////////////////////////////////////////////////////////
 
 // adds all data from the land of sunshine googlespreadsheet (text datapoints (responses)) published as a csv to the appropriate tables
@@ -16,14 +18,10 @@
 // a variable to carry the url of the google spreadsheet:
 // -- the spreadsheet must be 'published to the web' in google docs for it to be accessible
 // -- the the suffix needs to be 'output=csv'
-
 $gcsv = 'https://docs.google.com/spreadsheet/pub?key=0AtVEb6YM9oi8dDE0cEx1eVpqN2pBQkpxVjdpeGZ4WkE&output=csv';
 
-$gcsv_full_test = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdHA2R3pHLTBrZHJFbE1kOUtZLV9GSEE&output=csv';
-$gcsv_local = 'http://localhost:8888/los/textdata_short.csv';
-$gcsv_rec_test = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdHgtMDVpLVRvcnNDdmJIS1liMFRRQ1E&output=csv';
-$gcsv_copy = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdGN0OFpuVGZFYnRSdFhjd05HYVFncEE&output=csv';
-$gcsv_short = 'https://docs.google.com/spreadsheet/pub?key=0AqAqvqKN28wbdEhrSkVqQ3Ezb2p5ZV9UWnFUMGV5dEE&output=csv';
+// if you want to test a local copy -- like so ... 
+// $gcsv_local = 'http://localhost:8888/los/textdata_short.csv';
 
 // an array for mapping columns to table variables
 $columns = array(

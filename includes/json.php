@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-if(!$_GET['p'] == 'test_table' && !isset($_SESSION['username'])) { echo "<a href='../index.php'><em>sorry bro, not logged in ...</em></a>"; die; }
+// checks if you're logged in unless getting a table
+if(!$_GET['p'] == 'data_table' && !isset($_SESSION['username'])) { echo "<a href='../index.php'><em>sorry bro, not logged in ...</em></a>"; die; }
 include 'db.php';
 include 'utilities.php';
 
@@ -14,13 +15,13 @@ if($_GET['p'] == 'data_table') echo return_json($p, $id);
 else echo return_json($p, $id, $_SESSION['reviewer_id'], $reviewer2_id, $if_image);
 
 // for outputting json things
-
 function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $if_image = false) {
 
 	function query($sql, $num = false) {
 		$dbh = db_connect();
 		$results = $dbh->query($sql);
 
+		// choose whether to return associative array or not
 		if($num) while($row = $results->fetch(PDO::FETCH_NUM)) $results_array[] = $row;
 		else while($row = $results->fetch(PDO::FETCH_ASSOC)) $results_array[] = $row;
 		
@@ -137,6 +138,7 @@ function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $
 					ON Tags.tag_id = Articles_Tags.tag_id";
 			return query($sql);
 
+		// for steven -- all the places tags or all distinct locations grouped by count
 		case('places'):
 
 			if (!$id) "SELECT tag FROM Tags WHERE category = 'places' ORDER BY tag";
@@ -152,6 +154,7 @@ function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $
 			}								
 			return query($sql);
 
+		// all the publishing locations or all distinct locations grouped by count
 		case('locations'):
 
 				$sql = ($id == '1') ? 
@@ -160,6 +163,7 @@ function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $
 
 			return query($sql);
 
+		// big dump of all the article or image tables data // hopefully easily enough modified
 		case('data_table'):
 
 			$table = ($id == '') ? 'Articles' : 'Images';
@@ -180,7 +184,7 @@ function return_json($param, $id = '', $reviewer1_id = '', $reviewer2_id = '', $
 	}
 }
 
-
+// helper function for table dump, returning all the rows from articles or images and then tags / themes / reviews
 function get_all_rows($row, $dbh, $id) {
 
 	$element = ($id == '') ? 'article' : 'image';

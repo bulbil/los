@@ -1,15 +1,17 @@
-SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE Articles;
-TRUNCATE Tags;
-TRUNCATE Reviews;
-TRUNCATE Articles_Tags;
-TRUNCATE Articles_Themes;
 
-SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE Images;
-TRUNCATE TABLE Images_Tags;
-TRUNCATE TABLE Images_Themes;
-TRUNCATE TABLE Image_Reviews;
+-- just a reminder of how to truncate when using foreign keys
+-- SET FOREIGN_KEY_CHECKS=0;
+-- TRUNCATE Articles;
+-- TRUNCATE Tags;
+-- TRUNCATE Reviews;
+-- TRUNCATE Articles_Tags;
+-- TRUNCATE Articles_Themes;
+
+-- SET FOREIGN_KEY_CHECKS = 0;
+-- TRUNCATE TABLE Images;
+-- TRUNCATE TABLE Images_Tags;
+-- TRUNCATE TABLE Images_Themes;
+-- TRUNCATE TABLE Image_Reviews;
 
 -- indicating the engine here means you don't have to do so after each table
 -- but dreamhost sets db's up automatically so you have to indicate the engine after
@@ -17,8 +19,6 @@ TRUNCATE TABLE Image_Reviews;
 
 -- CREATE DATABASE los DEFAULT CHARSET UTF8 ENGINE = INNODB;
 -- USE los_data;
-
--- GRANT ALL ON los_data.* TO 'lummis'@'localhost' IDENTIFIED BY 'pQaD9oF';
 
 CREATE TABLE Articles (
 
@@ -206,53 +206,3 @@ CREATE TABLE Image_Reviews (
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- just for shits, for testing table with test values
-
-INSERT INTO Reviewers (`initials`, `first_name`, `last_name`, `username`, `password`) VALUES
-('JT', 'John', 'Toe', 'jtoe', 'what'),
-('JH', 'Joshua', 'Hubbard', 'jhub', 'what'),
-('AW', 'Ari', 'Weinberg', 'awein', 'what'),
-('RM', 'Rachel', 'Miller', 'rmill', 'what'),
-('MB', 'Michael', 'Barera', 'mbar', 'what'),
-('VMR', 'Valentina', 'Montero-Roe', 'vroe', 'what'),
-('SH', 'Steven', 'Hoelscher', 'shoe', 'what'),
-('jj', 'Justin', 'Joque', 'jjoe', 'what'),
-('rec','rec' , 'rec', 'rec','rec');
-
-UPDATE Reviewers SET username = , password = 'lummisexpandsthesoul' WHERE reviewer_id = 2;
-
--- INSERT INTO Articles (title, author, location, page_start, page_end, volume, issue, date_published, type, reconciled) VALUES
--- ('what', 'waht', 'what', '1', '2', '1','2','2000-10-10','poetry','0'),
--- ('two', 'two', 'two', '1', '3', '4','5','2000-10-10','poetry','0');
-
--- INSERT INTO Themes (theme,if_secondary) VALUES
--- ('chunk','0'),
--- ('greasy','1');
-
--- INSERT INTO Articles_Themes (article_id, reviewer_id, theme_id, if_main) VALUES
--- ('1', '1', '1', '0'),
--- ('2', '2', '2', '0');
-
--- INSERT INTO Tags (tag, category) VALUES
--- ('activities','activities'),
--- ('groups','groups'),
--- ('works','works'),
--- ('entities','entities'),
--- ('events','events');
-
--- INSERT INTO Articles_Tags (article_id, tag_id, reviewer_id, if_main) VALUES
--- ('1','1','1','0'),
--- ('1','2','2','0'),
--- ('1','3','1','0'),
--- ('1','3','2','0'),
--- ('2','1','1','0'),
--- ('2','2','2','0'),
--- ('2','3','	1','0'),
--- ('2','4','2','0');
-
--- INSERT INTO Reviews (article_id,reviewer_id,summary,notes) VALUES
--- ('1','1','summary article 1 reviewer 1', 'notes one article 1 reviewer 1'),
--- ('1','2','summary article 1 reviewer 2', 'notes article 1 reviewer 2'),
--- ('2','1','summary article 2 reviewer 1', 'notes one article 2 reviewer 1'),
--- ('2','2','summary article 2 reviewer 2', 'notes article 2 reviewer 2');

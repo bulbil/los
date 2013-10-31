@@ -1,4 +1,5 @@
 <?php
+//insert google spreadsheet data into db
 session_start();
 require '../html/header.html';
 include '../html/masthead.html';

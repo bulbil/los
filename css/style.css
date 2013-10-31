@@ -1,3 +1,12 @@
+/*
+land of sunshine
+License: MIT
+https://github.com/misoproject/dataset/blob/master/LICENSE-MIT 
+(c) 2013
+nabilk.com
+*/
+
+/* masthead */
 #login {height: 2em; padding: 0px;}
 #login h5{float: right; padding: 0px;}
 
@@ -24,12 +33,14 @@
 
 #masthead ul.nav li a{ color: #777;}
 
+/* sign in page form */
 form.form-signin h2, form.form-signin button, form.form-signin input { margin-bottom: 20px;}
 
 form.form-signin h2 {text-align: center;}
 
 #login a{ color: #ffaa00; }
 
+/* form stuff */
 ul.select2-results {border-bottom: 1px solid #ddd;border-top: 1px solid #ddd;}
 
 form input.btn { margin: 20px 15px -10px 0;}
@@ -61,6 +72,7 @@ div#main-review-2.review-list ul li {border: none;}
 .two ul li.reviewer, 
 #narration-pov-review-2 h5 {color: #2a6496;}
 
+/* data table */
 div#data-table_wrapper {margin-top: 2em;}
 
 #data-table th.sorting {text-decoration: underline;}

@@ -1,4 +1,5 @@
-<?php ob_start();
+<?php
+ob_start();
 session_start();
 
 include '../html/header.html';
@@ -20,22 +21,14 @@ if (isset($_POST['username']) && isset($_POST['password']) && strlen($_POST['use
     ob_end_flush();
     return;
 
-  } else {echo "<div class='col-md-6 col-md-offset-3'>
-                <div class='alert alert-danger'>sorry <em>!</em> invalid username/password combo</div>
-                </div>";}
-}
-?>
+  } else { 
 
-<div class="row">
-<div class="col-md-3 col-md-offset-4">
-  <a href="home.php"><img src="../img/los_lion.png" alt="land of sunshine lion" /></a>
-  <form class="form-signin" action="login.php" method="post">
-    <h2 class="form-signin-heading">please sign in</h2>
-    <input type="text" name='username' class="form-control" placeholder="username" autofocus>
-    <input type="password" name='password' class="form-control" placeholder="password">
-    <button class="btn btn-primary btn-block" type="submit">go <em>!</em></button>
-  </form>
-</div>
-</div>
+    $html =  "<div class='col-md-6 col-md-offset-3'>
+              <div class='alert alert-danger'>sorry <em>!</em> invalid username/password combo</div>
+              </div>";
+    echo $html;
+  }
+} 
 
-<?php include '../html/footer.html'; ?>
+include '../html/login.html';
+include '../html/footer.html';

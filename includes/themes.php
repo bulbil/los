@@ -1,5 +1,5 @@
 <?php
-
+// takes the themes authority list from google spreadsheet and puts into the database
 include 'db.php';
 include 'utilities.php';
 
@@ -23,24 +23,26 @@ $stmt = $themesPDO->prepare($sql);
 
 foreach($themes as $theme) { 
 
-$label_main = preg_replace('/\./', '', ucfirst(trim($theme['main'])));
-$stmt->bindValue('theme', $label_main);
-$stmt->bindValue('if_secondary', false);
+	// normalize the main labels	
+	$label_main = preg_replace('/\./', '', ucfirst(trim($theme['main'])));
+	$stmt->bindValue('theme', $label_main);
+	$stmt->bindValue('if_secondary', false);
 
-echo $label_main . '<br />';
-$stmt->execute();
+	echo $label_main . '<br />';
+	$stmt->execute();
 
-if($theme['secondary']) {
+		if($theme['secondary']) {
 
-	$secondary = string_format($theme['secondary'],'array');
-	foreach($secondary as $value) {
-		$value = preg_replace('/\./', '', $value);
-		echo $label_main . '--' . trim($value) . '<br />';
-		$stmt->bindValue('theme', $label_main . '--' . trim($value));
-		$stmt->bindValue('if_secondary', true);
-		$stmt->execute();
+			// for the second column, adds them to the main library of congress style
+			$secondary = string_format($theme['secondary'],'array');
+			foreach($secondary as $value) {
+				$value = preg_replace('/\./', '', $value);
+				echo $label_main . '--' . trim($value) . '<br />';
+				$stmt->bindValue('theme', $label_main . '--' . trim($value));
+				$stmt->bindValue('if_secondary', true);
+				$stmt->execute();
 
+			}
+		}
 	}
-}
-}
 } catch (PDOException $e) { $e->getMessage(); } 

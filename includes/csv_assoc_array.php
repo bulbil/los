@@ -1,14 +1,13 @@
 <?php
 /////////////////////////////////////////////////////////
 //
-//
-//									<コ:彡
-//
-//						LAND OF SUNSHINE 
-//						university of michigan digital humanities project
-// 						nabil kashyap (nabilk.com)
+//					 	License: MIT
+//						https://github.com/misoproject/dataset/blob/master/LICENSE-MIT 
+//						(c) 2013
 //
 /////////////////////////////////////////////////////////
+
+// OLDER BRUTE FORCE VERSION
 
 // adds all data from the land of sunshine googlespreadsheet (text datapoints (responses)) published as a csv to the appropriate tables
 // relies heavily on a number of reusable utility scripts in utilities.php

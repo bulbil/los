@@ -1,3 +1,4 @@
+<!-- bibliographic information tab -->
 <div class="tab-pane fade in active" id="article">
 	<fieldset>
 
@@ -36,7 +37,7 @@
 		<div class="form-group col-md-2" id='page-start-group'>
 			<label  for="page-start">Pages</label>
 				<div class="input-group">
-					<span class="input-group-addon">start</span>
+					<span class="input-group-addon">start<strong>*</strong></span>
 					<input class="form-control" id="page-start" name="page_start" type="text">
 				</div>
 		</div>
@@ -45,12 +46,12 @@
 		<div class="form-group col-md-2" id='page-end-group'>
 			<label  for="page-end">&nbsp;</label>
 				<div class="input-group">
-					<span class="input-group-addon">end</span>
+					<span class="input-group-addon">end<strong>*</strong></span>
 					<input class="form-control" id="page-end" name="page_end" type="text">
 				</div>
 		</div>
 
-		<!-- WHETHER AN IMAGE IS PART OF AN ARTICLE -->
+		<!-- IMAGE ASSOCIATION -->
 		<div class="form-group col-md-4" id='img-association'>
 			<label for='image'>Image</label>
 			<select class='form-control' id='image' name='img_association'>
@@ -58,7 +59,9 @@
 				<option value='attached'>Attached</option>
 				<option value='freestanding'>Freestanding</option>
 			</select>
-		    <input disabled='disabled' type="hidden" name="img_association">
+			<!-- when the image association field is disabled when editing existing image, this gets 
+				enabled so it still sends the right info in the POST -->
+			<input disabled='disabled' type="hidden" name="img_association">
 		</div>
 
 		</div>
@@ -67,9 +70,9 @@
 
 		<!-- VOLUME -->
 		<div class="form-group col-md-2" id='volume-group'>
-			<label  for="volume">Issue</label>
+			<label  for="volume">&nbsp;</label>
 				<div class="input-group">
-					<span class="input-group-addon">volume</span>
+					<span class="input-group-addon">volume<strong>*</strong></span>
 					<input class="form-control" id="volume" name="volume" type="text">
 			</div>
 		</div>
@@ -78,7 +81,7 @@
 		<div class="form-group col-md-2" id='issue-group'>
 			<label  for="issue">&nbsp;</label>
 				<div class="input-group">
-					<span class="input-group-addon">issue</span>
+					<span class="input-group-addon">issue<strong>*</strong></span>
 					<input class="form-control" id="issue" name="issue" type="text">
 				</div>
 		</div>

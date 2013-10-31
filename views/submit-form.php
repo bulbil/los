@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+// are you logged in? otherwise can't see
 if(!isset($_SESSION['username'])) { $_SESSION['login_error'] = '1'; header('Location: home.php'); }
 
 include '../html/header.html';

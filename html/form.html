@@ -1,3 +1,4 @@
+<!-- starts the form -->
 <div class='row'>
 
 	<div class='col-md-12' style='border: 1px solid #ddd;'>
@@ -5,11 +6,14 @@
     <h2 id="form-tabs-title"><?= get_form_title() ?></h2>
 
     <form action="../views/submit-form.php" method="post">
+    <!-- these hidden fields send important information for submit-form.php sequence -->
     <input type="hidden" name="form" value = <?= "'" . $_GET['form'] . "'" ?> >
     <input type="hidden" name="id" value = <? echo "'" . ((isset($_GET['id'])) ? $_GET['id'] : 0) . "'"; ?> >
     <input type="hidden" name="img_id" value = <? echo "'" . ((isset($_GET['id'])) ? $_GET['id'] : 0) . "'"; ?> >
+    <!-- populated automagically with js -->
     <input type="hidden" name="timestamp">
   
+    <!-- sets of bootstrap tabs -->
     <div class='row'>
       <ul id="form-tabs" class="nav nav-tabs">
         <li class="active"><a href="#article" data-toggle="tab">ARTICLE</a></li>

@@ -1,5 +1,6 @@
 <?php
 session_start();
+// are you logged in? otherwise can't see
 if(!isset($_SESSION['username'])) { $_SESSION['login_error'] = '1'; header('Location: home.php'); }
 
 include '../html/header.html';
@@ -12,8 +13,10 @@ unset_session_vars();
 $reviewer_id = $_SESSION['reviewer_id'];
 $dbh = db_connect();
 
+// starts the tables
 include '../html/reviewer-table.html';
 
+// starts the articles table
 $sql = "SELECT timestamp, Articles.article_id, title, issue, volume, date_published, reconciled 
 		FROM Articles JOIN Reviews ON Articles.article_id = Reviews.article_id 
 		WHERE reviewer_id = $reviewer_id 
@@ -31,6 +34,7 @@ while ($row = $results->fetch(PDO::FETCH_ASSOC)) {
 
 $html .= table_end();
 
+// starts the images table
 $html .= "<div class='tab-pane fade' id='images'>";
 
 $table_columns = array('img_caption', 'freestanding', 'img_volume','img_issue', 'img_date');
